@@ -1,2 +1,2 @@
 # ihc-image-analysis
-A Python library for analyzing immunohistochemistry images
+A web application for analyzing immunohistochemistry images
