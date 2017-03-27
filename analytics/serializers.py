@@ -12,7 +12,7 @@ class ExperimentSerializer(serializers.ModelSerializer):
 class ProbeSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Experiment
+        model = Probe
         fields = ('id', 'probe_name', 'probe_id')
 
 
@@ -20,6 +20,17 @@ class LungmapImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LungmapImage
-        fields = ('id', 's3key', 'strain', 'organism', 'magnification', 'image_name', 'gender', 'age', 'experiment',
-                  'image_id', 'date', 'image_orig')
-
+        fields = (
+            'id',
+            's3key',
+            'strain',
+            'organism',
+            'magnification',
+            'image_name',
+            'gender',
+            'age',
+            'experiment',
+            'image_id',
+            'date',
+            'image_orig'
+        )

@@ -1,18 +1,15 @@
-import os
-from lungmap_sparql_client.lungmap_sparql_utils import *
+from lungmap_sparql_utils import *
 from tqdm import tqdm
 import pandas as pd
 import json
 import os
 from dateutil import parser
-from PIL import Image
-from io import BytesIO
-import hashlib
+
 
 class LMClient(object):
     def __init__(self):
         """
-        initalizes a LMClient that is tied to a particular location. This location is used to copy images from S3
+        initializes a LMClient that is tied to a particular location. This location is used to copy images from S3
         Lungmap to this location as well as save pandas dataframe representations of the metadata.
         """
         print("Generating Metadata for all '.tif' or '.tiff' images within lungmap")
@@ -22,7 +19,8 @@ class LMClient(object):
         print("Generating Metadata for all conditions associated with a probe")
         self._create_condition_list()
 
-    def _get_media_inventory(self, media_location):
+    @staticmethod
+    def _get_media_inventory(media_location):
         """
         This is the only function in this package that ties it to django configurations because it will take
         the media_location provided in __init__ and then append two folders (images, images_jpeg) to that location
@@ -47,14 +45,13 @@ class LMClient(object):
         tables = get_lungmap_file_list()
         rows = []
         for x in tqdm(tables):
-            output = {}
-            output['image_id'] = x['image_id']['value'].split('owl#')[1]
+            output = {'image_id': x['image_id']['value'].split('owl#')[1]}
             filename = x.get('raw_file').get('value')
             name, ext = os.path.splitext(filename)
             root = os.path.basename(os.path.normpath(x.get('path').get('value')))
-            s3objkey = os.path.join(root,name,filename)
+            s3_obj_key = os.path.join(root, name, filename)
             output['image_name'] = filename
-            output['s3key'] = s3objkey
+            output['s3key'] = s3_obj_key
             output['age'] = x['age_label']['value']
             output['experiment_id'] = x['experiment_id']['value'].split('owl#')[1]
             output['gender'] = x['gender']['value']
@@ -80,13 +77,14 @@ class LMClient(object):
         for x in tqdm(unique_ids):
             probes = get_experiment_probe_antibody_strain(x)
             for z in probes['bindings']:
-                results = {}
-                results['color'] = z['color']['value']
-                results['probe_id'] = z['probe_id']['value'].split('owl#')[1]
-                results['probe_name'] = z['probe_label']['value']
-                results['target_conditions'] = z['target_conditions']['value']
-                results['target_molecules'] = z['target_molecules']['value']
-                results['experiment_id'] = z['experiment_id']['value'].split('owl#')[1]
+                results = {
+                    'color': z['color']['value'],
+                    'probe_id': z['probe_id']['value'].split('owl#')[1],
+                    'probe_name': z['probe_label']['value'],
+                    'target_conditions': z['target_conditions']['value'],
+                    'target_molecules': z['target_molecules']['value'],
+                    'experiment_id': z['experiment_id']['value'].split('owl#')[1]
+                }
                 output.append(results)
         self.probe_list = output
 
@@ -95,8 +93,7 @@ class LMClient(object):
         for x in tqdm(self.probe_list):
             bar_split = x.get('target_conditions').split('|')
             for z in bar_split:
-                row = {}
-                row['probe_id'] = x.get('probe_id')
+                row = {'probe_id': x.get('probe_id')}
                 semi_split = z.split(';')
                 row['condition'] = semi_split[1]
                 output.append(row)
@@ -140,10 +137,10 @@ class LMClient(object):
             output.append({"model": "analytics.lungmapimage",
                            "pk": i + 1,
                            "fields": x})
-        with open(os.path.join(location, 'image.json'),'w') as f:
+        with open(os.path.join(location, 'image.json'), 'w') as f:
             json.dump(output, f, indent=2)
 
-    def get_unique_keys(self,key_name):
+    def get_unique_keys(self, key_name):
         """
         Generate a unique list of experiment_ids from image_list
         :return: list (of unique experiment_ids)
@@ -165,10 +162,14 @@ class LMClient(object):
         unique_ids = self.get_unique_keys(key_name)
         output = []
         for i, x in enumerate(unique_ids):
-            output.append({"model":model_name,
-                           "pk":i+1,
-                           "fields":{key_name:x}})
-        with open(os.path.join(location, json_name),'w') as f:
+            output.append(
+                {
+                    "model": model_name,
+                    "pk": i+1,
+                    "fields": {key_name: x}
+                }
+            )
+        with open(os.path.join(location, json_name), 'w') as f:
             json.dump(output, f, indent=2)
 
     def create_experiment_fixture(self, location):
@@ -176,29 +177,24 @@ class LMClient(object):
         Creates a fixture for the repository.experiment model (i.e. experiment.json)
         :return:
         """
-        self._create_unique_fixture_from_image_list(json_name= 'experiment.json',
-                                                    key_name= 'experiment_id',
-                                                    model_name= 'analytics.experiment',
-                                                    location= location)
+        self._create_unique_fixture_from_image_list(json_name='experiment.json',
+                                                    key_name='experiment_id',
+                                                    model_name='analytics.experiment',
+                                                    location=location)
 
     def create_probe_fixture(self, location):
         df = pd.DataFrame(self.probe_list)
-        df_sub = df[['probe_id','probe_name']]
+        df_sub = df[['probe_id', 'probe_name']]
         df_sub = df_sub.drop_duplicates()
         mylist = list(df_sub.T.to_dict().values())
         output = []
         for i, x in enumerate(mylist):
-            output.append({"model": 'analytics.probe',
-                           "pk":i+1,
-                           "fields":x})
-        with open(os.path.join(location, 'probe.json'),'w') as f:
+            output.append(
+                {
+                    "model": 'analytics.probe',
+                    "pk": i+1,
+                    "fields": x
+                }
+            )
+        with open(os.path.join(location, 'probe.json'), 'w') as f:
             json.dump(output, f, indent=2)
-
-
-
-
-
-
-
-
-

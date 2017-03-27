@@ -1,7 +1,7 @@
 import os
 from jinja2 import Template
 
-from lap import BASE_DIR as PROJECT_DIR
+from lap.settings import BASE_DIR as PROJECT_DIR
 from lungmap_sparql_client.lungmap_sparql_client import LMClient
 
 lminstance = LMClient()
@@ -16,10 +16,11 @@ for x in GENDER:
 ORGANISM_CHOICES = lminstance.get_unique_keys(key_name='organism')
 MAGNIFICATION_CHOICES = lminstance.get_unique_keys(key_name='magnification')
 
-def convert_list_to_tuple(list):
+
+def convert_list_to_tuple(list_input):
     output = []
-    for x in list:
-        output.append((x,x))
+    for i in list_input:
+        output.append((i, i))
     return tuple(output)
 
 AGE_CHOICES = convert_list_to_tuple(AGE_CHOICES)
@@ -42,5 +43,3 @@ t_rendered = t.render(AGE_CHOICES=AGE_CHOICES,
 
 with open(os.path.join(PROJECT_DIR, 'analytics', 'models_choices.py'), 'w') as f:
     f.write(t_rendered)
-
-

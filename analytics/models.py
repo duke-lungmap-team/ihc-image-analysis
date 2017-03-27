@@ -4,8 +4,8 @@ from io import BytesIO
 import hashlib
 from django.core.files.uploadedfile import SimpleUploadedFile
 import os
-import boto3
 from analytics.models_choices import *
+
 
 class Probe(models.Model):
     probe_name = models.CharField(max_length=50)
@@ -15,28 +15,11 @@ class Probe(models.Model):
         return '%s, %s' % (self.id, self.probe_name)
 
 
-# class Condition(models.Model):
-#     condition = models.CharField(max_length=50)
-#     probe = models.ForeignKey(Probe)
-#
-#     def __str__(self):
-#         return '%s, %s' % (self.probe_id, self.condition)
-
-
 class Experiment(models.Model):
     experiment_id = models.CharField(max_length=25)
 
     def __str__(self):
         return '%s, %s' % (self.id, self.experiment_id)
-
-
-# class ExperimentProbe(models.Model):
-#     experiment = models.ForeignKey(Experiment)
-#     color = models.CharField(max_length=20)
-#     probe = models.ForeignKey(Probe)
-#
-#     def __str__(self):
-#         return '%s %s %s' % (self.experiment, self.probe, self.color)
 
 
 def save_image(instance, filename):
@@ -66,6 +49,7 @@ def save_image(instance, filename):
         print("Something went wrong with LungmapImage column image_orig upload_to function save_image.")
     upload_dir = os.path.join('image', instance.s3key, instance.image_name)
     return upload_dir
+
 
 class LungmapImage(models.Model):
     s3key = models.CharField(max_length=200)
