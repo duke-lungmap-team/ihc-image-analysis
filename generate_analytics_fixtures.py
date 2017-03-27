@@ -4,11 +4,10 @@
 # data will change over time, so having the ability to dynamically generate is desired.
 ################################################################################################################
 
-#!/usr/bin/env python
 import os
-import sys
+
+from lap import BASE_DIR as PROJECT_DIR
 from lungmap_sparql_client.lungmap_sparql_client import LMClient
-from lap.settings import BASE_DIR as PROJECT_DIR
 
 if __name__ == "__main__":
     fixture_dir = os.path.join(PROJECT_DIR,'analytics','fixtures')

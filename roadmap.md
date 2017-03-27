@@ -7,7 +7,6 @@
 
 ## Begin ontology development
   - Can be done in parallel with the next stage
-  -
 
 ## Query lung map (LM) site to retrieve, store, and display images
   - Write functions to communicate w/LM SPARQL interface (put LM functions in their own module)

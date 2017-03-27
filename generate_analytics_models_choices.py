@@ -1,8 +1,8 @@
-from lungmap_sparql_client.lungmap_sparql_client import LMClient
 import os
 from jinja2 import Template
-from lap.settings import BASE_DIR as PROJECT_DIR
 
+from lap import BASE_DIR as PROJECT_DIR
+from lungmap_sparql_client.lungmap_sparql_client import LMClient
 
 lminstance = LMClient()
 
