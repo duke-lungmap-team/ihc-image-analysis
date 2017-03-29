@@ -2,8 +2,8 @@ from rest_framework import viewsets
 import pandas as pd
 from lungmap_sparql_client.lungmap_sparql_client import LMClient
 from lungmap_sparql_client.lungmap_sparql_utils import get_lungmap_file_list_all
-from analytics.models import Experiment, Probe
-from analytics.serializers import ExperimentSerializer, ProbeSerializer
+from analytics.models import Experiment
+from analytics.serializers import ExperimentSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response

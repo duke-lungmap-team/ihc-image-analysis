@@ -2,7 +2,6 @@
 .idea
 .DS_Store
 analytics/migrations/
-playground/
 db.sqlite3
 README_ignore.md
 build

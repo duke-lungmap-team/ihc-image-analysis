@@ -37,7 +37,7 @@ class LMClient(object):
         return output
 
     @classmethod
-    def create_image_table(self, func):
+    def create_image_table(cls, func):
         """
         Internal function used to generate an attribute that is a list of dicts where keys are varaibles in the
         analytics.image model.
