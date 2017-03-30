@@ -1,6 +1,9 @@
 *.pyc
 .idea
 .DS_Store
+analytics/migrations/
+db.sqlite3
+README_ignore.md
 build
 dist
 *.egg-info

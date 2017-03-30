@@ -38,6 +38,17 @@ def get_lungmap_file_list():
     tif_files = [results['results']['bindings'][i] for i in index]
     return tif_files
 
+def get_lungmap_file_list_all():
+    """
+    This function queries the lungmap sparql resource to obtain a list of dicts that contains all files regarless of their
+    extension
+    :return: comprehensive list of dictionaries detailing all tif images and associated metadata.
+    """
+    sparql = SPARQLWrapper("http://testdata.lungmap.net/sparql")
+    sparql.setQuery(ALL_EXPERIMENTS)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    return results['results']['bindings']
 
 def download_s3_lungmap_image(lungmap_file_dictionary, location):
     """
@@ -105,6 +116,27 @@ def get_experiment_sample_details(experiment_id):
     """
     results = _query_lungmap_experiment(SAMPLE_DETAILS, experiment_id)
     return results['results']
+
+def get_experiment_sample_details_first_parsed(experiment_id):
+    """
+    Submit an experiment_id (e.g. LMEX000000000X) and in return a dictionary of metadata about that experiment is
+    generated which includes the following keys: bindings (list of dicts), ordered, distinct
+    :param experiment_id: str
+    :return: dictionary of metadata about a particular experiment
+    """
+    output = {}
+    results = _query_lungmap_experiment(SAMPLE_DETAILS, experiment_id)
+    final = results['results']['bindings'][0]
+    output['experiment_id'] = experiment_id
+    output['age'] = final['age_label']['value']
+    output['weight'] = final['weight']['value']
+    output['strain'] = final['strain']['value']
+    output['genotype'] = final['genotype']['value']
+    output['crown_rump_length'] = final['crown_rump_length']['value']
+    output['organism'] = final['organism_label']['value']
+    output['gender'] = final['sex']['value']
+
+    return output
 
 
 def get_experiment_anatomy(experiment_id):

@@ -34,3 +34,13 @@ snippet = LungmapImage(s3key='LMEX0000000695/laminin_p28_x40/laminin_p28_x40.tif
                        image_orig = suf)
 snippet.save()
 
+
+####
+
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', "lap.settings")
+import django
+django.setup()
+from analytics.models import Experiment
+
+test = Experiment(experiment_id='LMEX0000000004')

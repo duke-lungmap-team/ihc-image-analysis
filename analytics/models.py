@@ -3,24 +3,47 @@ from PIL import Image
 from io import BytesIO
 import hashlib
 from django.core.files.uploadedfile import SimpleUploadedFile
+from lungmap_sparql_client.lungmap_sparql_utils import get_experiment_sample_details_first_parsed
 import os
 from analytics.models_choices import *
 
 
-class Probe(models.Model):
-    probe_name = models.CharField(max_length=50)
-    probe_id = models.CharField(max_length=20)
-
-    def __str__(self):
-        return '%s, %s' % (self.id, self.probe_name)
-
-
 class Experiment(models.Model):
-    experiment_id = models.CharField(max_length=25)
+    experiment_id = models.CharField(max_length=25, unique=True)
+    gender = models.CharField(max_length=20,
+                              choices=GENDER_CHOICES,
+                              null=False,
+                              blank=False)
+    age = models.CharField(max_length=10,
+                           choices=AGE_CHOICES,
+                           null=False,
+                           blank=False)
+    strain = models.CharField(max_length=20)
+    genotype = models.CharField(max_length=20)
+    organism = models.CharField(max_length=40,
+                                choices=ORGANISM_CHOICES,
+                                null=False,
+                                blank=False)
+    crown_rump_length = models.CharField(max_length=20)
+    weight = models.CharField(max_length=20)
 
     def __str__(self):
         return '%s, %s' % (self.id, self.experiment_id)
 
+    def get_metadata(self):
+        return get_experiment_sample_details_first_parsed(self.experiment_id)
+
+    def save(self, *args, **kwargs):
+        metadata = get_experiment_sample_details_first_parsed(self.experiment_id)
+        self.age = metadata['age']
+        self.gender = metadata['gender']
+        self.strain = metadata['strain']
+        self.genotype = metadata['genotype']
+        self.organism = metadata['organism']
+        self.crown_rump_length = metadata['crown_rump_length']
+        self.weight = metadata['weight']
+        self.validate_unique()
+        super(Experiment, self).save(*args, **kwargs)
 
 def save_image(instance, filename):
 
@@ -52,25 +75,12 @@ def save_image(instance, filename):
 
 
 class LungmapImage(models.Model):
-    s3key = models.CharField(max_length=200)
-    strain = models.CharField(max_length=20)
-    organism = models.CharField(max_length=40,
-                                choices=ORGANISM_CHOICES,
-                                null=False,
-                                blank=False)
+    s3key = models.CharField(max_length=200, unique=True)
     magnification = models.CharField(max_length=20,
                                      choices=MAGNIFICATION_CHOICES,
                                      null=False,
                                      blank=False)
     image_name = models.CharField(max_length=80)
-    gender = models.CharField(max_length=20,
-                              choices=GENDER_CHOICES,
-                              null=False,
-                              blank=False)
-    age = models.CharField(max_length=10,
-                           choices=AGE_CHOICES,
-                           null=False,
-                           blank=False)
     experiment = models.ForeignKey(Experiment)
     image_id = models.CharField(max_length=40)
     date = models.DateField()

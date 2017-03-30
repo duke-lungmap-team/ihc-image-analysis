@@ -1,4 +1,4 @@
-from lungmap_sparql_utils import *
+from lungmap_sparql_client.lungmap_sparql_utils import *
 from tqdm import tqdm
 import pandas as pd
 import json
@@ -13,7 +13,7 @@ class LMClient(object):
         Lungmap to this location as well as save pandas dataframe representations of the metadata.
         """
         print("Generating Metadata for all '.tif' or '.tiff' images within lungmap")
-        self._create_image_table()
+        self.image_list = self.create_image_table(get_lungmap_file_list)
         print("Generating Metadata for all probes associated with '.tif' or '.tiff' images within lungmap")
         self._create_probe_list()
         print("Generating Metadata for all conditions associated with a probe")
@@ -23,7 +23,7 @@ class LMClient(object):
     def _get_media_inventory(media_location):
         """
         This is the only function in this package that ties it to django configurations because it will take
-        the media_location provided in __init__ and then append two folders (images, images_jpeg) to that location
+        the media_location provided and then append two folders (images, images_jpeg) to that location
         to then do a recursive search to find what files are available and already downloaded. This will be used to
         stand up a database in the case of starting over and not wanting to download all images again.
         :return: dict of two lists. two keys 'images' and 'images_jpeg'
@@ -36,13 +36,14 @@ class LMClient(object):
                 output.append(os.path.join(endpoint_path, filename))
         return output
 
-    def _create_image_table(self):
+    @classmethod
+    def create_image_table(cls, func):
         """
         Internal function used to generate an attribute that is a list of dicts where keys are varaibles in the
-        repository.image model.
+        analytics.image model.
         :return: assigns image_table attribute to self
         """
-        tables = get_lungmap_file_list()
+        tables = func()
         rows = []
         for x in tqdm(tables):
             output = {'image_id': x['image_id']['value'].split('owl#')[1]}
@@ -50,6 +51,7 @@ class LMClient(object):
             name, ext = os.path.splitext(filename)
             root = os.path.basename(os.path.normpath(x.get('path').get('value')))
             s3_obj_key = os.path.join(root, name, filename)
+            output['file_ext'] = ext
             output['image_name'] = filename
             output['s3key'] = s3_obj_key
             output['age'] = x['age_label']['value']
@@ -61,11 +63,9 @@ class LMClient(object):
             output['date'] = parser.parse(x['date']['value']).strftime('%Y-%m-%d')
             output['image_orig'] = ''
             output['image_orig_sha1'] = ''
-            output['get_image'] = False
             output['image_jpeg'] = ''
-
             rows.append(output)
-        self.image_list = rows
+        return rows
 
     def _create_probe_list(self):
         """
