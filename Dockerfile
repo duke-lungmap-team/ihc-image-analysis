@@ -12,5 +12,8 @@ RUN apt-get install -y \
     libsqlite3-dev
 
 RUN pip3 install --upgrade pip
-ADD requirements.txt /requirements.txt
-RUN pip3 install -r /requirements.txt
+ADD . /ihc-image-analysis
+RUN pip3 install -r /ihc-image-analysis/requirements.txt
+RUN python3 /ihc-image-analysis/manage.py makemigrations analytics
+RUN python3 /ihc-image-analysis/manage.py migrate
+CMD ["python3", "/ihc-image-analysis/manage.py", "runserver", "0.0.0.0:8000"]
