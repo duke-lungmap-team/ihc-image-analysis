@@ -43,6 +43,4 @@ docker run -d \
 --restart always \
 lap python3 /ihc-image-analysis/manage.py runserver 0.0.0.0:8000
 ```
--name mariadb
-In progres...
 
