@@ -15,15 +15,17 @@ class ExperimentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Experiment
-        fields = ('id',
-                  'experiment_id',
-                  'gender',
-                  'age',
-                  'strain',
-                  'genotype',
-                  'organism',
-                  'crown_rump_length',
-                  'weight')
+        fields = (
+            'id',
+            'experiment_id',
+            'gender',
+            'age',
+            'strain',
+            'genotype',
+            'organism',
+            'crown_rump_length',
+            'weight'
+        )
 
 
 class LungmapImageSerializer(serializers.ModelSerializer):

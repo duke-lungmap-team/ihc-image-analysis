@@ -45,6 +45,7 @@ class Experiment(models.Model):
         self.validate_unique()
         super(Experiment, self).save(*args, **kwargs)
 
+
 def save_image(instance, filename):
 
     img = Image.open(instance.image_orig)

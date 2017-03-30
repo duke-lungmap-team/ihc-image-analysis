@@ -38,10 +38,11 @@ def get_lungmap_file_list():
     tif_files = [results['results']['bindings'][i] for i in index]
     return tif_files
 
+
 def get_lungmap_file_list_all():
     """
-    This function queries the lungmap sparql resource to obtain a list of dicts that contains all files regarless of their
-    extension
+    This function queries the lungmap sparql resource to obtain a list of dicts
+    that contains all files regardless of their extension.
     :return: comprehensive list of dictionaries detailing all tif images and associated metadata.
     """
     sparql = SPARQLWrapper("http://testdata.lungmap.net/sparql")
@@ -49,6 +50,7 @@ def get_lungmap_file_list_all():
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
     return results['results']['bindings']
+
 
 def download_s3_lungmap_image(lungmap_file_dictionary, location):
     """
@@ -116,6 +118,7 @@ def get_experiment_sample_details(experiment_id):
     """
     results = _query_lungmap_experiment(SAMPLE_DETAILS, experiment_id)
     return results['results']
+
 
 def get_experiment_sample_details_first_parsed(experiment_id):
     """
