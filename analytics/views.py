@@ -7,7 +7,7 @@ from analytics.serializers import ExperimentSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, mixins, generics
 
 
 class LungmapExperimentViewSet(viewsets.ViewSet):
@@ -21,21 +21,22 @@ class LungmapExperimentViewSet(viewsets.ViewSet):
         return Response(exp_names_df)
 
 
-class ExperimentList(APIView):
+class ExperimentList(
+        mixins.ListModelMixin,
+        mixins.CreateModelMixin,
+        generics.GenericAPIView):
     """
     List all experiments, or create a new experiment.
     """
-    def get(self, request, format=None):
-        experiments = Experiment.objects.all()
-        serializer = ExperimentSerializer(experiments, many=True)
-        return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = ExperimentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = Experiment.objects.all()
+    serializer_class = ExperimentSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
 class ExperimentDetail(APIView):
