@@ -41,6 +41,6 @@ docker run -d \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
 --restart always \
-lap python3 /ihc-image-analysis/manage.py runserver 0.0.0.0:8000
+lap ./standup.sh
 ```
 
