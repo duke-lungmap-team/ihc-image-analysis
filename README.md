@@ -36,8 +36,13 @@ the `Dockerfile` within this repo. To take advantage of the dockerized solution 
 these commands:
 
 ```
-docker build -t ihc-image-analysis .
+docker build -t lap .
+docker run -d \
+-p 8000:8000 \
+-v $(pwd):/ihc-image-analysis \
+--restart always \
+lap python3 /ihc-image-analysis/manage.py runserver 0.0.0.0:8000
 ```
-
+-name mariadb
 In progres...
 
