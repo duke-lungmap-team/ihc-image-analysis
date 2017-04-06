@@ -4,6 +4,20 @@ from lungmap_sparql_client.lungmap_sparql_queries import *
 import boto3
 
 
+def get_all_probes():
+    """
+    Function that takes a SPARQL query and return results. This is just a wrapper around SPARQLWrapper which knows
+    the endpoint and converts responses to JSON.
+    :param query: str: SPARQL query
+    :return: 
+    """
+    sparql = SPARQLWrapper("http://testdata.lungmap.net/sparql")
+    sparql.setQuery(ALL_PROBES)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    return results
+
+
 def _query_lungmap_experiment(query_name, experiment_id):
     """
     Internal function that queries lungmap based on set query (query_name) and experiment_id

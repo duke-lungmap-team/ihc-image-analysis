@@ -22,7 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = os.environ.get('DEBUG', 'on') == 'on'
 SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(32))
 
-ALLOWED_HOSTS = ['0.0.0.0','rapid-235.vm.duke.edu']
+# ALLOWED_HOSTS = ['0.0.0.0','rapid-235.vm.duke.edu']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -74,8 +75,12 @@ WSGI_APPLICATION = 'lap.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ihc_image_analysis',
+        'USER': 'ihc_image_analysis_user',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

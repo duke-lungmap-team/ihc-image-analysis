@@ -1,3 +1,33 @@
+#https://docs.google.com/document/d/10qtrZeCFeGPZt5r6Z_TKWl0ihXBzNysp8nhOpbgrl1o/edit
+
+ALL_PROBES = """
+PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
+PREFIX mont: <http://ontology.lungmap.net/ontologies/mouse_anatomy#>
+PREFIX owl: <http://www.w3.org/2002/07/>
+PREFIX owl2: <http://www.w3.org/2002/07/owl#>
+SELECT DISTINCT ?experiment_id ?probe_id ?probe_label ?color (GROUP_CONCAT(DISTINCT CONCAT(?gene_id, ';', ?symbol),'|') as ?target_molecules) (GROUP_CONCAT(DISTINCT CONCAT(?anatomy,';',?anatomy_label),'|') AS ?target_conditions)
+WHERE {
+    ?experiment_id lm:in_organism ?tax_id .
+    ?image lm:part_of_experiment ?experiment_id .
+    ?image lm:has_probe ?probe_id .
+    ?probe_color lm:maps_to ?probe_id .
+    ?probe_color lm:maps_to ?image .
+    ?probe_color lm:color ?color .
+    OPTIONAL { 
+        ?probe_id lm:maps_to ?resource .
+        ?resource lm:maps_to{0,1} ?gene_id .
+        ?gene_id lm:id_type owl:Gene_ID .
+        ?gene_id rdfs:label ?symbol .
+        ?gene_id lm:in_organism ?tax_id .
+    }
+    OPTIONAL { ?probe_id rdfs:label ?probe_label }
+    OPTIONAL { 
+        ?probe_id lm:probe_target_condition ?anatomy .
+        ?anatomy rdfs:label ?anatomy_label
+    }
+}
+"""
+
 ALL_EXPERIMENTS = """PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
 PREFIX mont: <http://ontology.lungmap.net/ontologies/mouse_anatomy#>
 PREFIX owl: <http://www.w3.org/2002/07/>
