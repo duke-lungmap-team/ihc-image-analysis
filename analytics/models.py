@@ -3,52 +3,22 @@ from PIL import Image
 from io import BytesIO
 import hashlib
 from django.core.files.uploadedfile import SimpleUploadedFile
-from lungmap_sparql_client.lungmap_sparql_utils import get_experiment_sample_details_first_parsed
+from lungmap_sparql_client.lungmap_sparql_utils import *
 import os
+import boto3
+import tempfile
 from analytics.models_choices import *
 
-
-class Experiment(models.Model):
-    experiment_id = models.CharField(max_length=25, unique=True)
-    gender = models.CharField(max_length=20,
-                              choices=GENDER_CHOICES,
-                              null=False,
-                              blank=False)
-    age = models.CharField(max_length=10,
-                           choices=AGE_CHOICES,
-                           null=False,
-                           blank=False)
-    strain = models.CharField(max_length=20)
-    genotype = models.CharField(max_length=20)
-    organism = models.CharField(max_length=40,
-                                choices=ORGANISM_CHOICES,
-                                null=False,
-                                blank=False)
-    crown_rump_length = models.CharField(max_length=20)
-    weight = models.CharField(max_length=20)
-
-    def __str__(self):
-        return '%s, %s' % (self.id, self.experiment_id)
-
-    def get_metadata(self):
-        return get_experiment_sample_details_first_parsed(self.experiment_id)
-
-    def save(self, *args, **kwargs):
-        metadata = get_experiment_sample_details_first_parsed(self.experiment_id)
-        self.age = metadata['age']
-        self.gender = metadata['gender']
-        self.strain = metadata['strain']
-        self.genotype = metadata['genotype']
-        self.organism = metadata['organism']
-        self.crown_rump_length = metadata['crown_rump_length']
-        self.weight = metadata['weight']
-        self.validate_unique()
-        super(Experiment, self).save(*args, **kwargs)
+s3 = boto3.resource('s3')
+bucket = s3.Bucket('lungmap-breath-data')
 
 
-def save_image(instance, filename):
-
-    img = Image.open(instance.image_orig)
+def get_from_images_from_s3(s3objkey):
+    
+    # metadata = get_images_by_experiment(self.experiment_id)
+    temp = tempfile.NamedTemporaryFile()
+    bucket.download_file(self.s3objkey, temp.name)
+    img = Image.open(temp)
     img_jpeg = img.copy()
     try:
         print('inside try')
@@ -75,25 +45,60 @@ def save_image(instance, filename):
     return upload_dir
 
 
+class Experiment(models.Model):
+    experiment_id = models.CharField(max_length=25, primary_key=True)
+    release_date = models.DateField()
+    platform = models.CharField(max_length=35, blank=True, null=True)
+    experiment_type = models.CharField(max_length=35, blank=True, null=True)
+    # researcher = models.CharField(max_length=50, blank=True, null=True)
+    # site = models.CharField(max_length=100, blank=True, null=True)
+    organism = models.CharField(max_length=25)
+    sex = models.CharField(max_length=20, null=True, blank=True)
+    age = models.CharField(max_length=10, null=True, blank=True)
+
+    def __str__(self):
+        return '%s, %s' % (self.id, self.experiment_id)
+
+    def get_metadata(self):
+        return get_experiment_model_data(self.experiment_id)
+
+    def save(self, *args, **kwargs):
+        metadata = get_experiment_model_data(self.experiment_id)
+        self.release_date = metadata['release_date']
+        self.platform = metadata['platform']
+        self.experiment_type = metadata['experiment_type_label']
+        # self.researcher = metadata['researcher_label']
+        # self.site = metadata['site_label']
+        self.organism = metadata['organism_label']
+        self.sex = metadata['sex']
+        self.age = metadata['age_label']
+        self.validate_unique()
+        super(Experiment, self).save(*args, **kwargs)
+        images = get_images_by_experiment(self.experiment_id)
+        print(images)
+
+
+
+
 class LungmapImage(models.Model):
     s3key = models.CharField(max_length=200, unique=True)
-    magnification = models.CharField(max_length=20,
-                                     choices=MAGNIFICATION_CHOICES,
-                                     null=False,
-                                     blank=False)
+    magnification = models.CharField(max_length=20, null=False, blank=False)
     image_name = models.CharField(max_length=80)
-    experiment = models.ForeignKey(Experiment)
+    experiment = models.ForeignKey(Experiment, db_column='experiment_id')
     image_id = models.CharField(max_length=40)
-    date = models.DateField()
-    image_orig = models.FileField(upload_to=save_image,
-                                  blank=False,
-                                  null=False)
-    image_orig_sha1 = models.CharField(max_length=40,
-                                       blank=False,
-                                       null=False)
-    image_jpeg = models.FileField(upload_to='images_jpeg',
-                                  blank=False,
-                                  null=False)
+    x_scaling = models.CharField(max_length=65, null=True, blank=True)
+    y_scaling = models.CharField(max_length=65, null=True, blank=True)
+    image_orig = models.FileField(upload_to='images', blank=False, null=False)
+    image_orig_sha1 = models.CharField(max_length=40,blank=False, null=False)
+    image_jpeg = models.FileField(upload_to='images_jpeg', blank=False, null=False)
 
     def __str__(self):
         return '%s, %s' % (self.image_id, self.image_name)
+
+class ProbeExperiments(models.Model):
+    probe_label = models.CharField(max_length=30)
+    color = models.CharField(max_length=30)
+    experiment = models.ForeignKey(Experiment, db_column='experiment_id')
+
+    def __str__(self):
+        return '%s, %s' % (self.id, self.probe_label)

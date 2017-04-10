@@ -8,6 +8,9 @@ from analytics.serializers import LungmapImageSerializer, ExperimentSerializer
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import SimpleUploadedFile
+import boto3
+s3 = boto3.resource('s3')
+bucket = s3.Bucket('lungmap-breath-data')
 
 serializer = LungmapImageSerializer()
 

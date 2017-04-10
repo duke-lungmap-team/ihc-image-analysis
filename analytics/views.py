@@ -1,7 +1,6 @@
 from rest_framework import viewsets
 import pandas as pd
-from lungmap_sparql_client.lungmap_sparql_client import LMClient
-from lungmap_sparql_client.lungmap_sparql_utils import get_lungmap_file_list_all
+from lungmap_sparql_client.lungmap_sparql_utils import *
 from analytics.models import Experiment
 from analytics.serializers import ExperimentSerializer
 from django.http import Http404
@@ -16,8 +15,7 @@ class LungmapExperimentViewSet(viewsets.ViewSet):
     images, and associated data. From that point, it deduplicates experiment ids and provides a list to the user. 
     """
     def list(self, request):
-        alldata_df = pd.DataFrame(LMClient.create_image_table(get_lungmap_file_list_all))
-        exp_names_df = alldata_df[['experiment_id']].drop_duplicates()
+        exp_names_df = list_all_lungmap_experiments()
         return Response(exp_names_df)
 
 
