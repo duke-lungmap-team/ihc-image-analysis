@@ -9,6 +9,11 @@ from django.contrib.auth.models import User
 #         model = User
 #         fields = ('id', 'username', 'snippets')
 
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'username')
 
 class ExperimentSerializer(serializers.ModelSerializer):
 

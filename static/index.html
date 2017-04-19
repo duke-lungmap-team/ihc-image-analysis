@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Image Sub-region Identifier</title>
+  <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" media="all" href="css/angular-areas.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="js/jquery.js"></script>
+  <script src="js/angular.js"></script>
+  <script src="js/angular-route.js"></script>
+  <script src="js/angular-resource.js"></script>
+  <script src="js/angular-canvas-area-draw.js"></script>
+  <script src="js/ui-bootstrap-tpls-2.4.0.min.js"></script>
+</head>
+
+<body>
+
+  <div class="container" ng-app="ISEApp" ng-controller="MainController">
+    <div class="row">
+      <h1>Image Sub-region Extractor</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3">
+        <div class="btn-group" uib-dropdown>
+          <button id="split-button" type="button" class="btn btn-default">Choose Experiment</button>
+          <button type="button" class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+            <li ng-repeat="expp in experiments">
+              <a ng-click="experiment_selected(expp)">{{expp.experiment_id}}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="btn-group" uib-dropdown>
+          <button id="split-button" type="button" class="btn btn-default">Choose Image</button>
+          <button type="button" class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+            <li ng-repeat="img in images">
+              <a ng-click="image_selected(img)">{{img.name}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-9">
+        {{ current_image_name }}
+      </div>
+    </div>
+
+    <p></p>
+
+    <div class="row">
+      <div class="col-md-9">
+          <div ng-poly-draw points="points"
+               active="activePolygon" image-url="imageSrc"
+               width="poly_width" height="poly_height"
+               enabled="enabled" palette="colorArray"></div>
+      </div>
+      <div class="col-md-3" id="actions">
+        <button type="button" class="btn btn-block btn-primary" ng-click="add()">Add new</button>
+        <button type="button" class="btn btn-block btn-primary" ng-click="undo()">Undo</button>
+        <button type="button" class="btn btn-block btn-danger" ng-click="clearAll()">Clear</button>
+        <button type="button" class="btn btn-block btn-danger" ng-click="removePolygon(activePolygon)">Remove</button>
+        <button type="button" class="btn btn-block btn-success" ng-click="post_regions()">POST Regions</button>
+
+        <p></p>
+
+        <table class="table" ng-repeat="point_set in points">
+          <thead>
+            <th>x</th>
+            <th>y</th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="p in point_set">
+              <td>{{ p[0] }} ({{ p[2] }})</td>
+              <td>{{ p[1] }} ({{ p[3] }})</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="ng-app/app.js"></script>
+  <script src="ng-app/services/restService.js"></script>
+  <script src="ng-app/controllers/main_controller.js"></script>
+
+</body>
+
+</html>
