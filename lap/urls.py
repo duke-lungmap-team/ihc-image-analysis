@@ -8,4 +8,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('analytics.urls')),
     url(r'^docs/', include_docs_urls(title='Lungmap Analytic Platform')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
