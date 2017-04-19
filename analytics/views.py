@@ -1,12 +1,13 @@
-from rest_framework import viewsets
-import pandas as pd
-from lungmap_sparql_client.lungmap_sparql_utils import *
-from analytics.models import Experiment
-from analytics.serializers import ExperimentSerializer
+
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, mixins, generics
+from rest_framework import viewsets
+from rest_framework import status
+from lungmap_sparql_client.lungmap_sparql_utils import *
+from analytics.models import Experiment, ProbeExperiments
+from analytics.serializers import ExperimentSerializer, ExperimentIdSerializer, ProbeExperimentsSerializer
+
 
 
 class LungmapExperimentViewSet(viewsets.ViewSet):
@@ -19,28 +20,28 @@ class LungmapExperimentViewSet(viewsets.ViewSet):
         return Response(exp_names_df)
 
 
-class ExperimentList(
-        mixins.ListModelMixin,
-        mixins.CreateModelMixin,
-        generics.GenericAPIView):
-    """
-    List all experiments, or create a new experiment.
-    """
+class ExperimentList(APIView):
 
-    queryset = Experiment.objects.all()
-    serializer_class = ExperimentSerializer
+    def get(self, request, format=None):
+        """
+        GET a list of all experiments loaded into the LAP system
+        """
+        experiments = Experiment.objects.all()
+        experiment = ExperimentIdSerializer(experiments, many=True)
+        return Response(experiment.data)
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
+    def post(self, request, format=None):
+        """
+        Load an experiment into the LAP system (admin users only)
+        """
+        serializer = ExperimentIdSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ExperimentDetail(APIView):
-    """
-    Retrieve, update or delete an experiment instance.
-    """
+
     def get_object(self, pk):
         try:
             return Experiment.objects.get(pk=pk)
@@ -52,15 +53,63 @@ class ExperimentDetail(APIView):
         serializer = ExperimentSerializer(experiment)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = ExperimentSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ProbeDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return ProbeExperiments.objects.filter(experiment_id='LMEX0000000062')
+        except ProbeExperiments.DoesNotExist:
+            raise Http404
 
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get(self, request, pk, format=None):
+        probes = self.get_object(pk)
+        serializer = ProbeExperimentsSerializer(probes, many=True)
+        return Response(serializer.data)
+
+
+# class ExperimentList(
+#         mixins.ListModelMixin,
+#         mixins.CreateModelMixin,
+#         generics.GenericAPIView):
+#     """
+#     List all experiments, or create a new experiment.
+#     """
+#
+#     queryset = Experiment.objects.all()
+#     serializer_class = ExperimentSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+#
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+#
+# class ExperimentList(APIView):
+#     """
+#     List all experiments, or create a new experiment.
+#     """
+#     def get_object(self, pk):
+#         try:
+#             return Experiment.objects.get(pk=pk)
+#         except Experiment.DoesNotExist:
+#             raise Http404
+#
+#     def get(self, request, pk, format=None):
+#         experiment = self.get_object(pk)
+#         serializer = ExperimentSerializer(experiment)
+#         return Response(serializer.data)
+#
+#
+# class ExperimentDetail(APIView):
+#     """
+#     Retrieve, update or delete an experiment instance.
+#     """
+#     def get_object(self, pk):
+#         try:
+#             return Experiment.objects.get(pk=pk)
+#         except Experiment.DoesNotExist:
+#             raise Http404
+#
+#     def get(self, request, pk, format=None):
+#         experiment = self.get_object(pk)
+#         serializer = ExperimentSerializer(experiment)
+#         return Response(serializer.data)

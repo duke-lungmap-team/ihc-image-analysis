@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
-from analytics.views import (LungmapExperimentViewSet, ExperimentList, ExperimentDetail)
+from analytics.views import (LungmapExperimentViewSet, ExperimentList, ExperimentDetail, ProbeDetail)
 
 
 urlpatterns = [
-    url(r'^lungmapexperiments/', LungmapExperimentViewSet.as_view({'get': 'list'}), name='lungmapexperiments'),
-    url(r'^experiments/$', ExperimentList.as_view()),
-    url(r'^experiments/(?P<pk>[0-9]+)$', ExperimentDetail.as_view()),
+    url(r'^api/lungmapexperiments/', LungmapExperimentViewSet.as_view({'get': 'list'}), name='lungmapexperiments'),
+    url(r'^api/experiments/$', ExperimentList.as_view()),
+    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,40})/$', ExperimentDetail.as_view()),
+    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/probes/$', ProbeDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
