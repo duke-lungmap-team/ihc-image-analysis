@@ -4,9 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework import mixins, generics
 from lungmap_sparql_client.lungmap_sparql_utils import *
-from analytics.models import Experiment, ProbeExperiments
-from analytics.serializers import ExperimentSerializer, ExperimentIdSerializer, ProbeExperimentsSerializer
+from analytics.models import Experiment, ProbeExperiments, LungmapImage
+from analytics.serializers import (ExperimentSerializer, ExperimentIdSerializer,
+                                   ProbeExperimentsSerializer, LungmapImageSerializer)
 
 
 
@@ -20,25 +22,42 @@ class LungmapExperimentViewSet(viewsets.ViewSet):
         return Response(exp_names_df)
 
 
-class ExperimentList(APIView):
+# class ExperimentList(APIView):
+#
+#     def get(self, request, format=None):
+#         """
+#         GET a list of all experiments loaded into the LAP system
+#         """
+#         experiments = Experiment.objects.all()
+#         experiment = ExperimentIdSerializer(experiments, many=True)
+#         return Response(experiment.data)
+#
+#     def post(self, request, format=None):
+#         """
+#         Load an experiment into the LAP system (admin users only)
+#         """
+#         serializer = ExperimentIdSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, format=None):
-        """
-        GET a list of all experiments loaded into the LAP system
-        """
-        experiments = Experiment.objects.all()
-        experiment = ExperimentIdSerializer(experiments, many=True)
-        return Response(experiment.data)
+class ExperimentList(
+        mixins.ListModelMixin,
+        mixins.CreateModelMixin,
+        generics.GenericAPIView):
+    """
+    List all experiments, or create a new experiment.
+    """
 
-    def post(self, request, format=None):
-        """
-        Load an experiment into the LAP system (admin users only)
-        """
-        serializer = ExperimentIdSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = Experiment.objects.all()
+    serializer_class = ExperimentIdSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 class ExperimentDetail(APIView):
 
@@ -56,7 +75,7 @@ class ExperimentDetail(APIView):
 class ProbeDetail(APIView):
     def get_object(self, pk):
         try:
-            return ProbeExperiments.objects.filter(experiment_id='LMEX0000000062')
+            return ProbeExperiments.objects.filter(experiment_id=pk)
         except ProbeExperiments.DoesNotExist:
             raise Http404
 
@@ -65,6 +84,17 @@ class ProbeDetail(APIView):
         serializer = ProbeExperimentsSerializer(probes, many=True)
         return Response(serializer.data)
 
+class ImageDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return LungmapImage.objects.filter(experiment_id=pk)
+        except LungmapImage.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        images = self.get_object(pk)
+        serializer = LungmapImageSerializer(images, many=True)
+        return Response(serializer.data)
 
 # class ExperimentList(
 #         mixins.ListModelMixin,

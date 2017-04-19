@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
-from analytics.views import (LungmapExperimentViewSet, ExperimentList, ExperimentDetail, ProbeDetail)
+from analytics.views import (LungmapExperimentViewSet, ExperimentList, ExperimentDetail,
+                             ProbeDetail, ImageDetail)
 
 
 urlpatterns = [
@@ -23,6 +24,6 @@ urlpatterns = [
     url(r'^api/experiments/$', ExperimentList.as_view()),
     url(r'^api/experiments/(?P<pk>[\w{}.-]{1,40})/$', ExperimentDetail.as_view()),
     url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/probes/$', ProbeDetail.as_view()),
+    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/images/$', ImageDetail.as_view()),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)

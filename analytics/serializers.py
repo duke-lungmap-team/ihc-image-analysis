@@ -2,12 +2,12 @@ from rest_framework import serializers
 from analytics.models import Experiment, LungmapImage, ProbeExperiments
 from django.contrib.auth.models import User
 
-class UserSerializer(serializers.ModelSerializer):
-    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'snippets')
+# class UserSerializer(serializers.ModelSerializer):
+#     snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Experiment.objects.all())
+#
+#     class Meta:
+#         model = User
+#         fields = ('id', 'username', 'snippets')
 
 
 class ExperimentSerializer(serializers.ModelSerializer):
@@ -30,6 +30,12 @@ class ProbeExperimentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProbeExperiments
+        fields = "__all__"
+
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LungmapImage
         fields = "__all__"
 
 
