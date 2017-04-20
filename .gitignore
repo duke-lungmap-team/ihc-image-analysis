@@ -2,6 +2,9 @@
 .idea
 .DS_Store
 analytics/migrations/
+media/
+playground/
+lap/settings.py
 db.sqlite3
 README_ignore.md
 build

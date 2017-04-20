@@ -1,11 +1,14 @@
 # ihc-image-analysis
-A (django) web application for analyzing immunohistochemistry images. As this project progresses, we will try to use continuous integration to deploy to a [demo](http://rapid-235.vm.duke.edu:8000/)application. However, in the early stages of this project, this may or may not b operational.
+A (django) web application for analyzing immunohistochemistry images. As this 
+project progresses, we will try to use continuous integration to deploy to a 
+[demo](http://rapid-235.vm.duke.edu:8000/docs) application. However, in the 
+early stages of this project, this may or may not be operational.
 
 
 ### Standing up the project
 As a django project, there are many steps that are taken by interacting with
-the `manage.py` file. This section aims to help explain steps with `manage.py` to
-help with the reproducibility of the production environment.
+the `manage.py` file. This section aims to help explain steps with `manage.py` 
+to help with the reproducibility of the production environment.
 
 ```
 git clone <this repo>
@@ -14,8 +17,8 @@ pip install -r requirements.txt
 ```
 
 Up to this point, we've downloaded the source code and installed the required
-python packages. Let's now initialize our database (**note this requires sqlite to be 
-installed on the host machine**).
+python packages. Let's now initialize our database (**note this requires sqlite 
+to be installed on the host machine**).
 
 ```
 python manage.py makemigrations analytics

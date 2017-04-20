@@ -14,14 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from rest_framework.urlpatterns import format_suffix_patterns
-from analytics.views import (LungmapExperimentViewSet, ExperimentList, ExperimentDetail)
+from analytics import views
 
 
 urlpatterns = [
-    url(r'^lungmapexperiments/', LungmapExperimentViewSet.as_view({'get': 'list'}), name='lungmapexperiments'),
-    url(r'^experiments/$', ExperimentList.as_view()),
-    url(r'^experiments/(?P<pk>[0-9]+)$', ExperimentDetail.as_view()),
+    url(r'^api/lungmapexperiments/', views.LungmapExperimentViewSet.as_view({'get': 'list'})),
+    url(r'^api/experiments/$', views.ExperimentList.as_view()),
+    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/$', views.ExperimentDetail.as_view()),
+    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/probes/$', views.ProbeDetail.as_view()),
+    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/images/$', views.ExperimentImageDetail.as_view()),
+    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/images/(?P<ipk>[0-9]+)/$', views.ImageJpeg.as_view()),
+    url(r'^api/users/$', views.UserList.as_view()),
+    url(r'^api/users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
