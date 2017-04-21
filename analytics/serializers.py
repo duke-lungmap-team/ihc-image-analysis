@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username')
 
+
 class ExperimentSerializer(serializers.ModelSerializer):
     experiment_id = serializers.CharField(required=True)
     release_date = serializers.DateField(read_only=True)
@@ -16,7 +17,6 @@ class ExperimentSerializer(serializers.ModelSerializer):
     organism = serializers.CharField(read_only=True)
     sex = serializers.CharField(read_only=True)
     age = serializers.CharField(read_only=True)
-    experiment_id = serializers.CharField(required=True)
 
     class Meta:
         model = Experiment
