@@ -1,0 +1,54 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>{{ header_title }}</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,600,700,300' rel='stylesheet' type='text/css'>
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body>
+    <div id="wrap">
+      {% block header %}
+      <div class="navbar navbar-static-top">
+          <div class="container">
+            <div class="navbar-brand">
+              <img class="inline" height=48 src="{% static 'lungmap_logo_green.png' %}">
+            </div>
+            <div class="navbar-right">
+                <p class="navbar-text">
+                  {{ user.username }}
+                </p>
+                {% if user.is_superuser %}
+                <p class="navbar-text">
+                    <a href="/admin/" class="navbar-link">Admin</a>
+                </p>
+                {% endif %}
+                <p class="navbar-text"><a href="/docs/" target="_blank" class="navbar-link">Documentation</a></p>
+                <p class="navbar-text"><a href="{% url 'logout' %}" class="navbar-link">Logout</a></p>
+            </div>
+          </div>
+      </div>
+      {% endblock %}
+
+      <div id="main">
+
+      {% block body %}
+      {% endblock %}
+      </div>    <!-- id:main -->
+
+    </div>    <!-- id:wrap -->
+    <div class="container">
+    </div>
+
+    <!-- Javascript at the end of the document so pages load faster -->
+
+    {% block toes %}{% endblock %}
+
+  </body>
+
+</html>
