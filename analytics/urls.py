@@ -18,7 +18,7 @@ from analytics import views
 
 
 urlpatterns = [
-    url(r'^api/lungmapexperiments/', views.LungmapExperimentViewSet.as_view({'get': 'list'})),
+    url(r'^api/lungmapexperiments/', views.LungmapExperimentViewSet.as_view({'get': 'get_lm_experiments'})),
     url(r'^api/experiments/$', views.ExperimentList.as_view()),
     url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/$', views.ExperimentDetail.as_view()),
     url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/probes/$', views.ProbeDetail.as_view()),
