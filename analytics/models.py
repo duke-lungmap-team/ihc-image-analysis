@@ -42,14 +42,17 @@ def get_image_from_s3(s3key):
         temp_handle_jpeg.seek(0)
         # filename
         suf = SimpleUploadedFile(os.path.basename(s3key), temp_handle.read(), content_type='image/tif')
-        suf_jpg = SimpleUploadedFile(os.path.basename(s3key_jpg) + '.jpg', temp_handle_jpeg.read(), content_type='image/jpeg')
+        suf_jpg = SimpleUploadedFile(
+            os.path.basename(s3key_jpg) + '.jpg',
+            temp_handle_jpeg.read(),
+            content_type='image/jpeg'
+        )
         # instance.image_orig.save(instance.s3key, suf, save=False)
         temp_handle.seek(0)
         image_orig_sha1 = hashlib.sha1(temp_handle.read()).hexdigest()
         return suf, image_orig_sha1, suf_jpg
     except ValueError as e:
         raise e
-
 
 
 class Experiment(models.Model):
@@ -64,7 +67,7 @@ class Experiment(models.Model):
     age = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
-        return '%s' % (self.experiment_id)
+        return '%s' % self.experiment_id
 
     def save(self, *args, **kwargs):
         try:
@@ -88,18 +91,21 @@ class Experiment(models.Model):
                                  experiment_id=expmnt).save()
             for image in tqdm(images):
                 suf, sha1, suf_jpeg = get_image_from_s3(image['s3key'])
-                LungmapImage(s3key=image['s3key'],
-                                     magnification=image['magnification'],
-                                     image_name=image['image_name'],
-                                     experiment=expmnt,
-                                     image_id=image['image_id'],
-                                     x_scaling=image['x_scaling'],
-                                     y_scaling=image['y_scaling'],
-                                     image_orig=suf,
-                                     image_orig_sha1=sha1,
-                                     image_jpeg=suf_jpeg).save()
+                LungmapImage(
+                    s3key=image['s3key'],
+                    magnification=image['magnification'],
+                    image_name=image['image_name'],
+                    experiment=expmnt,
+                    image_id=image['image_id'],
+                    x_scaling=image['x_scaling'],
+                    y_scaling=image['y_scaling'],
+                    image_orig=suf,
+                    image_orig_sha1=sha1,
+                    image_jpeg=suf_jpeg
+                ).save()
         except ValueError as e:
             raise e
+
 
 class LungmapImage(models.Model):
     s3key = models.CharField(max_length=200, unique=True)
@@ -110,11 +116,12 @@ class LungmapImage(models.Model):
     x_scaling = models.CharField(max_length=65, null=True, blank=True)
     y_scaling = models.CharField(max_length=65, null=True, blank=True)
     image_orig = models.FileField(upload_to='images', blank=False, null=False)
-    image_orig_sha1 = models.CharField(max_length=40,blank=False, null=False)
+    image_orig_sha1 = models.CharField(max_length=40, blank=False, null=False)
     image_jpeg = models.FileField(upload_to='images_jpeg', blank=False, null=False)
 
     def __str__(self):
         return '%s, %s' % (self.image_id, self.image_name)
+
 
 class ProbeExperiments(models.Model):
     probe_label = models.CharField(max_length=30)
