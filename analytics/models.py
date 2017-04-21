@@ -11,7 +11,8 @@ import boto3
 import tempfile
 from analytics.models_choices import *
 
-s3 = boto3.resource('s3')
+session = boto3.Session(profile_name='lungmap')
+s3 = session.resource('s3')
 bucket = s3.Bucket('lungmap-breath-data')
 
 
