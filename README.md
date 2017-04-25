@@ -39,11 +39,21 @@ the `Dockerfile` within this repo. To take advantage of the dockerized solution 
 these commands:
 
 ```
-docker build -t lap .
+docker build -t lap .  
+  
+
+
+#Background
 docker run -d \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
 --restart always \
-lap python /ihc-image-analysis/manage.py runserver
+lap python /ihc-image-analysis/manage.py runserver 0.0.0.0:8000
+  
+#Interactive
+docker run -it \
+-p 8000:8000 \
+-v $(pwd):/ihc-image-analysis \
+lap bash
 ```
 

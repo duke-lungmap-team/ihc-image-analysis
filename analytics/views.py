@@ -34,22 +34,26 @@ class LungmapExperimentViewSet(viewsets.ViewSet):
         exp_names_df = list_all_lungmap_experiments()
         return Response(exp_names_df)
 
-class ExperimentList(
-        mixins.ListModelMixin,
-        mixins.CreateModelMixin,
-        generics.GenericAPIView):
-    """
-    List all experiments, or create a new experiment.
-    """
+# class ExperimentList(
+#         mixins.ListModelMixin,
+#         mixins.CreateModelMixin,
+#         generics.GenericAPIView):
+#     """
+#     List all experiments, or create a new experiment.
+#     """
+#
+#     queryset = Experiment.objects.all()
+#     serializer_class = ExperimentSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+#
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
 
+class ExperimentList(generics.ListCreateAPIView):
     queryset = Experiment.objects.all()
     serializer_class = ExperimentSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
 
 class ExperimentDetail(APIView):
 
