@@ -119,6 +119,10 @@ def get_experiment_type_by_experiment(experiment_id):
         raise ValueError(
             'lungmap_sparql_client.lungmap_sparql_utils.get_experiment_type_by_experiment error too many results.'
         )
+    if len(results) == 0:
+        raise ValueError(
+            'lungmap_sparql_client.lungmap_sparql_utils.get_experiment_type_by_experiment no results found.'
+        )
     try:
         for x in results:
             row = {
