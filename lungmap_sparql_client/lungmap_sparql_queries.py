@@ -1,4 +1,4 @@
-#https://docs.google.com/document/d/10qtrZeCFeGPZt5r6Z_TKWl0ihXBzNysp8nhOpbgrl1o/edit
+# https://docs.google.com/document/d/10qtrZeCFeGPZt5r6Z_TKWl0ihXBzNysp8nhOpbgrl1o/edit
 
 ALL_EXPERIMENTS_WITH_IMAGE = """
 PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
@@ -148,4 +148,3 @@ WHERE {
     ?researcher rdfs:label ?researcher_label .
     ?site rdfs:label ?site_label .
 }"""
-
