@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework import mixins, generics
 from lungmap_sparql_client.lungmap_sparql_utils import *
 from analytics.models import Experiment, ProbeExperiments, LungmapImage
-from analytics.serializers import (ExperimentSerializer, ExperimentIdSerializer,
+from analytics.serializers import (ExperimentSerializer,
                                    ProbeExperimentsSerializer, LungmapImageSerializer, UserSerializer)
 from django.contrib.auth.models import User
 from rest_framework import permissions
@@ -43,7 +43,7 @@ class ExperimentList(
     """
 
     queryset = Experiment.objects.all()
-    serializer_class = ExperimentIdSerializer
+    serializer_class = ExperimentSerializer
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
