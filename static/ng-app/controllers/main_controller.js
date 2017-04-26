@@ -36,11 +36,28 @@ app.controller(
                 results[1].forEach(function(exp) {
                     if ($scope.all_experiments.hasOwnProperty(exp.experiment_id)) {
                         $scope.all_experiments[exp.experiment_id].retrieved = true;
+                        $scope.all_experiments[exp.experiment_id].retrieving = false;
                     }
                 });
 
-                console.log('adf');
             });
+
+            $scope.retrieve_experiment = function (exp_id) {
+                $scope.all_experiments[exp_id].retrieving = true;
+
+                var save_response = Experiment.save(
+                    {
+                        'experiment_id': exp_id
+                    }
+                );
+
+                save_response.$promise.then(function(data) {
+                    $scope.all_experiments[data.experiment_id].retrieved = true;
+                    $scope.all_experiments[data.experiment_id].retrieving = false;
+                }, function (error) {
+                    // TODO: figure out how to turn retrieving off for experiment
+                });
+            };
         }
     ]
 );
