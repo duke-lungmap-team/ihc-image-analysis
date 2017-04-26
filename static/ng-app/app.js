@@ -1,4 +1,15 @@
 var app = angular.module(
     'IHCApp',
-    ['ngResource', 'ui.bootstrap', 'ngPolyDraw']
+    ['ngResource', 'ngRoute', 'ui.bootstrap', 'ngPolyDraw']
 );
+
+
+app.config(function($routeProvider) {
+    $routeProvider.when(
+        '/experiments/',
+        {
+            templateUrl: 'static/ng-app/partials/exp_list.html',
+            controller: 'ExperimentListController'
+        }
+    ).otherwise({ redirectTo: '/' });
+});

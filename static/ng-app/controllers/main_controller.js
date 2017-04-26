@@ -7,3 +7,13 @@ app.controller(
         }
     ]
 );
+
+app.controller(
+    'ExperimentListController',
+    [
+        '$scope',
+        function ($scope) {
+            // placeholder
+        }
+    ]
+);
