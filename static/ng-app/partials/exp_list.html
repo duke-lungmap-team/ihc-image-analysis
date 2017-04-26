@@ -9,18 +9,18 @@
     </tr>
     <tr>
       <th>Experiment ID</th>
-      <th>something</th>
+      <th>Retrieved</th>
     </tr>
   </thead>
 
   <tbody>
 
-    <tr ng-repeat="exp_id in lm_experiments">
+    <tr ng-repeat="(exp_id, exp) in all_experiments">
       <td>
         {{ exp_id }}
       </td>
       <td>
-        asdf
+        {{ exp.retrieved }}
       </td>
     </tr>
 
