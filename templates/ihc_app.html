@@ -2,11 +2,16 @@
 {% load staticfiles %}
 
 {% block body %}
+  <hr>
   <div class="container" data-ng-app="IHCApp">
 
-      <div ncy-breadcrumb></div>
+      <div ng-controller="MainController" ui-view>
+        <a href="#experiments/">Experiment List</a> |
+        something else
 
-      <div ng-controller="MainController" ui-view></div>
+        <div ng-view></div>
+
+      </div>
 
   </div>
 {% endblock %}

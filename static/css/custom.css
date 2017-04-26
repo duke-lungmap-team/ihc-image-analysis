@@ -107,7 +107,7 @@ p.navbar-text {
   }
 }
 
-/* ----------Sticky footer START---------- */
+/* ----------  Sticky footer START  ---------- */
 html, body, #wrap {
   height: 100%;
 }
@@ -130,9 +130,20 @@ body > #wrap {height: auto; min-height: 100%;}
   color: #6c717b;
   font-size: 11px;
 }
-/* ----------  Sticky footer END---------- */
+/* ----------  Sticky footer END  ---------- */
+/* ----------  Custom Table stuff START  ---------- */
+td {
+  vertical-align: middle !important;
+}
+td.center {
+  text-align: center;
+}
+th.center {
+  text-align: center;
+}
+/* ----------  Custom Table stuff END  ---------- */
 
-/* ----------  Login stuff START---------- */
+/* ----------  Login stuff START  ---------- */
 #login-box {
   width: 350px;
   margin: auto;
