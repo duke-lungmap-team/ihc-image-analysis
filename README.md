@@ -48,7 +48,7 @@ docker run -d \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
 --restart always \
-lap python /ihc-image-analysis/manage.py runserver 0.0.0.0:8000
+lap gunicorn /ihc-image-analysis/lap.wsgi runserver 0.0.0.0:8000
   
 #Interactive
 docker run -it \
