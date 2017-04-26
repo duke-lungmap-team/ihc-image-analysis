@@ -11,6 +11,16 @@ from analytics.serializers import (ExperimentSerializer,
 from django.contrib.auth.models import User
 from rest_framework import permissions
 
+class LungmapExperimentViewSet(viewsets.ViewSet):
+    """
+    Utilizing the lungmap_sparql_client, this View calls out to the Lungmap mothership (via SPARQL) to get a list of all
+    images, and associated data. From that point, it deduplicates experiment ids and provides a list to the user. 
+    """
+    # permission_classes = (permissions.IsAdminUser,)
+    @staticmethod
+    def list(request):
+        exp_names_df = list_all_lungmap_experiments()
+        return Response(exp_names_df)
 
 class UserList(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -22,19 +32,6 @@ class UserDetail(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-
-class LungmapExperimentViewSet(viewsets.ViewSet):
-    """
-    Utilizing the lungmap_sparql_client, this View calls out to the Lungmap mothership (via SPARQL) to get a list of all
-    images, and associated data. From that point, it deduplicates experiment ids and provides a list to the user. 
-    """
-    # permission_classes = (permissions.IsAdminUser,)
-
-    @staticmethod
-    def get_lm_experiments(request):
-        exp_names_df = list_all_lungmap_experiments()
-        return Response(exp_names_df)
 
 
 class ExperimentList(
