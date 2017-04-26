@@ -12,8 +12,9 @@ app.controller(
     'ExperimentListController',
     [
         '$scope',
-        function ($scope) {
-            // placeholder
+        'LungMapExperiment',
+        function ($scope, LungMapExperiment) {
+            $scope.lm_experiments = LungMapExperiment.query({});
         }
     ]
 );
