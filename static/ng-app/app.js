@@ -20,6 +20,12 @@ app.config(function($routeProvider) {
             templateUrl: 'static/ng-app/partials/exp_list.html',
             controller: 'ExperimentListController'
         }
+    ).when(
+        '/experiments/:experiment_id',
+        {
+            templateUrl: 'static/ng-app/partials/exp_detail.html',
+            controller: 'ExperimentDetailController'
+        }
     ).otherwise({ redirectTo: '/' });
 });
 

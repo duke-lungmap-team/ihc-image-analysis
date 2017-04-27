@@ -61,3 +61,24 @@ app.controller(
         }
     ]
 );
+
+app.controller(
+    'ExperimentDetailController',
+    [
+        '$scope',
+        '$q',
+        '$routeParams',
+        'Experiment',
+        function ($scope, $q, $routeParams, Experiment) {
+            $scope.experiment = Experiment.get(
+                {
+                    'experiment_id': $routeParams.experiment_id
+                }
+            );
+
+            $scope.experiment.$promise.then(function (data) {
+                console.log('asdf');
+            });
+        }
+    ]
+);
