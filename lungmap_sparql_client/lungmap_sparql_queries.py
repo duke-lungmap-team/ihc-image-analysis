@@ -2,21 +2,18 @@
 
 ALL_EXPERIMENTS_WITH_IMAGE = """
 PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
-PREFIX mont: <http://ontology.lungmap.net/ontologies/mouse_anatomy#>
-PREFIX owl: <http://www.w3.org/2002/07/>
-PREFIX owl2: <http://www.w3.org/2002/07/owl#>
-SELECT DISTINCT ?experiment 
+SELECT DISTINCT ?experiment, ?experiment_type_label
 FROM  <http://data.lungmap.net/lungmap_data>
-FROM  <http://data.lungmap.net/sequence_mappings>
-FROM  <http://data.lungmap.net/lungmap_ontology>
 WHERE {
     ?image lm:part_of_experiment ?experiment .
+    ?experiment lm:is_experiment_type/rdfs:label ?experiment_type_label .
+    ?experiment lm:is_experiment_type/rdfs:label "Immunofluorescence-Confocal" .
     ?image lm:display_url ?img_file .
     ?image lm:magnification ?magnification .
     ?image lm:x_scaling ?x_scaling .
     ?image lm:y_scaling ?y_scaling .
     ?experiment lm:file_name ?path .
-} ORDER BY ASC(xsd:integer(REPLACE(str(?magnification), 'X', '')))
+} ORDER BY ASC(?experiment)
 """
 
 GET_IMAGES_BY_EXPERIMENT = """
