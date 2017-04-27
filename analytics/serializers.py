@@ -31,13 +31,6 @@ class ProbeExperimentsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ImageSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = LungmapImage
-        fields = "__all__"
-
-
 class LungmapImageSerializer(serializers.ModelSerializer):
 
     class Meta:
