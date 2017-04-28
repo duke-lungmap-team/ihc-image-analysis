@@ -18,7 +18,7 @@ service.factory(
     'Experiment',
     function ($resource) {
         return $resource(
-            URLS.exp + ':id',
+            URLS.exp + ':experiment_id',
             {},
             {}
         );

@@ -3,13 +3,24 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework import viewsets
-from rest_framework import mixins, generics
+from rest_framework import  generics
 from lungmap_sparql_client.lungmap_sparql_utils import *
 from analytics.models import Experiment, ProbeExperiments, LungmapImage
-from analytics.serializers import (ExperimentSerializer,
-                                   ProbeExperimentsSerializer, LungmapImageSerializer, UserSerializer)
+from analytics import serializers
 from django.contrib.auth.models import User
 from rest_framework import permissions
+import django_filters
+
+class UserList(generics.ListAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
 
 class LungmapExperimentViewSet(viewsets.ViewSet):
     """
@@ -17,39 +28,20 @@ class LungmapExperimentViewSet(viewsets.ViewSet):
     images, and associated data. From that point, it deduplicates experiment ids and provides a list to the user. 
     """
     # permission_classes = (permissions.IsAdminUser,)
+
     @staticmethod
-    def list(request):
+    def get_lm_experiments(request):
         exp_names_df = list_all_lungmap_experiments()
         return Response(exp_names_df)
 
-class UserList(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
-
-class UserDetail(generics.RetrieveAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class ExperimentList(
-        mixins.ListModelMixin,
-        mixins.CreateModelMixin,
-        generics.GenericAPIView):
+class ExperimentList(generics.ListCreateAPIView):
     """
     List all experiments, or create a new experiment.
     """
 
     queryset = Experiment.objects.all()
-    serializer_class = ExperimentSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+    serializer_class = serializers.ExperimentSerializer
 
 
 class ExperimentDetail(APIView):
@@ -62,7 +54,7 @@ class ExperimentDetail(APIView):
 
     def get(self, request, pk, format=None):
         experiment = self.get_object(pk)
-        serializer = ExperimentSerializer(experiment)
+        serializer = serializers.ExperimentSerializer(experiment)
         return Response(serializer.data)
 
 
@@ -75,8 +67,34 @@ class ProbeDetail(APIView):
 
     def get(self, request, pk, format=None):
         probes = self.get_object(pk)
-        serializer = ProbeExperimentsSerializer(probes, many=True)
+        serializer = serializers.ProbeExperimentsSerializer(probes, many=True)
         return Response(serializer.data)
+
+
+# noinspection PyClassHasNoInit
+class LungmapImageFilter(django_filters.rest_framework.FilterSet):
+     class Meta:
+        model = LungmapImage
+        fields = ['experiment']
+
+
+class LungmapImageList(generics.ListAPIView):
+    """
+    List all images.
+    """
+
+    queryset = LungmapImage.objects.all()
+    serializer_class = serializers.LungmapImageSerializer
+    filter_class = LungmapImageFilter
+
+
+class LungmapImageDetail(generics.RetrieveAPIView):
+    """
+    Get an image
+    """
+
+    queryset = LungmapImage.objects.all()
+    serializer_class = serializers.LungmapImageSerializer
 
 
 class ExperimentImageDetail(APIView):
@@ -88,7 +106,7 @@ class ExperimentImageDetail(APIView):
 
     def get(self, request, pk, format=None):
         images = self.get_object(pk)
-        serializer = LungmapImageSerializer(images, many=True)
+        serializer = serializers.LungmapImageSerializer(images, many=True)
         return Response(serializer.data)
 
 

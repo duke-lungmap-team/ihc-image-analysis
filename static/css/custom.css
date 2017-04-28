@@ -132,6 +132,10 @@ body > #wrap {height: auto; min-height: 100%;}
 }
 /* ----------  Sticky footer END  ---------- */
 /* ----------  Custom Table stuff START  ---------- */
+tbody > tr > td {
+  border: none !important;
+}
+
 td {
   vertical-align: middle !important;
 }

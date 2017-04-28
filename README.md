@@ -55,5 +55,10 @@ docker run -it \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
 lap bash
+
+docker run -d \
+-p 8000:8000 \
+-v $(pwd):/ihc-image-analysis \
+lap bash
 ```
 
