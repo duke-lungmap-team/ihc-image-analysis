@@ -3,7 +3,7 @@ from analytics import api_views
 
 
 urlpatterns = [
-    url(r'^api/lungmapexperiments/', api_views.LungmapExperimentViewSet.as_view({'get': 'get_lm_experiments'})),
+    url(r'^api/lungmapexperiments/', api_views.get_lung_map_experiments),
     url(r'^api/experiments/$', api_views.ExperimentList.as_view()),
     url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/$', api_views.ExperimentDetail.as_view()),
     url(r'^api/images/$', api_views.LungmapImageList.as_view()),
