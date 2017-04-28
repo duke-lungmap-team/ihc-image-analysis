@@ -32,8 +32,6 @@ def get_lung_map_experiments(request):
     (via SPARQL) to get a list of all images, and associated data. From that point, 
     it de-duplicates experiment ids and provides a list to the user. 
     """
-    # permission_classes = (permissions.IsAdminUser,)
-
     exp_names_df = list_all_lungmap_experiments()
     return Response(exp_names_df)
 
@@ -47,18 +45,13 @@ class ExperimentList(generics.ListCreateAPIView):
     serializer_class = serializers.ExperimentSerializer
 
 
-class ExperimentDetail(APIView):
-
-    def get_object(self, pk):
-        try:
-            return Experiment.objects.get(pk=pk)
-        except Experiment.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        experiment = self.get_object(pk)
-        serializer = serializers.ExperimentSerializer(experiment)
-        return Response(serializer.data)
+class ExperimentDetail(generics.RetrieveAPIView):
+    """
+    Get a single experiment
+    """
+    queryset = Experiment.objects.all()
+    serializer_class = serializers.ExperimentSerializer
+    lookup_field = 'experiment_id'
 
 
 class ProbeDetail(APIView):
