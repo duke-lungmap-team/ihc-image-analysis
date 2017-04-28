@@ -1,11 +1,18 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th class="center" colspan="50">
+        <div style="position:relative">
+          <h4>Experiment: {{ experiment.experiment_id }}</h4>
+        </div>
+      </th>
+    </tr>
+  </thead>
+</table>
 
-<div class="col-md-6">
-  <table class="table ">
+<div class="col-md-4 well well-sm">
+  <table class="table">
     <tbody>
-      <tr>
-        <td>Experiment ID:</td>
-        <td>{{ experiment.experiment_id }}</td>
-      </tr>
       <tr>
         <td>Experiment Type:</td>
         <td>{{ experiment.experiment_type }}</td>
@@ -32,4 +39,22 @@
       </tr>
     </tbody>
   </table>
+</div>
+<div class="col-md-8">
+  <div class="btn-group" uib-dropdown>
+    <button id="split-button" type="button" class="btn btn-default">Choose Image</button>
+    <button type="button" class="btn btn-default" uib-dropdown-toggle>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+      <li ng-repeat="img in images">
+        <a ng-click="image_selected(img)">{{img.image_name}}</a>
+      </li>
+    </ul>
+  </div>
+
+  <p></p>
+
+  <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image" width="862"/>
+
 </div>

@@ -1,6 +1,7 @@
 var URLS = {
     'lm_exp': '/api/lungmapexperiments/',
-    'exp': '/api/experiments/'
+    'exp': '/api/experiments/',
+    'images': '/api/images/'
 };
 
 var service = angular.module('IHCApp');
@@ -23,4 +24,10 @@ service.factory(
             {}
         );
     }
-);
+).factory('Image', function ($resource) {
+        return  $resource(
+            URLS.images + ':id',
+            {},
+            {}
+        );
+});
