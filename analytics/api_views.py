@@ -9,6 +9,7 @@ from analytics.models import Experiment, ProbeExperiments, LungmapImage
 from analytics import serializers
 from django.contrib.auth.models import User
 from rest_framework import permissions
+from rest_framework.decorators import api_view
 import django_filters
 
 class UserList(generics.ListAPIView):
@@ -22,17 +23,15 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
 
-class LungmapExperimentViewSet(viewsets.ViewSet):
+@api_view(['GET'])
+def get_lung_map_experiments(request):
     """
-    Utilizing the lungmap_sparql_client, this View calls out to the Lungmap mothership (via SPARQL) to get a list of all
-    images, and associated data. From that point, it deduplicates experiment ids and provides a list to the user. 
+    Utilizing the lungmap_sparql_client, calls out to the Lungmap mother ship 
+    (via SPARQL) to get a list of all images, and associated data. From that point, 
+    it de-duplicates experiment ids and provides a list to the user. 
     """
-    # permission_classes = (permissions.IsAdminUser,)
-
-    @staticmethod
-    def list(request):
-        exp_names_df = list_all_lungmap_experiments()
-        return Response(exp_names_df)
+    exp_names_df = list_all_lungmap_experiments()
+    return Response(exp_names_df)
 
 
 class ExperimentList(generics.ListCreateAPIView):
@@ -44,18 +43,13 @@ class ExperimentList(generics.ListCreateAPIView):
     serializer_class = serializers.ExperimentSerializer
 
 
-class ExperimentDetail(APIView):
-
-    def get_object(self, pk):
-        try:
-            return Experiment.objects.get(pk=pk)
-        except Experiment.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        experiment = self.get_object(pk)
-        serializer = serializers.ExperimentSerializer(experiment)
-        return Response(serializer.data)
+class ExperimentDetail(generics.RetrieveAPIView):
+    """
+    Get a single experiment
+    """
+    queryset = Experiment.objects.all()
+    serializer_class = serializers.ExperimentSerializer
+    lookup_field = 'experiment_id'
 
 
 class ProbeDetail(APIView):
