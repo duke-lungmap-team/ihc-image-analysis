@@ -30,7 +30,7 @@ class LungmapExperimentViewSet(viewsets.ViewSet):
     # permission_classes = (permissions.IsAdminUser,)
 
     @staticmethod
-    def get_lm_experiments(request):
+    def list(request):
         exp_names_df = list_all_lungmap_experiments()
         return Response(exp_names_df)
 
