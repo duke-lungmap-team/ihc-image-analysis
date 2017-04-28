@@ -1,6 +1,7 @@
 from analytics import serializers, models
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
 from lungmap_sparql_client import lungmap_sparql_utils as sparql_utils
 from rest_framework import generics, permissions
 from rest_framework.decorators import api_view
@@ -102,13 +103,14 @@ class ExperimentImageDetail(APIView):
         return Response(serializer.data)
 
 
-class ImageJpeg(APIView):
-    def get_object(self, ipk):
-        try:
-            return models.LungmapImage.objects.get(id=ipk).image_jpeg
-        except models.LungmapImage.DoesNotExist:
-            raise Http404
+@api_view(['GET'])
+def get_image_jpeg(request, pk):
+    """
+    Get JPEG version of a single image
+    :param request: HttpRequest
+    :param pk: Primary key of an image
+    :return: HttpResponse
+    """
+    image = get_object_or_404(models.LungmapImage, pk=pk)
 
-    def get(self, request, pk, ipk, format=None):
-        jpeg = self.get_object(ipk)
-        return HttpResponse(jpeg, content_type='image/jpeg')
+    return HttpResponse(image.image_jpeg, content_type='image/jpeg')
