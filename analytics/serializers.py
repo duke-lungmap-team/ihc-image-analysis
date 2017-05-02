@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ExperimentSerializer(serializers.ModelSerializer):
-    experiment_id = serializers.CharField(required=True)
+    experiment_id = serializers.CharField(max_length=14, required=True)
     release_date = serializers.DateField(read_only=True)
     platform = serializers.CharField(read_only=True)
     experiment_type = serializers.CharField(read_only=True)

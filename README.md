@@ -1,7 +1,7 @@
 # ihc-image-analysis
 A (django) web application for analyzing immunohistochemistry images. As this 
 project progresses, we will try to use continuous integration to deploy to a 
-[demo](http://rapid-235.vm.duke.edu:8000/docs) application. However, in the 
+[demo](http://rapid-609.vm.duke.edu:8000) application. However, in the 
 early stages of this project, this may or may not be operational.
 
 
@@ -39,11 +39,21 @@ the `Dockerfile` within this repo. To take advantage of the dockerized solution 
 these commands:
 
 ```
-docker build -t lap .
+docker build -t lap .  
+  
+
+
+#Background
 docker run -d \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
 --restart always \
-lap
+lap 
+  
+#Interactive
+docker run -it \
+-p 8000:8000 \
+-v $(pwd):/ihc-image-analysis \
+lap bash  
 ```
 
