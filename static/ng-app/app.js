@@ -17,13 +17,13 @@ app.config(function($routeProvider) {
     $routeProvider.when(
         '/experiments/',
         {
-            templateUrl: 'ihc-static/ng-app/partials/exp_list.html',
+            templateUrl: 'static/ng-app/partials/exp_list.html',
             controller: 'ExperimentListController'
         }
     ).when(
         '/experiments/:experiment_id',
         {
-            templateUrl: 'ihc-static/ng-app/partials/exp_detail.html',
+            templateUrl: 'static/ng-app/partials/exp_detail.html',
             controller: 'ExperimentDetailController'
         }
     ).otherwise({ redirectTo: '/' });
