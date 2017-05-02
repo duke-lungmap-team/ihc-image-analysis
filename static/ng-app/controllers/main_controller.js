@@ -134,6 +134,10 @@ app.controller(
                 $scope.$broadcast("ngAreas:remove_all");
             };
 
+            $scope.post_regions = function () {
+                // placeholder
+            };
+
         }
     ]
 );
