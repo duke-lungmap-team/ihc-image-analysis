@@ -64,7 +64,7 @@ class Experiment(models.Model):
     # site = models.CharField(max_length=100, blank=True, null=True)
     organism = models.CharField(max_length=25)
     sex = models.CharField(max_length=20, null=True, blank=True)
-    age = models.CharField(max_length=10, null=True, blank=True)
+    age = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return '%s' % self.experiment_id
