@@ -69,7 +69,11 @@ app.controller(
         '$q',
         '$routeParams',
         'Experiment',
-        function ($scope, $q, $routeParams, Experiment) {
+        'Image',
+        function ($scope, $q, $routeParams, Experiment, Image) {
+            $scope.images = [];
+            $scope.selected_image = null;
+
             $scope.experiment = Experiment.get(
                 {
                     'experiment_id': $routeParams.experiment_id
@@ -77,8 +81,18 @@ app.controller(
             );
 
             $scope.experiment.$promise.then(function (data) {
-                console.log('asdf');
+                $scope.images = Image.query({experiment: $routeParams.experiment_id});
+
+                $scope.images.$promise.then(function (data) {
+                    console.log('adf');
+                });
+
             });
+
+            $scope.image_selected = function(img) {
+                $scope.selected_image = img;
+            }
+
         }
     ]
 );
