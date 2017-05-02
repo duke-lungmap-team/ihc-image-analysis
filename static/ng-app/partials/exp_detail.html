@@ -61,17 +61,33 @@
   </div>
 
   <div class="btn-group pull-right" ng-if="selected_image" >
-    <button type="button" class="btn btn-default {{ mode == 'view' ? 'active' : null }}" ng-click="mode = 'view'">View</button>
-    <button type="button" class="btn btn-default {{ mode == 'train' ? 'active' : null }}" ng-click="mode = 'train'">Train</button>
-    <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="mode = 'classify'">Classify</button>
+    <button type="button" class="btn btn-default {{ mode == 'view' ? 'active' : null }}" ng-click="set_mode('view')">View</button>
+    <button type="button" class="btn btn-default {{ mode == 'train' ? 'active' : null }}" ng-click="set_mode('train')">Train</button>
+    <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="set_mode('classify')">Classify</button>
   </div>
 
   <p>
-    <div class="text-center ">
+    <div class="text-center">
       <strong>{{ selected_image.image_name }}</strong>
     </div>
   </p>
 
-  <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image" width="862"/>
+  <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image && mode == 'view'" width="862"/>
+
+  <div ng-if="selected_image && mode == 'train'">
+    <div class="btn-group btn-group-xs">
+      <button type="button" class="btn btn-primary" ng-click="add()">Add new</button>
+      <button type="button" class="btn btn-primary" ng-click="undo()">Undo</button>
+    </div>
+    <div class="btn-group btn-group-xs">
+      <button type="button" class="btn btn-danger" ng-click="clearAll()">Clear All</button>
+      <button type="button" class="btn btn-danger" ng-click="removePolygon(activePolygon)">Remove Selected</button>
+    </div>
+
+    <div ng-poly-draw points="points"
+         active="activePolygon" image-url="selected_image.image_jpeg"
+         width="poly_width" height="poly_height"
+         enabled="enabled" palette="colorArray"></div>
+  </div>
 
 </div>

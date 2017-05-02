@@ -75,6 +75,14 @@ app.controller(
             $scope.selected_image = null;
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
 
+            // training mode vars
+            $scope.enabled = true;
+            $scope.colorArray = ['#00FF00'];
+            $scope.activePolygon = 0;
+            $scope.points = [[]];
+            $scope.poly_height = 862;
+            $scope.poly_width = 862;
+
             $scope.experiment = Experiment.get(
                 {
                     'experiment_id': $routeParams.experiment_id
@@ -92,7 +100,39 @@ app.controller(
 
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
-            }
+            };
+
+            $scope.set_mode = function (mode) {
+                $scope.mode = mode;
+            };
+
+            $scope.undo = function(){
+                $scope.points[$scope.activePolygon].splice(-1, 1);
+            };
+
+            $scope.clearAll = function(){
+                $scope.points[$scope.activePolygon] = [];
+            };
+
+            $scope.removePolygon = function (index) {
+                $scope.points.splice(index, 1);
+                if(index <= $scope.activePolygon) {
+                    --$scope.activePolygon;
+                }
+                if ($scope.points.length === 0) {
+                    $scope.enabled = false;
+                }
+            };
+
+            $scope.add = function (index) {
+                $scope.enabled = true;
+                $scope.points.push([]);
+                $scope.activePolygon = $scope.points.length - 1;
+            };
+
+            $scope.delete_all_regions = function () {
+                $scope.$broadcast("ngAreas:remove_all");
+            };
 
         }
     ]
