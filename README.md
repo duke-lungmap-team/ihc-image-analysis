@@ -47,14 +47,16 @@ docker build -t lap .
 docker run -d \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
+lap
 --restart always \
-lap gunicorn /ihc-image-analysis/lap.wsgi runserver 0.0.0.0:8000
+lap 
   
 #Interactive
 docker run -it \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
-lap bash
+lap bash  
+  
 
 docker run -d \
 -p 8000:8000 \

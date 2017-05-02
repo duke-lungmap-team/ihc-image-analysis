@@ -6,6 +6,7 @@ media/
 playground/
 .aws/
 lap/settings.py
+ihc-static/
 db.sqlite3
 README_ignore.md
 build

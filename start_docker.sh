@@ -1,3 +1,4 @@
 #!/bin/bash
-gunicorn --workers 3 --bind unix:/ihc-image-analysis/lap.sock lap.wsgi:application &
-service nginx restart
+python manage.py collectstatic --noinput
+gunicorn --bind unix:/ihc-image-analysis/lap.sock lap.wsgi:application &
+nginx -g "daemon off;"
