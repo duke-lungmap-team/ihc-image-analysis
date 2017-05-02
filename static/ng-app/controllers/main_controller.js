@@ -73,6 +73,7 @@ app.controller(
         function ($scope, $q, $routeParams, Experiment, Image) {
             $scope.images = [];
             $scope.selected_image = null;
+            $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
 
             $scope.experiment = Experiment.get(
                 {

@@ -12,6 +12,13 @@
 
 <div class="col-md-4 well well-sm">
   <table class="table">
+    <thead>
+      <tr>
+        <th class="center" colspan="50">
+          <h5>Experiment Details</h5>
+        </th>
+      </tr>
+    </thead>
     <tbody>
       <tr>
         <td>Experiment Type:</td>
@@ -53,7 +60,17 @@
     </ul>
   </div>
 
-  <p></p>
+  <div class="btn-group pull-right" ng-if="selected_image" >
+    <button type="button" class="btn btn-default {{ mode == 'view' ? 'active' : null }}" ng-click="mode = 'view'">View</button>
+    <button type="button" class="btn btn-default {{ mode == 'train' ? 'active' : null }}" ng-click="mode = 'train'">Train</button>
+    <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="mode = 'classify'">Classify</button>
+  </div>
+
+  <p>
+    <div class="text-center ">
+      <strong>{{ selected_image.image_name }}</strong>
+    </div>
+  </p>
 
   <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image" width="862"/>
 
