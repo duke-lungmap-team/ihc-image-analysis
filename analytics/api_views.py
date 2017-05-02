@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import django_filters
 
+
 class UserList(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
@@ -19,6 +20,7 @@ class UserDetail(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
+
 
 @api_view(['GET'])
 def get_lung_map_experiments(request):
