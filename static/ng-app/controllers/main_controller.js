@@ -141,3 +141,16 @@ app.controller(
         }
     ]
 );
+
+
+app.controller(
+    'ProbeListController',
+    [
+        '$scope',
+        '$q',
+        'Probe',
+        function ($scope, $q, Probe) {
+            $scope.probes = Probe.query({});
+        }
+    ]
+);
