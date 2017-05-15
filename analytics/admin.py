@@ -1,8 +1,9 @@
 from django.contrib import admin
-from analytics.models import Experiment, LungmapImage, ProbeExperiments
+from analytics import models
 
 # Register your models here.
 
-admin.site.register(Experiment)
-admin.site.register(LungmapImage)
-admin.site.register(ProbeExperiments)
+admin.site.register(models.Experiment)
+admin.site.register(models.LungmapImage)
+admin.site.register(models.Probe)
+admin.site.register(models.ExperimentProbeMap)
