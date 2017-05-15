@@ -68,20 +68,6 @@ class ProbeDetail(generics.RetrieveAPIView):
     serializer_class = serializers.ProbeSerializer
 
 
-class ExperimentProbeDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return models.ExperimentProbeMap.objects.filter(experiment_id=pk)
-        except models.ExperimentProbeMap.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        probes = self.get_object(pk)
-        serializer = serializers.ExperimentProbeSerializer(probes, many=True)
-
-        return Response(serializer.data)
-
-
 # noinspection PyClassHasNoInit
 class LungmapImageFilter(django_filters.rest_framework.FilterSet):
     class Meta:
@@ -108,19 +94,6 @@ class LungmapImageDetail(generics.RetrieveAPIView):
     serializer_class = serializers.LungmapImageSerializer
 
 
-class ExperimentImageDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return models.LungmapImage.objects.filter(experiment_id=pk)
-        except models.LungmapImage.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        images = self.get_object(pk)
-        serializer = serializers.LungmapImageSerializer(images, many=True)
-        return Response(serializer.data)
-
-
 @api_view(['GET'])
 def get_image_jpeg(request, pk):
     """
@@ -132,3 +105,29 @@ def get_image_jpeg(request, pk):
     image = get_object_or_404(models.LungmapImage, pk=pk)
 
     return HttpResponse(image.image_jpeg, content_type='image/jpeg')
+
+
+# noinspection PyClassHasNoInit
+class ExperimentProbeFilter(django_filters.rest_framework.FilterSet):
+    class Meta:
+        model = models.ExperimentProbeMap
+        fields = ['experiment']
+
+
+class ExperimentProbeList(generics.ListAPIView):
+    """
+    List all experiment probes
+    """
+
+    queryset = models.ExperimentProbeMap.objects.all()
+    serializer_class = serializers.ExperimentProbeSerializer
+    filter_class = ExperimentProbeFilter
+
+
+class ExperimentProbeDetail(generics.RetrieveAPIView):
+    """
+    Get an experiment probe
+    """
+
+    queryset = models.ExperimentProbeMap.objects.all()
+    serializer_class = serializers.ExperimentProbeSerializer

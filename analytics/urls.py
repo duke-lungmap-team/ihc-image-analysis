@@ -8,11 +8,11 @@ urlpatterns = [
     url(r'^api/experiments/(?P<experiment_id>[\w{}.-]{1,14})/$', api_views.ExperimentDetail.as_view()),
     url(r'^api/probes/$', api_views.ProbeList.as_view()),
     url(r'^api/probes/(?P<pk>[0-9]+)/$', api_views.ProbeDetail.as_view()),
+    url(r'^api/experiment_probes/$', api_views.ExperimentProbeList.as_view()),
+    url(r'^api/experiment_probes/(?P<pk>[0-9]+)/$', api_views.ExperimentProbeDetail.as_view()),
     url(r'^api/images/$', api_views.LungmapImageList.as_view()),
     url(r'^api/images/(?P<pk>[0-9]+)/$', api_views.LungmapImageDetail.as_view()),
     url(r'^api/images-jpeg/(?P<pk>[0-9]+)/$', api_views.get_image_jpeg, name='image-jpeg'),
-    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/probes/$', api_views.ExperimentProbeDetail.as_view()),
-    url(r'^api/experiments/(?P<pk>[\w{}.-]{1,14})/images/$', api_views.ExperimentImageDetail.as_view()),
     url(r'^api/users/$', api_views.UserList.as_view()),
     url(r'^api/users/(?P<pk>[0-9]+)/$', api_views.UserDetail.as_view()),
 ]
