@@ -70,7 +70,8 @@ app.controller(
         '$routeParams',
         'Experiment',
         'Image',
-        function ($scope, $q, $routeParams, Experiment, Image) {
+        'ExperimentProbe',
+        function ($scope, $q, $routeParams, Experiment, Image, ExperimentProbe) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
@@ -91,11 +92,7 @@ app.controller(
 
             $scope.experiment.$promise.then(function (data) {
                 $scope.images = Image.query({experiment: $routeParams.experiment_id});
-
-                $scope.images.$promise.then(function (data) {
-                    console.log('adf');
-                });
-
+                $scope.probes = ExperimentProbe.query({experiment: $routeParams.experiment_id});
             });
 
             $scope.image_selected = function(img) {

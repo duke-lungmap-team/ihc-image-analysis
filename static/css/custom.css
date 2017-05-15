@@ -195,3 +195,24 @@ th.center {
 .no-wrap {
   white-space: nowrap;
 }
+
+/* ----------- Color Square -------------- */
+.color-square {
+  float: left;
+  width: 11px;
+  height: 11px;
+  margin: 3px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.green {
+  background: limegreen;
+}
+
+.white {
+  background: white;
+}
+
+.red {
+  background: red;
+}

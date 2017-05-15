@@ -44,6 +44,16 @@
         <td>Platform:</td>
         <td>{{ experiment.platform }}</td>
       </tr>
+      <tr>
+        <td style="vertical-align: top !important;">Probes:</td>
+        <td>
+          <ul class="list-unstyled">
+            <li ng-repeat="p in probes">
+              <div class='color-square {{ p.color }}'></div>{{ p.label }} ({{ p.color }})
+            </li>
+          </ul>
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>
