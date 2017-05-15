@@ -110,7 +110,8 @@ WHERE {
         ?probe_id lm:probe_target_condition ?anatomy .
         ?anatomy rdfs:label ?anatomy_label
     }
-}"""
+}
+"""
 
 GET_EXPERIMENT_TYPE_BY_EXPERIMENT = """
 PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
