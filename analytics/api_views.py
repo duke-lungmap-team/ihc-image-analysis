@@ -51,6 +51,23 @@ class ExperimentDetail(generics.RetrieveAPIView):
     lookup_field = 'experiment_id'
 
 
+class ProbeList(generics.ListAPIView):
+    """
+    List all probes
+    """
+
+    queryset = models.Probe.objects.all()
+    serializer_class = serializers.ProbeSerializer
+
+
+class ProbeDetail(generics.RetrieveAPIView):
+    """
+    Get a single probe
+    """
+    queryset = models.Probe.objects.all()
+    serializer_class = serializers.ProbeSerializer
+
+
 class ExperimentProbeDetail(APIView):
     def get_object(self, pk):
         try:
