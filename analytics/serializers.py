@@ -31,6 +31,13 @@ class ProbeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ExperimentProbeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.ExperimentProbeMap
+        fields = "__all__"
+
+
 class LungmapImageSerializer(serializers.ModelSerializer):
     image_jpeg = serializers.HyperlinkedIdentityField('image-jpeg', read_only=True)
 
