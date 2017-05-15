@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from analytics.models import Experiment, LungmapImage, ProbeExperiments
+from analytics import models
 from django.contrib.auth.models import User
 
 
@@ -20,14 +20,14 @@ class ExperimentSerializer(serializers.ModelSerializer):
     age = serializers.CharField(read_only=True)
 
     class Meta:
-        model = Experiment
+        model = models.Experiment
         fields = "__all__"
 
 
-class ProbeExperimentsSerializer(serializers.ModelSerializer):
+class ProbeSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = ProbeExperiments
+        model = models.Probe
         fields = "__all__"
 
 
@@ -35,5 +35,5 @@ class LungmapImageSerializer(serializers.ModelSerializer):
     image_jpeg = serializers.HyperlinkedIdentityField('image-jpeg', read_only=True)
 
     class Meta:
-        model = LungmapImage
+        model = models.LungmapImage
         fields = "__all__"
