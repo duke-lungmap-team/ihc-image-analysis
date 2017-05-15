@@ -32,6 +32,7 @@ class ProbeSerializer(serializers.ModelSerializer):
 
 
 class ExperimentProbeSerializer(serializers.ModelSerializer):
+    label = serializers.CharField(source='probe.label')
 
     class Meta:
         model = models.ExperimentProbeMap
