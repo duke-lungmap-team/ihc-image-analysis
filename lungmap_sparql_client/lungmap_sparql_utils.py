@@ -3,8 +3,23 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from lungmap_sparql_client.lungmap_sparql_queries import *
 import warnings
 from dateutil import parser
+# noinspection PyPackageRequirements
+from PIL import Image
+from io import BytesIO
+import hashlib
+# noinspection PyPackageRequirements
+import cv2
+from django.core.files.uploadedfile import SimpleUploadedFile
+import tempfile
+import boto3
+
 
 lm_mother_ship = "http://testdata.lungmap.net/sparql"
+
+
+session = boto3.Session(profile_name='lungmap')
+s3 = session.resource('s3')
+bucket = s3.Bucket('lungmap-breath-data')
 
 
 def list_all_lungmap_experiments():
@@ -148,5 +163,55 @@ def get_researcher_by_experiment(experiment_id):
                 'site_label': x['site_label']['value']
             }
         return row
+    except ValueError as e:
+        raise e
+
+
+def get_image_from_s3(s3key):
+    """
+    Takes an s3key and then downloads the image, calculates a SHA1, 
+    creates a SimpleUploadedFile, converts to jpeg
+    and then creates another SimpleUploadedFile for the jpeg, 
+    returns 3 objects
+    :param s3key: 
+    :return: SimpleUploadedFile (orig), SHA1 Hash (orig), SimpleUploadedFile (jpeg converted)
+    """
+    try:
+        s3key_jpg, ext = os.path.splitext(s3key)
+        temp = tempfile.NamedTemporaryFile(suffix=ext)
+        bucket.download_file(s3key, temp.name)
+        # noinspection PyUnresolvedReferences
+        cv_img = cv2.imread(temp.name)
+        # noinspection PyUnresolvedReferences
+        img = Image.fromarray(
+            cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB),
+            'RGB'
+        )
+        img_jpeg = img.copy()
+        temp_handle = BytesIO()
+        img.save(temp_handle, 'TIFF')
+        temp_handle.seek(0)
+
+        # jpeg image
+        temp_handle_jpeg = BytesIO()
+        img_jpeg.save(temp_handle_jpeg, 'JPEG')
+        temp_handle_jpeg.seek(0)
+
+        # filename
+        suf = SimpleUploadedFile(os.path.basename(
+            s3key),
+            temp_handle.read(),
+            content_type='image/tif'
+        )
+        suf_jpg = SimpleUploadedFile(
+            os.path.basename(s3key_jpg) + '.jpg',
+            temp_handle_jpeg.read(),
+            content_type='image/jpeg'
+        )
+
+        temp_handle.seek(0)
+        image_orig_sha1 = hashlib.sha1(temp_handle.read()).hexdigest()
+
+        return suf, image_orig_sha1, suf_jpg
     except ValueError as e:
         raise e

@@ -1,12 +1,13 @@
 from analytics import serializers, models
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse
+from django.db import transaction
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from lungmap_sparql_client import lungmap_sparql_utils as sparql_utils
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from tqdm import tqdm
 import django_filters
 
 
@@ -40,6 +41,61 @@ class ExperimentList(generics.ListCreateAPIView):
 
     queryset = models.Experiment.objects.all()
     serializer_class = serializers.ExperimentSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
+        try:
+            with transaction.atomic():
+                exp = models.Experiment(
+                    experiment_id=data['experiment_id']
+                )
+                exp.save()
+
+                images = sparql_utils.get_images_by_experiment(exp.experiment_id)
+                exp_probes = sparql_utils.get_probes_by_experiment(exp.experiment_id)
+
+                for exp_probe in tqdm(exp_probes):
+                    probe, created = models.Probe.objects.get_or_create(
+                        label=str.strip(exp_probe['probe_label'])
+                    )
+
+                    models.ExperimentProbeMap(
+                        probe=probe,
+                        color=str.strip(exp_probe['color']).lower(),
+                        experiment_id=exp
+                    ).save()
+
+                for image in tqdm(images):
+                    suf, sha1, suf_jpeg = sparql_utils.get_image_from_s3(image['s3key'])
+                    models.LungmapImage(
+                        s3key=image['s3key'],
+                        magnification=image['magnification'],
+                        image_name=image['image_name'],
+                        experiment=exp,
+                        image_id=image['image_id'],
+                        x_scaling=image['x_scaling'],
+                        y_scaling=image['y_scaling'],
+                        image_orig=suf,
+                        image_orig_sha1=sha1,
+                        image_jpeg=suf_jpeg
+                    ).save()
+        except Exception as e:  # catch any exception to rollback changes
+            if hasattr(e, 'messages'):
+                return Response(data={'detail': e.messages}, status=400)
+            return Response(data={'detail': e.message}, status=400)
+
+        serializer = serializers.ExperimentSerializer(
+            exp,
+            context={'request': request}
+        )
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
 
 class ExperimentDetail(generics.RetrieveAPIView):
