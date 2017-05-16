@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from lungmap_sparql_client import lungmap_sparql_utils as sparql_utils
+from lungmap_sparql_client import lungmap_utils
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -30,7 +30,7 @@ def get_lung_map_experiments(request):
     (via SPARQL) to get a list of all images, and associated data. From that point, 
     it de-duplicates experiment ids and provides a list to the user. 
     """
-    exp_names_df = sparql_utils.list_all_lungmap_experiments()
+    exp_names_df = lungmap_utils.list_all_lungmap_experiments()
     return Response(exp_names_df)
 
 
@@ -52,8 +52,8 @@ class ExperimentList(generics.ListCreateAPIView):
                 )
                 exp.save()
 
-                images = sparql_utils.get_images_by_experiment(exp.experiment_id)
-                exp_probes = sparql_utils.get_probes_by_experiment(exp.experiment_id)
+                images = lungmap_utils.get_images_by_experiment(exp.experiment_id)
+                exp_probes = lungmap_utils.get_probes_by_experiment(exp.experiment_id)
 
                 for exp_probe in tqdm(exp_probes):
                     probe, created = models.Probe.objects.get_or_create(
@@ -67,7 +67,7 @@ class ExperimentList(generics.ListCreateAPIView):
                     ).save()
 
                 for image in tqdm(images):
-                    suf, sha1, suf_jpeg = sparql_utils.get_image_from_s3(image['s3key'])
+                    suf, sha1, suf_jpeg = lungmap_utils.get_image_from_s3(image['s3key'])
                     models.LungmapImage(
                         s3key=image['s3key'],
                         magnification=image['magnification'],
