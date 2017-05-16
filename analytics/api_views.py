@@ -68,7 +68,7 @@ class ExperimentList(generics.ListCreateAPIView):
 
                 for image in tqdm(images):
                     suf, sha1, suf_jpeg = lungmap_utils.get_image_from_s3(image['s3key'])
-                    models.LungmapImage(
+                    models.Image(
                         s3key=image['s3key'],
                         magnification=image['magnification'],
                         image_name=image['image_name'],
@@ -127,7 +127,7 @@ class ProbeDetail(generics.RetrieveAPIView):
 # noinspection PyClassHasNoInit
 class LungmapImageFilter(django_filters.rest_framework.FilterSet):
     class Meta:
-        model = models.LungmapImage
+        model = models.Image
         fields = ['experiment']
 
 
@@ -136,7 +136,7 @@ class LungmapImageList(generics.ListAPIView):
     List all images.
     """
 
-    queryset = models.LungmapImage.objects.all()
+    queryset = models.Image.objects.all()
     serializer_class = serializers.LungmapImageSerializer
     filter_class = LungmapImageFilter
 
@@ -146,7 +146,7 @@ class LungmapImageDetail(generics.RetrieveAPIView):
     Get an image
     """
 
-    queryset = models.LungmapImage.objects.all()
+    queryset = models.Image.objects.all()
     serializer_class = serializers.LungmapImageSerializer
 
 
@@ -158,7 +158,7 @@ def get_image_jpeg(request, pk):
     :param pk: Primary key of an image
     :return: HttpResponse
     """
-    image = get_object_or_404(models.LungmapImage, pk=pk)
+    image = get_object_or_404(models.Image, pk=pk)
 
     return HttpResponse(image.image_jpeg, content_type='image/jpeg')
 

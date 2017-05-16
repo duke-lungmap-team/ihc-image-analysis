@@ -59,7 +59,7 @@ class Probe(models.Model):
         return '%s: %s' % (self.id, self.label)
 
 
-class LungmapImage(models.Model):
+class Image(models.Model):
     s3key = models.CharField(max_length=200, unique=True)
     magnification = models.CharField(max_length=20, null=False, blank=False)
     image_name = models.CharField(max_length=80)

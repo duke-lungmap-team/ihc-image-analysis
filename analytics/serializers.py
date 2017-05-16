@@ -43,5 +43,5 @@ class LungmapImageSerializer(serializers.ModelSerializer):
     image_jpeg = serializers.HyperlinkedIdentityField('image-jpeg', read_only=True)
 
     class Meta:
-        model = models.LungmapImage
+        model = models.Image
         fields = "__all__"
