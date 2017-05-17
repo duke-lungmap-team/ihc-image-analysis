@@ -1,17 +1,17 @@
-import os
-from SPARQLWrapper import SPARQLWrapper, JSON
-from lungmap_sparql_client.lungmap_sparql_queries import *
-import warnings
-from dateutil import parser
-# noinspection PyPackageRequirements
-from PIL import Image
-from io import BytesIO
-import hashlib
 # noinspection PyPackageRequirements
 import cv2
+from dateutil import parser
 from django.core.files.uploadedfile import SimpleUploadedFile
-import tempfile
+from io import BytesIO
+from lungmap_sparql_client.lungmap_sparql_queries import *
+from SPARQLWrapper import SPARQLWrapper, JSON
 import boto3
+import hashlib
+import os
+# noinspection PyPackageRequirements
+from PIL import Image
+import tempfile
+import warnings
 
 
 lm_mother_ship = "http://testdata.lungmap.net/sparql"
@@ -24,8 +24,9 @@ bucket = s3.Bucket('lungmap-breath-data')
 
 def list_all_lungmap_experiments():
     """
-    Call out to the LM mothership (via SPARQL) to get a list of all experiments that have an image. NOTE: this could
-    mean a .tif image or .png image (or something else). No restriction is placed on the type of image.
+    Call out to the LM mothership (via SPARQL) to get a list of all experiments 
+    that have an image. NOTE: this could mean a .tif image or .png image 
+    (or something else). No restriction is placed on the type of image.
     :return: status of sparql query
     """
     try:
@@ -43,9 +44,10 @@ def list_all_lungmap_experiments():
 
 def _get_by_experiment(query, experiment_id):
     """
-    Query LM mothership (via SPARQL) and get information by a given experiment_id for a particular experiment
-    :param query: a predefined query string from lungmap_sparql_client that has the replacement 
-    string EXPERIMENT_PLACEHOLDER
+    Query LM mothership (via SPARQL) and get information by a given 
+    experiment_id for a particular experiment
+    :param query: a predefined query string from lungmap_sparql_client that 
+    has the replacement string EXPERIMENT_PLACEHOLDER
     :param experiment_id: valid experiment_id from lungmap
     :return:
     """
@@ -62,7 +64,8 @@ def _get_by_experiment(query, experiment_id):
 
 def get_experiment_model_data(experiment_id):
     """
-    Combines three lungmap_sparql_utils functions to provide data to the Experiment model via dict
+    Combines three lungmap_sparql_utils functions to provide data to the 
+    Experiment model via dict
     :param experiment_id: str: lungmap id
     :return: dict that matches the columns in the Experiment model
     """
@@ -75,7 +78,7 @@ def get_experiment_model_data(experiment_id):
 def get_sample_by_experiment(experiment_id):
     results = _get_by_experiment(GET_SAMPLE_BY_EXPERIMENT, experiment_id)
     if len(results) > 1:
-        warnings.warn('get_sample_by_experiment: more than 1 sample received, only passing the first result.')
+        warnings.warn('>1 sample received, only passing first result')
     try:
         for x in results[:1]:
             row = {
@@ -129,20 +132,25 @@ def get_probes_by_experiment(experiment_id):
 
 
 def get_experiment_type_by_experiment(experiment_id):
-    results = _get_by_experiment(GET_EXPERIMENT_TYPE_BY_EXPERIMENT, experiment_id)
+    results = _get_by_experiment(
+        GET_EXPERIMENT_TYPE_BY_EXPERIMENT, experiment_id
+    )
+
     if len(results) > 1:
         raise ValueError(
-            'lungmap_sparql_client.lungmap_sparql_utils.get_experiment_type_by_experiment error too many results.'
+            'too many results'
         )
     if len(results) == 0:
         raise ValueError(
-            'lungmap_sparql_client.lungmap_sparql_utils.get_experiment_type_by_experiment no results found.'
+            'no results found'
         )
     try:
         for x in results:
             row = {
                 'platform': x['platform']['value'],
-                'release_date': parser.parse(x['release_date']['value']).strftime('%Y-%m-%d'),
+                'release_date': parser.parse(
+                    x['release_date']['value']
+                ).strftime('%Y-%m-%d'),
                 'experiment_type_label': x['experiment_type_label']['value']
             }
         return row
@@ -154,7 +162,7 @@ def get_researcher_by_experiment(experiment_id):
     results = _get_by_experiment(GET_RESEARCHER_BY_EXPERIMENT, experiment_id)
     if len(results) > 1:
         raise ValueError(
-            'lungmap_sparql_client.lungmap_sparql_utils.get_experiment_type_by_experiment error too many results.'
+            'too many results'
         )
     try:
         for x in results:
@@ -174,7 +182,8 @@ def get_image_from_s3(s3key):
     and then creates another SimpleUploadedFile for the jpeg, 
     returns 3 objects
     :param s3key: 
-    :return: SimpleUploadedFile (orig), SHA1 Hash (orig), SimpleUploadedFile (jpeg converted)
+    :return: SimpleUploadedFile (orig), SHA1 Hash (orig), 
+    SimpleUploadedFile (jpeg converted)
     """
     try:
         s3key_jpg, ext = os.path.splitext(s3key)
@@ -198,8 +207,8 @@ def get_image_from_s3(s3key):
         temp_handle_jpeg.seek(0)
 
         # filename
-        suf = SimpleUploadedFile(os.path.basename(
-            s3key),
+        suf = SimpleUploadedFile(
+            os.path.basename(s3key),
             temp_handle.read(),
             content_type='image/tif'
         )
