@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from lungmap_sparql_client import lungmap_utils
+from lungmap_client import lungmap_utils
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -26,7 +26,7 @@ class UserDetail(generics.RetrieveAPIView):
 @api_view(['GET'])
 def get_lung_map_experiments(request):
     """
-    Utilizing the lungmap_sparql_client, calls out to the Lungmap mother ship 
+    Utilizing the lungmap_client, calls out to the Lungmap mother ship 
     (via SPARQL) to get a list of all images, and associated data. From that point, 
     it de-duplicates experiment ids and provides a list to the user. 
     """

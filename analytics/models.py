@@ -1,5 +1,5 @@
 from django.db import models
-from lungmap_sparql_client import lungmap_utils as sparql_utils
+from lungmap_client import lungmap_utils as sparql_utils
 
 
 class Experiment(models.Model):

@@ -3,7 +3,7 @@ import cv2
 from dateutil import parser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from io import BytesIO
-from lungmap_sparql_client.lungmap_sparql_queries import *
+from lungmap_client import lungmap_sparql_queries as sparql_queries
 from SPARQLWrapper import SPARQLWrapper, JSON
 import boto3
 import hashlib
@@ -31,7 +31,7 @@ def list_all_lungmap_experiments():
     """
     try:
         sparql = SPARQLWrapper(lm_mother_ship)
-        sparql.setQuery(ALL_EXPERIMENTS_WITH_IMAGE)
+        sparql.setQuery(sparql_queries.ALL_EXPERIMENTS_WITH_IMAGE)
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
         output = []
@@ -46,7 +46,7 @@ def _get_by_experiment(query, experiment_id):
     """
     Query LM mothership (via SPARQL) and get information by a given 
     experiment_id for a particular experiment
-    :param query: a predefined query string from lungmap_sparql_client that 
+    :param query: a predefined query string from lungmap_client that 
     has the replacement string EXPERIMENT_PLACEHOLDER
     :param experiment_id: valid experiment_id from lungmap
     :return:
@@ -76,7 +76,10 @@ def get_experiment_model_data(experiment_id):
 
 
 def get_sample_by_experiment(experiment_id):
-    results = _get_by_experiment(GET_SAMPLE_BY_EXPERIMENT, experiment_id)
+    results = _get_by_experiment(
+        sparql_queries.GET_SAMPLE_BY_EXPERIMENT,
+        experiment_id
+    )
     if len(results) > 1:
         warnings.warn('>1 sample received, only passing first result')
     try:
@@ -93,7 +96,10 @@ def get_sample_by_experiment(experiment_id):
 
 
 def get_images_by_experiment(experiment_id):
-    results = _get_by_experiment(GET_IMAGES_BY_EXPERIMENT, experiment_id)
+    results = _get_by_experiment(
+        sparql_queries.GET_IMAGES_BY_EXPERIMENT,
+        experiment_id
+    )
     output = []
     try:
         for x in results:
@@ -117,7 +123,10 @@ def get_images_by_experiment(experiment_id):
 
 
 def get_probes_by_experiment(experiment_id):
-    results = _get_by_experiment(GET_PROBE_BY_EXPERIMENT, experiment_id)
+    results = _get_by_experiment(
+        sparql_queries.GET_PROBE_BY_EXPERIMENT,
+        experiment_id
+    )
     output = []
     try:
         for x in results:
@@ -133,7 +142,8 @@ def get_probes_by_experiment(experiment_id):
 
 def get_experiment_type_by_experiment(experiment_id):
     results = _get_by_experiment(
-        GET_EXPERIMENT_TYPE_BY_EXPERIMENT, experiment_id
+        sparql_queries.GET_EXPERIMENT_TYPE_BY_EXPERIMENT,
+        experiment_id
     )
 
     if len(results) > 1:
@@ -159,7 +169,10 @@ def get_experiment_type_by_experiment(experiment_id):
 
 
 def get_researcher_by_experiment(experiment_id):
-    results = _get_by_experiment(GET_RESEARCHER_BY_EXPERIMENT, experiment_id)
+    results = _get_by_experiment(
+        sparql_queries.GET_RESEARCHER_BY_EXPERIMENT,
+        experiment_id
+    )
     if len(results) > 1:
         raise ValueError(
             'too many results'
