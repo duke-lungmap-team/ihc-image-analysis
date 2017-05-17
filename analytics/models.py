@@ -50,7 +50,7 @@ class Experiment(models.Model):
 
 class Probe(models.Model):
     label = models.CharField(
-        max_length=30,
+        max_length=100,
         null=False,
         blank=False,
         unique=True
