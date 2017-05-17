@@ -116,3 +116,26 @@ class ExperimentProbeMap(models.Model):
 
     def __str__(self):
         return '%s, %s (%s)' % (self.experiment_id, self.probe.label, self.color)
+
+
+class Subregion(models.Model):
+    image_id = models.ForeignKey(
+        Image,
+        db_column='image_id'
+    )
+
+    def __str__(self):
+        return '%s, %s' % (self.id, self.image_id.image_name)
+
+
+class Points(models.Model):
+    subregion_id = models.ForeignKey(
+        Subregion,
+        db_column='subregion_id'
+    )
+    x = models.IntegerField()
+    y = models.IntegerField()
+    order = models.IntegerField()
+
+    def __str__(self):
+        return '%s %s #%s: [%s, %s]' % (self.id, self.subregion_id, self.order, self.x, self.y)
