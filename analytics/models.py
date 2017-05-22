@@ -118,7 +118,20 @@ class ExperimentProbeMap(models.Model):
         return '%s, %s (%s)' % (self.experiment_id, self.probe.label, self.color)
 
 
+class Classification(models.Model):
+    classification_name = models.CharField(
+        max_length=100,
+        primary_key=True
+    )
+    def __str__(self):
+        return '%s: %s' % (self.id, self.classification_name)
+
+
 class Subregion(models.Model):
+    classification_id = models.ForeignKey(
+        Classification,
+        db_column='classification_id'
+    )
     image_id = models.ForeignKey(
         Image,
         db_column='image_id'
