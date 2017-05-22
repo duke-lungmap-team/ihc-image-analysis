@@ -120,8 +120,7 @@ class ExperimentProbeMap(models.Model):
 
 class Classification(models.Model):
     classification_name = models.CharField(
-        max_length=100,
-        primary_key=True
+        max_length=100
     )
     def __str__(self):
         return '%s: %s' % (self.id, self.classification_name)
