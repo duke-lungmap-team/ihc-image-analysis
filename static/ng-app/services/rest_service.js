@@ -3,7 +3,8 @@ var URLS = {
     'exp': '/api/experiments/',
     'probes': '/api/probes/',
     'exp_probes': '/api/experiment_probes/',
-    'images': '/api/images/'
+    'images': '/api/images/',
+    'classifications': '/api/classifications/'
 };
 
 var service = angular.module('IHCApp');
@@ -40,6 +41,14 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.exp_probes + ':experiment_probe_id',
+            {},
+            {}
+        );
+    }
+).factory('Classification',
+    function($resource) {
+        return $resource(
+            URLS.classifications + ':id',
             {},
             {}
         );
