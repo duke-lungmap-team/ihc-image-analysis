@@ -68,7 +68,7 @@ To deploy we use:
 ```
 docker run -d \
 -p 3030:3030 \
--e ADMIN_PASSWORD=derdaYbre3 \
+-e ADMIN_PASSWORD=xxxxx \
 --restart always \
 stain/jena-fuseki
 ```

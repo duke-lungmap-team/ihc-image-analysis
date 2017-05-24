@@ -127,22 +127,24 @@ class Classification(models.Model):
 
 
 class Subregion(models.Model):
-    classification_id = models.ForeignKey(
+    classification = models.ForeignKey(
         Classification,
+        related_name='subregion',
         db_column='classification_id'
     )
-    image_id = models.ForeignKey(
+    image = models.ForeignKey(
         Image,
         db_column='image_id'
     )
 
     def __str__(self):
-        return '%s, %s' % (self.id, self.image_id.image_name)
+        return '%s, %s, %s' % (self.id, self.image_id.image_name, self.classification_id.classification_name)
 
 
 class Points(models.Model):
-    subregion_id = models.ForeignKey(
+    subregion = models.ForeignKey(
         Subregion,
+        related_name='points',
         db_column='subregion_id'
     )
     x = models.IntegerField()
