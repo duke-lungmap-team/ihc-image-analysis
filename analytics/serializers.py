@@ -68,6 +68,13 @@ class SubregionSerializer(serializers.ModelSerializer):
         data['classification'] = instance.classification.classification_name
         return data
 
+    def create(self, validated_data):
+        points_data = validated_data.pop('points')
+        subregion = models.Subregion.objects.create(**validated_data)
+        for point_data in points_data:
+            models.Points.objects.create(subregion=subregion, **point_data)
+        return subregion
+
 
 class ClassificationSerializer(serializers.ModelSerializer):
 
