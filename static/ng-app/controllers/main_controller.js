@@ -70,10 +70,12 @@ app.controller(
         '$routeParams',
         'Experiment',
         'Image',
+        'Classification',
         'ExperimentProbe',
-        function ($scope, $q, $routeParams, Experiment, Image, ExperimentProbe) {
+        function ($scope, $q, $routeParams, Experiment, Image, Classification, ExperimentProbe) {
             $scope.images = [];
             $scope.selected_image = null;
+            $scope.selected_subregion = null;
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
 
             // training mode vars
@@ -83,12 +85,15 @@ app.controller(
             $scope.points = [[]];
             $scope.poly_height = 862;
             $scope.poly_width = 862;
+            $scope.classifications = Classification.query();
+
 
             $scope.experiment = Experiment.get(
                 {
                     'experiment_id': $routeParams.experiment_id
                 }
             );
+
 
             $scope.experiment.$promise.then(function (data) {
                 $scope.images = Image.query({experiment: $routeParams.experiment_id});
@@ -98,6 +103,10 @@ app.controller(
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
             };
+
+            $scope.select_subregion = function(classification) {
+                $scope.selected_subregion = classification;
+            }
 
             $scope.set_mode = function (mode) {
                 $scope.mode = mode;

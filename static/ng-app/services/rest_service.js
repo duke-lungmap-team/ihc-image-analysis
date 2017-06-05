@@ -48,7 +48,7 @@ service.factory(
 ).factory('Classification',
     function($resource) {
         return $resource(
-            URLS.classifications + ':id',
+            URLS.classifications,
             {},
             {}
         );
