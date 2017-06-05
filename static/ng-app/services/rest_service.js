@@ -4,7 +4,8 @@ var URLS = {
     'probes': '/api/probes/',
     'exp_probes': '/api/experiment_probes/',
     'images': '/api/images/',
-    'classifications': '/api/classifications/'
+    'classifications': '/api/classifications/',
+    'subregion': '/api/subregion/'
 };
 
 var service = angular.module('IHCApp');
@@ -49,6 +50,14 @@ service.factory(
     function($resource) {
         return $resource(
             URLS.classifications,
+            {},
+            {}
+        );
+    }
+).factory('Subregion',
+    function($resource) {
+        return $resource(
+            URLS.subregion,
             {},
             {}
         );
