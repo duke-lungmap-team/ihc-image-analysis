@@ -68,12 +68,16 @@ app.controller(
         '$scope',
         '$q',
         '$routeParams',
+        '$window',
         'Experiment',
         'Image',
+        'Classification',
+        'Subregion',
         'ExperimentProbe',
-        function ($scope, $q, $routeParams, Experiment, Image, ExperimentProbe) {
+        function ($scope, $q, $routeParams, $window, Experiment, Image, Classification, Subregion, ExperimentProbe) {
             $scope.images = [];
             $scope.selected_image = null;
+            $scope.selected_subregion = null;
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
 
             // training mode vars
@@ -81,14 +85,18 @@ app.controller(
             $scope.colorArray = ['#00FF00'];
             $scope.activePolygon = 0;
             $scope.points = [[]];
+            $scope.label = [[]];
             $scope.poly_height = 862;
             $scope.poly_width = 862;
+            $scope.classifications = Classification.query();
+
 
             $scope.experiment = Experiment.get(
                 {
                     'experiment_id': $routeParams.experiment_id
                 }
             );
+
 
             $scope.experiment.$promise.then(function (data) {
                 $scope.images = Image.query({experiment: $routeParams.experiment_id});
@@ -98,6 +106,10 @@ app.controller(
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
             };
+
+            $scope.select_subregion = function(classification) {
+                $scope.selected_subregion = classification;
+            }
 
             $scope.set_mode = function (mode) {
                 $scope.mode = mode;
@@ -131,8 +143,33 @@ app.controller(
                 $scope.$broadcast("ngAreas:remove_all");
             };
 
+            $scope.zqwsd = Subregion;
+
             $scope.post_regions = function () {
                 // placeholder
+                var thesepoints = $scope.points[$scope.activePolygon];
+                if (thesepoints.length === 0) {
+                    $window.alert('The current polygon has no points selected, please segment something first.');
+                }
+                if ($scope.selected_subregion === null) {
+                    $window.alert('There is no label associated with the active polygon, please choose a label first.');
+                }
+                //TODO check logic here to ensure that I'm grabbing correct points
+                var payload = {};
+                var points = [];
+                //Get points
+                for (var i=0; i<thesepoints.length; i++) {
+                    points.push({"x":thesepoints[i][0], "y":thesepoints[i][1], "order":i});
+                }
+                payload.classification = $scope.selected_subregion.id;
+                payload.image = $scope.selected_image.id;
+                payload.points = points;
+
+                //How to get results of post to conditionally get ready for next
+                var newregion = Subregion.save(payload);
+                $scope.add();
+                $scope.selected_subregion = null;
+
             };
 
         }

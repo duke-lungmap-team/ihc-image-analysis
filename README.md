@@ -57,3 +57,24 @@ docker run -it \
 lap bash  
 ```
 
+## SPARQL Server
+As part of this project, we are building our own ontology. For research purposes, it is of interest
+to host a SPARQL server (ontop of our DJANGO RESTful interface) to demonstrate the refactor of the ontology.
+To do this, the Python SParql queries are not performant, so we will turn to a 3rd party applicaiton to server
+our triples. We will use [Apache Jena-fuseki](https://jena.apache.org/documentation/fuseki2/index.html). We will
+use a dockerized version from [stain/jena-docker](https://github.com/stain/jena-docker/tree/master/jena-fuseki).
+
+To deploy we use:
+```
+docker run -d \
+-p 3030:3030 \
+-e ADMIN_PASSWORD=xxxxx \
+--restart always \
+stain/jena-fuseki
+```
+
+We then load our `.owl` file. This is a way more performant way to make our SPARQL queries.
+You can demo this resource [here](http://rapid-609.vm.duke.edu:3030).
+
+
+

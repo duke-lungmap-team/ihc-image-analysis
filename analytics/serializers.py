@@ -45,3 +45,39 @@ class LungmapImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Image
         fields = "__all__"
+
+
+class PointsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Points
+        fields = ('x', 'y', 'order')
+
+
+class SubregionSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    points = PointsSerializer(many=True)
+
+    class Meta:
+        model = models.Subregion
+        fields = ('id', 'classification', 'image', 'points')
+
+    def to_representation(self, instance):
+        data = super(SubregionSerializer, self).to_representation(instance)
+        data['image'] = instance.image.image_name
+        data['classification'] = instance.classification.classification_name
+        return data
+
+    def create(self, validated_data):
+        points_data = validated_data.pop('points')
+        subregion = models.Subregion.objects.create(**validated_data)
+        for point_data in points_data:
+            models.Points.objects.create(subregion=subregion, **point_data)
+        return subregion
+
+
+class ClassificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Classification
+        fields = "__all__"

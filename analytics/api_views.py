@@ -187,3 +187,31 @@ class ExperimentProbeDetail(generics.RetrieveAPIView):
 
     queryset = models.ExperimentProbeMap.objects.all()
     serializer_class = serializers.ExperimentProbeSerializer
+
+
+class LungmapSubregionFilter(django_filters.rest_framework.FilterSet):
+    class Meta:
+        model = models.Subregion
+        fields = ['image']
+
+class SubregionList(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = models.Subregion.objects.all()
+    serializer_class = serializers.SubregionSerializer
+    filter_class = LungmapSubregionFilter
+
+# class SubregionList(generics.CreateAPIView):
+#     permission_classes = (permissions.IsAuthenticated,)
+#     queryset = models.Subregion.objects.all()
+#     serializer_class = serializers.SubregionSerializer
+
+
+class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = models.Subregion.objects.all()
+    serializer_class = serializers.SubregionSerializer
+
+
+class ClassificationList(generics.ListAPIView):
+    queryset = models.Classification.objects.all()
+    serializer_class = serializers.ClassificationSerializer
