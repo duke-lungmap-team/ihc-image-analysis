@@ -1,126 +1,138 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th class="center" colspan="50">
-        <div style="position:relative">
-          <h4>Experiment: {{ experiment.experiment_id }}</h4>
-        </div>
-      </th>
-    </tr>
-  </thead>
-</table>
-
-<div class="col-md-4 well well-sm">
+<div class="row">
   <table class="table">
     <thead>
       <tr>
         <th class="center" colspan="50">
-          <h5>Experiment Details</h5>
+          <div style="position:relative">
+            <h4>Experiment: {{ experiment.experiment_id }}</h4>
+          </div>
         </th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>Experiment Type:</td>
-        <td>{{ experiment.experiment_type }}</td>
-      </tr>
-      <tr>
-        <td>Organism:</td>
-        <td>{{ experiment.organism }}</td>
-      </tr>
-      <tr>
-        <td>Age:</td>
-        <td>{{ experiment.age }}</td>
-      </tr>
-      <tr>
-        <td>Sex:</td>
-        <td>{{ experiment.sex }}</td>
-      </tr>
-      <tr>
-        <td>Release Date:</td>
-        <td>{{ experiment.release_date }}</td>
-      </tr>
-      <tr>
-        <td>Platform:</td>
-        <td>{{ experiment.platform }}</td>
-      </tr>
-      <tr>
-        <td style="vertical-align: top !important;">Probes:</td>
-        <td>
-          <ul class="list-unstyled">
-            <li ng-repeat="p in probes">
-              <div class='color-square {{ p.color }}'></div>{{ p.label }} ({{ p.color }})
-            </li>
-          </ul>
-        </td>
-      </tr>
-    </tbody>
   </table>
 </div>
-<div class="col-md-8">
-  <div class="btn-group" uib-dropdown>
-    <button id="split-button" type="button" class="btn btn-default">Choose Image</button>
-    <button type="button" class="btn btn-default" uib-dropdown-toggle>
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
-      <li ng-repeat="img in images">
-        <a ng-click="image_selected(img)">{{img.image_name}}</a>
-      </li>
-    </ul>
+<div class="row">
+  <div class="col-md-4 well well-sm">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="center" colspan="50">
+            <h5>Experiment Details</h5>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Experiment Type:</td>
+          <td>{{ experiment.experiment_type }}</td>
+        </tr>
+        <tr>
+          <td>Organism:</td>
+          <td>{{ experiment.organism }}</td>
+        </tr>
+        <tr>
+          <td>Age:</td>
+          <td>{{ experiment.age }}</td>
+        </tr>
+        <tr>
+          <td>Sex:</td>
+          <td>{{ experiment.sex }}</td>
+        </tr>
+        <tr>
+          <td>Release Date:</td>
+          <td>{{ experiment.release_date }}</td>
+        </tr>
+        <tr>
+          <td>Platform:</td>
+          <td>{{ experiment.platform }}</td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top !important;">Probes:</td>
+          <td>
+            <ul class="list-unstyled">
+              <li ng-repeat="p in probes">
+                <div class='color-square {{ p.color }}'></div>{{ p.label }} ({{ p.color }})
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <div class="btn-group pull-right" ng-if="selected_image" >
-    <button type="button" class="btn btn-default {{ mode == 'view' ? 'active' : null }}" ng-click="set_mode('view')">View</button>
-    <button type="button" class="btn btn-default {{ mode == 'train' ? 'active' : null }}" ng-click="set_mode('train')">Train</button>
-    <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="set_mode('classify')">Classify</button>
-  </div>
-
-  <p>
-    <div class="text-center">
-      <strong>{{ selected_image.image_name }}</strong>
+  <div class="col-md-8">
+    <div class="btn-group" uib-dropdown>
+      <button id="choose-img-button" type="button" class="btn btn-default">Choose Image</button>
+      <button type="button" class="btn btn-default" uib-dropdown-toggle>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-img-button">
+        <li ng-repeat="img in images">
+          <a ng-click="image_selected(img)">{{img.image_name}}</a>
+        </li>
+      </ul>
     </div>
-  </p>
 
-  <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image && mode == 'view'" width="862"/>
+    <div class="btn-group pull-right" ng-if="selected_image" >
+      <button type="button" class="btn btn-default {{ mode == 'view' ? 'active' : null }}" ng-click="set_mode('view')">View</button>
+      <button type="button" class="btn btn-default {{ mode == 'train' ? 'active' : null }}" ng-click="set_mode('train')">Train</button>
+      <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="set_mode('classify')">Classify</button>
+    </div>
 
-  <div ng-if="selected_image && mode == 'train'">
-    <div class="col-md-8">
-        <div class="btn-group" uib-dropdown>
-            <button id="split-button" type="button" class="btn btn-default">Label Subregion</button>
+    <p>
+      <div class="text-center">
+        <strong>{{ selected_image.image_name }}</strong>
+      </div>
+    </p>
+
+    <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image && mode == 'view'" width="862"/>
+
+    <div ng-if="selected_image && mode == 'train'">
+      <div class="row margin-bottom-5">
+        <div class="col-md-3">
+          <div class="btn-group btn-group-xs pull-left" uib-dropdown>
+            <button id="choose-label-button" type="button" class="btn btn-default">Label Subregion</button>
             <button type="button" class="btn btn-default" uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-label-button">
               <li ng-repeat="classification in classifications">
                 <a ng-click="select_subregion(classification)">{{classification.classification_name}}</a>
               </li>
             </ul>
+          </div>
         </div>
-    </div>
-   <p>
-    <div class="text-center">
-      <strong>{{ selected_subregion.classification_name }}</strong>
-    </div>
-  </p>
-    <div class="btn-group btn-group-xs">
-      <button type="button" class="btn btn-primary" ng-click="add()">Add new</button>
-      <button type="button" class="btn btn-primary" ng-click="undo()">Undo</button>
-    </div>
-    <div class="btn-group btn-group-xs">
-      <button type="button" class="btn btn-danger" ng-click="clearAll()">Clear All</button>
-      <button type="button" class="btn btn-danger" ng-click="removePolygon(activePolygon)">Remove Selected</button>
-    </div>
-    <div class="btn-group btn-group-xs pull-right">
-      <button type="button" class="btn btn-success" ng-click="post_regions()">POST Regions</button>
+        <div class="col-md-7 col-md-offset-2">
+          <span class="text-center">
+            <strong>{{ selected_subregion.classification_name }}</strong>
+          </span>
+        </div>
+      </div>
+
+      <div class="row margin-bottom-5">
+        <div class="col-md-6">
+          <div class="btn-group btn-group-xs">
+            <button type="button" class="btn btn-primary" ng-click="add()">Add new</button>
+            <button type="button" class="btn btn-primary" ng-click="undo()">Undo</button>
+          </div>
+          <div class="btn-group btn-group-xs">
+            <button type="button" class="btn btn-danger" ng-click="clearAll()">Clear All</button>
+            <button type="button" class="btn btn-danger" ng-click="removePolygon(activePolygon)">Remove Selected</button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="btn-group btn-group-xs pull-right">
+            <button type="button" class="btn btn-success" ng-click="post_regions()">POST Regions</button>
+          </div>
+        </div>
+      </div>
+
+      <div ng-poly-draw points="points"
+           active="activePolygon" image-url="selected_image.image_jpeg"
+           width="poly_width" height="poly_height"
+           enabled="enabled" palette="colorArray">
+
+      </div>
     </div>
 
-    <div ng-poly-draw points="points"
-         active="activePolygon" image-url="selected_image.image_jpeg"
-         width="poly_width" height="poly_height"
-         enabled="enabled" palette="colorArray">
-
-    </div>
   </div>
-
 </div>
