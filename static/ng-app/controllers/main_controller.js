@@ -148,18 +148,27 @@ app.controller(
             $scope.post_regions = function () {
                 // placeholder
                 var thesepoints = $scope.points[$scope.activePolygon];
+
                 if (thesepoints.length === 0) {
                     $window.alert('The current polygon has no points selected, please segment something first.');
                 }
+
                 if ($scope.selected_subregion === null) {
                     $window.alert('There is no label associated with the active polygon, please choose a label first.');
                 }
+
                 //TODO check logic here to ensure that I'm grabbing correct points
                 var payload = {};
                 var points = [];
                 //Get points
                 for (var i=0; i<thesepoints.length; i++) {
-                    points.push({"x":thesepoints[i][0], "y":thesepoints[i][1], "order":i});
+                    points.push(
+                        {
+                            "x": thesepoints[i][2],
+                            "y": thesepoints[i][3],
+                            "order": i
+                        }
+                    );
                 }
                 payload.classification = $scope.selected_subregion.id;
                 payload.image = $scope.selected_image.id;
