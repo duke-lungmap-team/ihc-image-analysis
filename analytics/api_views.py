@@ -194,16 +194,12 @@ class LungmapSubregionFilter(django_filters.rest_framework.FilterSet):
         model = models.Subregion
         fields = ['image']
 
+
 class SubregionList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
     filter_class = LungmapSubregionFilter
-
-# class SubregionList(generics.CreateAPIView):
-#     permission_classes = (permissions.IsAuthenticated,)
-#     queryset = models.Subregion.objects.all()
-#     serializer_class = serializers.SubregionSerializer
 
 
 class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
