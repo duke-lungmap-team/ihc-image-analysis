@@ -57,16 +57,16 @@ PREFIX owl: <http://www.w3.org/2002/07/>
 PREFIX owl2: <http://www.w3.org/2002/07/owl#>
 PREFIX mont: <http://ontology.lungmap.net/ontologies/mouse_anatomy#>
 PREFIX hont: <http://ontology.lungmap.net/ontologies/human_anatomy#>
-SELECT ?sample_id ?tax_id ?organism_label ?local_id ?age ?age_label ?age_group ?age_group_label ?weight ?sex ?race ?cause_of_death ?health_status ?strain ?genotype ?crown_rump_length ?harvest_date
+SELECT ?experiment_id ?sample_id ?tax_id ?organism_label ?local_id ?age ?age_label ?age_range_id ?age_group ?age_group_label ?weight ?sex ?race ?cause_of_death ?health_status ?strain ?genotype ?crown_rump_length ?harvest_date ?ga_at_birth ?cga ?weight_percentile ?type_of_death
 WHERE {
     VALUES ?experiment_id { owl2:EXPERIMENT_PLACEHOLDER }
-    ?sample_id lm:part_of_experiment ?experiment_id .
+    ?experiment_id lm:uses_sample ?sample_id .
     ?sample_id lm:in_organism ?tax_id .
     ?tax_id rdfs:label ?organism_label .
     ?sample_id lm:local_id ?local_id .
     ?sample_id lm:in_stage ?age .
-    ?sample_id lm:in_stage ?age .
     OPTIONAL { ?age rdfs:label ?age_label }
+    OPTIONAL { ?age lm:in_stage_range ?age_range_id }
     FILTER NOT EXISTS { ?age rdfs:subClassOf hont:LMHA0000000648 }
     OPTIONAL {
        ?sample_id lm:in_stage ?age_group .
@@ -82,7 +82,12 @@ WHERE {
     OPTIONAL {?sample_id lm:genotype ?genotype }
     OPTIONAL {?sample_id lm:crown_rump_length ?crown_rump_length }
     OPTIONAL {?sample_id lm:harvest_date ?harvest_date }
-}"""
+    OPTIONAL {?sample_id lm:ga_at_birth ?ga_at_birth }
+    OPTIONAL {?sample_id lm:cga ?cga }
+    OPTIONAL {?sample_id lm:weight_percentile ?weight_percentile }
+    OPTIONAL {?sample_id lm:type_of_death ?type_of_death }
+}
+"""
 
 GET_PROBE_BY_EXPERIMENT = """
 PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
