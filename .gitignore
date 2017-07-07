@@ -19,3 +19,5 @@ dist
 *.jpg
 *.jpeg
 *.env
+.ipynb_checkpoints
+*.ipynb
