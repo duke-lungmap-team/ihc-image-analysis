@@ -1,5 +1,21 @@
 # https://docs.google.com/document/d/10qtrZeCFeGPZt5r6Z_TKWl0ihXBzNysp8nhOpbgrl1o/edit
 
+GET_BASIC_EXPERIMENTS = """
+PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
+PREFIX owl2: <http://www.w3.org/2002/07/owl#>
+PREFIX mont: <http://ontology.lungmap.net/ontologies/mouse_anatomy#>
+PREFIX hont: <http://ontology.lungmap.net/ontologies/human_anatomy#>
+SELECT ?experiment_id ?species ?stage_label
+WHERE {
+    ?experiment_id lm:is_experiment_type/rdfs:label "Immunofluorescence-Confocal" .
+    ?experiment_id lm:in_organism ?tax_id .
+    ?tax_id rdfs:label ?species . 
+    ?experiment_id lm:uses_sample ?sample_id . 
+    ?sample_id lm:in_stage ?stage .
+    ?stage rdfs:label ?stage_label .
+}
+"""
+
 ALL_EXPERIMENTS_WITH_IMAGE = """
 PREFIX lm: <http://ontology.lungmap.net/ontologies/expression_ontology#>
 SELECT DISTINCT ?experiment, ?experiment_type_label
