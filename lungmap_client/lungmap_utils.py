@@ -14,7 +14,7 @@ import tempfile
 import warnings
 
 
-lm_mother_ship = "http://testdata.lungmap.net/sparql"
+lungmap_sparql_server = "http://data.lungmap.net/sparql"
 
 
 session = boto3.Session(profile_name='lungmap')
@@ -30,7 +30,7 @@ def list_all_lungmap_experiments():
     :return: status of sparql query
     """
     try:
-        sparql = SPARQLWrapper(lm_mother_ship)
+        sparql = SPARQLWrapper(lungmap_sparql_server)
         sparql.setQuery(sparql_queries.ALL_EXPERIMENTS_WITH_IMAGE)
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
@@ -53,7 +53,7 @@ def _get_by_experiment(query, experiment_id):
     """
     try:
         query_sub = query.replace('EXPERIMENT_PLACEHOLDER', experiment_id)
-        sparql = SPARQLWrapper(lm_mother_ship)
+        sparql = SPARQLWrapper(lungmap_sparql_server)
         sparql.setQuery(query_sub)
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
