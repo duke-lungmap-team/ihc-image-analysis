@@ -22,6 +22,68 @@ s3 = session.resource('s3')
 bucket = s3.Bucket('lungmap-breath-data')
 
 
+def get_image_set_candidates():
+    sparql = SPARQLWrapper(lungmap_sparql_server)
+    sparql.setQuery(sparql_queries.GET_BASIC_EXPERIMENTS)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    experiments = {}
+    for r in results['results']['bindings']:
+        e_id = r['experiment_id']['value'].split('#')[1]
+
+        if e_id in experiments.keys():
+            # looks like there are some experiments with multiple development stage strings
+            print('Duplicate experiment %s' % e_id)
+            print(
+                'Species: %s vs %s, DevStage: %s vs %s' % (
+                    experiments[e_id]['species'],
+                    r['species']['value'],
+                    experiments[e_id]['development_stage'],
+                    r['stage_label']['value']
+                )
+            )
+
+        experiments[e_id] = {
+            'species': r['species']['value'],
+            'development_stage': r['stage_label']['value']
+        }
+
+    images = []
+
+    for e_id, e in experiments.items():
+        e_probes = get_probes_by_experiment(experiment_id=e_id)
+        e['probes'] = sorted(e_probes, key=lambda k: k['probe_label'])
+
+        e_images = get_images_by_experiment(e_id)
+        images.extend(e_images)
+
+    image_sets = {}
+
+    for i in images:
+        e = experiments[i['experiment_id']]
+
+        species = e['species']
+        dev_stage = e['development_stage']
+        magnification = i['magnification']
+        probe_combo_str = "_".join(
+            ["__".join([p['probe_label'], p['color']]) for p in e['probes']])
+
+        i_set_str = "_".join([species, dev_stage, magnification, probe_combo_str])
+
+        if i_set_str in image_sets.keys():
+            image_sets[i_set_str]['images'].append(i['image_id'])
+        else:
+            image_sets[i_set_str] = {
+                'species': species,
+                'development_stage': dev_stage,
+                'magnification': magnification,
+                'images': [i['image_id']]
+            }
+
+    return image_sets
+
+
 def list_all_lungmap_experiments():
     """
     Call out to the LM mothership (via SPARQL) to get a list of all experiments 
