@@ -18,14 +18,8 @@ class Experiment(models.Model):
         blank=True,
         null=True
     )
-    organism = models.CharField(max_length=25)
     sex = models.CharField(
         max_length=20,
-        null=True,
-        blank=True
-    )
-    age = models.CharField(
-        max_length=100,
         null=True,
         blank=True
     )
@@ -48,6 +42,21 @@ class Experiment(models.Model):
             raise e
 
 
+class ImageSet(models.Model):
+    magnification = models.CharField(
+        max_length=20,
+        null=False,
+        blank=False
+    )
+    species = models.CharField(
+        max_length=25
+    )
+    development_stage = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
 class Probe(models.Model):
     label = models.CharField(
         max_length=100,
@@ -60,17 +69,33 @@ class Probe(models.Model):
         return '%s: %s' % (self.id, self.label)
 
 
+class ImageSetProbeMap(models.Model):
+    image_set = models.ForeignKey(
+        ImageSet,
+        db_column='image_set',
+        related_name='imagesetprobemap'
+    )
+    probe_name = models.ForeignKey(
+        Probe,
+        db_column='probe_name',
+        related_name='imagesetprobemap'
+    )
+    color = models.CharField(
+        max_length=30
+    )
+
+
 class Image(models.Model):
     s3key = models.CharField(
         max_length=200,
         unique=True
     )
-    magnification = models.CharField(
-        max_length=20,
-        null=False,
-        blank=False
-    )
     image_name = models.CharField(max_length=80)
+    image_set = models.ForeignKey(
+        ImageSet,
+        db_column='image_set',
+        related_name='image'
+    )
     experiment = models.ForeignKey(
         Experiment,
         db_column='experiment_id'
