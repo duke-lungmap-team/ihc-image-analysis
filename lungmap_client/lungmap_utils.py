@@ -65,6 +65,7 @@ def get_image_set_candidates():
 
         species = e['species']
         dev_stage = e['development_stage']
+        probes = e['probes']
         magnification = i['magnification']
         probe_combo_str = "_".join(
             ["__".join([p['probe_label'], p['color']]) for p in e['probes']])
@@ -77,6 +78,7 @@ def get_image_set_candidates():
             image_sets[i_set_str] = {
                 'species': species,
                 'development_stage': dev_stage,
+                'probes': probes,
                 'magnification': magnification,
                 'images': [i['image_id']]
             }
