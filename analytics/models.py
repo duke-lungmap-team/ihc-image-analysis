@@ -69,6 +69,22 @@ class Probe(models.Model):
         return '%s: %s' % (self.id, self.label)
 
 
+class ImageSetProbeMap(models.Model):
+    image_set = models.ForeignKey(
+        ImageSet,
+        db_column='image_set',
+        related_name='imagesetprobemap'
+    )
+    probe_name = models.ForeignKey(
+        Probe,
+        db_column='probe_name',
+        related_name='imagesetprobemap'
+    )
+    color = models.CharField(
+        max_length=30
+    )
+
+
 class Image(models.Model):
     s3key = models.CharField(
         max_length=200,
