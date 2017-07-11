@@ -76,11 +76,10 @@ PREFIX hont: <http://ontology.lungmap.net/ontologies/human_anatomy#>
 SELECT ?sample_id ?tax_id ?organism_label ?local_id ?age ?age_label ?age_group ?age_group_label ?weight ?sex ?race ?cause_of_death ?health_status ?strain ?genotype ?crown_rump_length ?harvest_date
 WHERE {
     VALUES ?experiment_id { owl2:EXPERIMENT_PLACEHOLDER }
-    ?sample_id lm:part_of_experiment ?experiment_id .
+    ?experiment_id lm:uses_sample ?sample_id .
     ?sample_id lm:in_organism ?tax_id .
     ?tax_id rdfs:label ?organism_label .
     ?sample_id lm:local_id ?local_id .
-    ?sample_id lm:in_stage ?age .
     ?sample_id lm:in_stage ?age .
     OPTIONAL { ?age rdfs:label ?age_label }
     FILTER NOT EXISTS { ?age rdfs:subClassOf hont:LMHA0000000648 }
