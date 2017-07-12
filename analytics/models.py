@@ -113,17 +113,17 @@ class Image(models.Model):
     )
     image_orig = models.FileField(
         upload_to='images',
-        blank=False,
+        blank=True,
         null=False
     )
     image_orig_sha1 = models.CharField(
         max_length=40,
-        blank=False,
+        blank=True,
         null=False
     )
     image_jpeg = models.FileField(
         upload_to='images_jpeg',
-        blank=False,
+        blank=True,
         null=False
     )
 
