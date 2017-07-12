@@ -73,7 +73,13 @@ def get_image_set_candidates():
         i_set_str = "_".join([species, dev_stage, magnification, probe_combo_str])
 
         if i_set_str in image_sets.keys():
-            image_sets[i_set_str]['images'].append(i['image_id'])
+            image_sets[i_set_str]['images'].append({
+                "image_id": i['image_id'],
+                "image_name": i['image_name'],
+                "x_scaling": i['x_scaling'],
+                "y_scaling": i['y_scaling'],
+                "s3key": i["s3key"]
+            })
         else:
             image_sets[i_set_str] = {
                 'species': species,
@@ -81,12 +87,18 @@ def get_image_set_candidates():
                 'probes': probes,
                 'experiments': [],
                 'magnification': magnification,
-                'images': [i['image_id']]
+                'images': [{
+                    "image_id": i['image_id'],
+                    "image_name": i['image_name'],
+                    "x_scaling": i['x_scaling'],
+                    "y_scaling": i['y_scaling'],
+                    "s3key": i["s3key"]
+                }]
             }
-        for key, value in image_sets.items():
-            for x in value['images']:
-                if x.split('_')[0] not in image_sets[key]['experiments']:
-                    image_sets[key]['experiments'].append(x.split('_')[0])
+    for key, value in image_sets.items():
+        for x in value['images']:
+            if x['image_id'].split('_')[0] not in image_sets[key]['experiments']:
+                image_sets[key]['experiments'].append(x['image_id'].split('_')[0])
 
     return image_sets
 
