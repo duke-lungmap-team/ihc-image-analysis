@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from lungmap_client import lungmap_utils
 from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from tqdm import tqdm
@@ -32,6 +33,19 @@ def get_lung_map_experiments(request):
     """
     exp_names_df = lungmap_utils.list_all_lungmap_experiments()
     return Response(exp_names_df)
+
+class ImageSetList(generics.ListAPIView):
+    queryset = models.ImageSet.objects.all()
+    serializer_class = serializers.ImageSetSerializer
+
+
+class ImageSetDetail(generics.RetrieveAPIView):
+    """
+    Get an image
+    """
+
+    queryset = models.ImageSet.objects.all()
+    serializer_class = serializers.ImageSetDetailSerializer
 
 
 class ExperimentList(generics.ListCreateAPIView):
