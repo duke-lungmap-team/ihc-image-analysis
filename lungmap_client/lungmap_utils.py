@@ -239,9 +239,6 @@ def get_experiment_type_by_experiment(experiment_id):
         for x in results:
             row = {
                 'platform': x['platform']['value'],
-                'release_date': parser.parse(
-                    x['release_date']['value']
-                ).strftime('%Y-%m-%d'),
                 'experiment_type_label': x['experiment_type_label']['value']
             }
         return row

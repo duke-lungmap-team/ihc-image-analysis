@@ -7,7 +7,6 @@ class Experiment(models.Model):
         max_length=25,
         primary_key=True
     )
-    release_date = models.DateField()
     platform = models.CharField(
         max_length=35,
         blank=True,
@@ -30,12 +29,9 @@ class Experiment(models.Model):
     def save(self, *args, **kwargs):
         try:
             metadata = sparql_utils.get_experiment_model_data(self.experiment_id)
-            self.release_date = metadata['release_date']
             self.platform = metadata['platform']
             self.experiment_type = metadata['experiment_type_label']
-            self.organism = metadata['organism_label']
             self.sex = metadata['sex']
-            self.age = metadata['age_label']
 
             super(Experiment, self).save(*args, **kwargs)
         except ValueError as e:
@@ -43,6 +39,12 @@ class Experiment(models.Model):
 
 
 class ImageSet(models.Model):
+    image_set_name = models.CharField(
+        unique=True,
+        max_length=200,
+        null=False,
+        blank=False
+    )
     magnification = models.CharField(
         max_length=20,
         null=False,
@@ -56,6 +58,7 @@ class ImageSet(models.Model):
         null=True,
         blank=True
     )
+
 
 class Probe(models.Model):
     label = models.CharField(
@@ -87,10 +90,9 @@ class ImageSetProbeMap(models.Model):
 
 class Image(models.Model):
     s3key = models.CharField(
-        max_length=200,
-        unique=True
+        max_length=200
     )
-    image_name = models.CharField(max_length=80)
+    image_name = models.CharField(max_length=200)
     image_set = models.ForeignKey(
         ImageSet,
         db_column='image_set',
@@ -132,7 +134,11 @@ class Image(models.Model):
 
 
 class ExperimentProbeMap(models.Model):
-    probe = models.ForeignKey(Probe)
+    probe_name = models.ForeignKey(
+        Probe,
+        db_column='probe_name',
+        related_name='experimentprobemap'
+    )
     color = models.CharField(max_length=30)
     experiment = models.ForeignKey(
         Experiment,
