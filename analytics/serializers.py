@@ -10,14 +10,18 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username')
 
 
+class ImageSetSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.ImageSet
+        fields = "__all__"
+
+
 class ExperimentSerializer(serializers.ModelSerializer):
     experiment_id = serializers.CharField(max_length=14, required=True)
-    release_date = serializers.DateField(read_only=True)
     platform = serializers.CharField(read_only=True)
     experiment_type = serializers.CharField(read_only=True)
-    organism = serializers.CharField(read_only=True)
     sex = serializers.CharField(read_only=True)
-    age = serializers.CharField(read_only=True)
 
     class Meta:
         model = models.Experiment

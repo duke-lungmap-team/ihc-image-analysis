@@ -33,6 +33,10 @@ def get_lung_map_experiments(request):
     exp_names_df = lungmap_utils.list_all_lungmap_experiments()
     return Response(exp_names_df)
 
+class ImageSetList(generics.ListAPIView):
+    queryset = models.ImageSet.objects.all()
+    serializer_class = serializers.ImageSetSerializer
+
 
 class ExperimentList(generics.ListCreateAPIView):
     """
