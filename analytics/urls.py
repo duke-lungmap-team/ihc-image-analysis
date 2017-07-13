@@ -19,4 +19,6 @@ urlpatterns = [
     url(r'^api/subregion/(?P<pk>[0-9]+)/$', api_views.SubregionDetail.as_view()),
     url(r'^api/classifications/$', api_views.ClassificationList.as_view()),
     url(r'^api/imagesets/$', api_views.ImageSetList.as_view()),
+    url(r'^api/imagesets/(?P<pk>[0-9]+)/$', api_views.ImageSetDetail.as_view()),
 ]
+

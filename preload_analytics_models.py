@@ -36,6 +36,7 @@ for key, value in image_sets.items():
             probe_name = probeobject,
             image_set = image_set
         )
+        #TODO: find a way to load experimentprobemap, errors currently thrown
         # for exp in value['experiments']:
         #     experimentobject = models.Experiment.objects.get(
         #         experiment_id = exp
