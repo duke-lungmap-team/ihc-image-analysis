@@ -5,7 +5,8 @@ var URLS = {
     'exp_probes': '/api/experiment_probes/',
     'images': '/api/images/',
     'classifications': '/api/classifications/',
-    'subregion': '/api/subregion/'
+    'subregion': '/api/subregion/',
+    'imagesetsurl': '/api/imagesets/'
 };
 
 var service = angular.module('IHCApp');
@@ -24,6 +25,15 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.exp + ':experiment_id',
+            {},
+            {}
+        );
+    }
+).factory(
+    'Imagesets',
+    function ($resource) {
+        return $resource(
+            URLS.imagesetsurl,
             {},
             {}
         );

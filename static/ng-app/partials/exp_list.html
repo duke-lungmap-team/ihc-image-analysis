@@ -3,29 +3,20 @@
     <tr>
       <th colspan="3" class="center">
         <div style="position:relative">
-          <h4>Experiments <span class="badge badge-inverse align-top">{{ lm_experiments.length }}</span></h4>
+          <h4>Imagesets<span class="badge badge-inverse align-top">{{ imagesetsresults.length }}</span></h4>
         </div>
       </th>
     </tr>
     <tr>
-      <th>Experiment ID</th>
-      <th>Retrieved</th>
+      <th>Imageset</th>
     </tr>
   </thead>
 
   <tbody>
 
-    <tr ng-repeat="(exp_id, exp) in all_experiments">
+    <tr ng-repeat="imset in imagesetsresults">
       <td>
-        <a href="#/experiments/{{ exp_id }}" ng-if="exp.retrieved">{{ exp_id }}</a>
-        <span ng-if="!exp.retrieved">{{ exp_id }}</span>
-      </td>
-      <td>
-        <span ng-if="exp.retrieved" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-        <span ng-if="!exp.retrieved && !exp.retrieving"><a href ng-click="retrieve_experiment(exp_id)">Retrieve</a></span>
-        <span ng-if="exp.retrieving"><i>Retrieving...</i></span>
-        <img ng-if="exp.retrieving" src="/static/whirligig.gif">
-
+        <a href="#/experiments/{{ imset.id }}">{{ imset.image_set_name }}</a>
       </td>
     </tr>
 

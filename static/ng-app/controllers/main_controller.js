@@ -15,9 +15,11 @@ app.controller(
         '$q',
         'LungMapExperiment',
         'Experiment',
-        function ($scope, $q, LungMapExperiment, Experiment) {
+        'Imagesets',
+        function ($scope, $q, LungMapExperiment, Experiment, Imagesets) {
             var lm_experiments = LungMapExperiment.query({});
             var experiments = Experiment.query({});
+            $scope.imagesetsresults = Imagesets.query({});
 
             // wait for both experiment lists to resolve,
             // then build combined list
