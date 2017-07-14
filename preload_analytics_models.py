@@ -27,7 +27,7 @@ for key, value in image_sets.items():
             image_id=image['image_id'],
             x_scaling=image['x_scaling'],
             y_scaling=image['y_scaling'],
-            image_set=image_set[0].id,
+            image_set=image_set[0],
             experiment_id=experiment.experiment_id
         )
 
@@ -37,8 +37,8 @@ for key, value in image_sets.items():
         )
         imagesetprobemap = models.ImageSetProbeMap.objects.get_or_create(
             color=probe['color'],
-            probe_name=probeobject,
-            image_set=image_set[0].id
+            probe=probeobject,
+            image_set=image_set[0]
         )
 
         for exp in value['experiments']:
@@ -48,5 +48,5 @@ for key, value in image_sets.items():
             experimentprobemap = models.ExperimentProbeMap.objects.create(
                 color=probe['color'],
                 experiment_id=experimentobject,
-                probe_name=probeobject,
+                probe=probeobject,
             )
