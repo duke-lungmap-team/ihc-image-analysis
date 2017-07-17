@@ -73,16 +73,8 @@ class Probe(models.Model):
 
 
 class ImageSetProbeMap(models.Model):
-    image_set = models.ForeignKey(
-        ImageSet,
-        db_column='image_set',
-        related_name='imagesetprobemap'
-    )
-    probe_name = models.ForeignKey(
-        Probe,
-        db_column='probe_name',
-        related_name='imagesetprobemap'
-    )
+    image_set = models.ForeignKey(ImageSet)
+    probe = models.ForeignKey(Probe)
     color = models.CharField(
         max_length=30
     )
@@ -93,15 +85,8 @@ class Image(models.Model):
         max_length=200
     )
     image_name = models.CharField(max_length=200)
-    image_set = models.ForeignKey(
-        ImageSet,
-        db_column='image_set',
-        related_name='image'
-    )
-    experiment = models.ForeignKey(
-        Experiment,
-        db_column='experiment_id'
-    )
+    image_set = models.ForeignKey(ImageSet)
+    experiment = models.ForeignKey(Experiment)
     image_id = models.CharField(max_length=40)
     x_scaling = models.CharField(
         max_length=65,
@@ -134,16 +119,9 @@ class Image(models.Model):
 
 
 class ExperimentProbeMap(models.Model):
-    probe_name = models.ForeignKey(
-        Probe,
-        db_column='probe_name',
-        related_name='experimentprobemap'
-    )
+    probe = models.ForeignKey(Probe)
     color = models.CharField(max_length=30)
-    experiment = models.ForeignKey(
-        Experiment,
-        db_column='experiment_id'
-    )
+    experiment = models.ForeignKey(Experiment)
 
     def __str__(self):
         return '%s, %s (%s)' % (self.experiment_id, self.probe.label, self.color)
@@ -153,31 +131,25 @@ class Classification(models.Model):
     classification_name = models.CharField(
         max_length=100
     )
+
     def __str__(self):
         return '%s: %s' % (self.id, self.classification_name)
 
 
 class Subregion(models.Model):
-    classification = models.ForeignKey(
-        Classification,
-        related_name='subregion',
-        db_column='classification_id'
-    )
-    image = models.ForeignKey(
-        Image,
-        db_column='image_id'
-    )
+    classification = models.ForeignKey(Classification)
+    image = models.ForeignKey(Image)
 
     def __str__(self):
-        return '%s, %s, %s' % (self.id, self.image_id.image_name, self.classification_id.classification_name)
+        return '%s, %s, %s' % (
+            self.id,
+            self.image.image_name,
+            self.classification.classification_name
+        )
 
 
 class Points(models.Model):
-    subregion = models.ForeignKey(
-        Subregion,
-        related_name='points',
-        db_column='subregion_id'
-    )
+    subregion = models.ForeignKey(Subregion)
     x = models.IntegerField()
     y = models.IntegerField()
     order = models.IntegerField()

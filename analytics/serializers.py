@@ -102,18 +102,18 @@ class ProbeNameSerializer(serializers.ModelSerializer):
 
 
 class ImageSetProbeMapSerializer(serializers.ModelSerializer):
+    probe_label = serializers.CharField(source='probe.label')
 
     class Meta:
         model = models.ImageSetProbeMap
-        #TODO: find a way to trace back to probe name for display
-        fields = ['color', 'probe_name']
+        fields = ['color', 'probe', 'probe_label']
 
 
 class ImageSetDetailSerializer(serializers.ModelSerializer):
-    imagesetprobes = ImageSetProbeMapSerializer(source='imagesetprobemap', many=True)
-    images = ImageSerializer(source='image', many=True)
+    probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
+    images = ImageSerializer(source='image_set', many=True)
 
     class Meta:
         model = models.ImageSet
         fields = ('image_set_name', 'magnification', 'species',
-                  'development_stage', 'imagesetprobes', 'images')
+                  'development_stage', 'probes', 'images')

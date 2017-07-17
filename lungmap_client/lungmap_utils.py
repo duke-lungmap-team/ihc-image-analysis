@@ -1,6 +1,5 @@
 # noinspection PyPackageRequirements
 import cv2
-from dateutil import parser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from io import BytesIO
 from lungmap_client import lungmap_sparql_queries as sparql_queries
