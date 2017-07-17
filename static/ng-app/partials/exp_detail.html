@@ -71,7 +71,7 @@
         <strong>{{ selected_image.image_name }}</strong>
       </div>
     </p>
-
+    <img ng-if="selected_image && !selected_image.image_jpeg" src="/static/whirligig.gif">
     <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image && mode == 'view'" width="862"/>
 
     <div ng-if="selected_image && mode == 'train'">

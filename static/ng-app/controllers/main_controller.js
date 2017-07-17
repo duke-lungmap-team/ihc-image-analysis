@@ -107,6 +107,7 @@ app.controller(
             //
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
+
             };
             //
             // $scope.select_subregion = function(classification) {
