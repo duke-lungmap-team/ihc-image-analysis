@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from lungmap_client import lungmap_utils
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from tqdm import tqdm
 import django_filters
@@ -21,17 +22,6 @@ class UserDetail(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
-
-
-@api_view(['GET'])
-def get_lung_map_experiments(request):
-    """
-    Utilizing the lungmap_client, calls out to the Lungmap mother ship 
-    (via SPARQL) to get a list of all images, and associated data. From that point, 
-    it de-duplicates experiment ids and provides a list to the user. 
-    """
-    exp_names_df = lungmap_utils.list_all_lungmap_experiments()
-    return Response(exp_names_df)
 
 
 class ImageSetList(generics.ListAPIView):
@@ -112,57 +102,29 @@ class ExperimentList(generics.ListCreateAPIView):
         )
 
 
-class ExperimentDetail(generics.RetrieveAPIView):
+class ImageDetailView(APIView):
     """
-    Get a single experiment
+    A view to get specific image metadata and to post to cache images
     """
-    queryset = models.Experiment.objects.all()
-    serializer_class = serializers.ExperimentSerializer
-    lookup_field = 'experiment_id'
-
-
-class ProbeList(generics.ListAPIView):
-    """
-    List all probes
-    """
-
-    queryset = models.Probe.objects.all()
-    serializer_class = serializers.ProbeSerializer
-
-
-class ProbeDetail(generics.RetrieveAPIView):
-    """
-    Get a single probe
-    """
-    queryset = models.Probe.objects.all()
-    serializer_class = serializers.ProbeSerializer
-
-
-# noinspection PyClassHasNoInit
-class LungmapImageFilter(django_filters.rest_framework.FilterSet):
-    class Meta:
-        model = models.Image
-        fields = ['experiment']
-
-
-class LungmapImageList(generics.ListAPIView):
-    """
-    List all images.
-    """
-
-    queryset = models.Image.objects.all()
-    serializer_class = serializers.LungmapImageSerializer
-    filter_class = LungmapImageFilter
-
-
-class LungmapImageDetail(generics.RetrieveAPIView):
-    """
-    Get an image
-    """
-
-    queryset = models.Image.objects.all()
-    serializer_class = serializers.LungmapImageSerializer
-
+    def get(self, request, *args, **kwargs):
+        img = get_object_or_404(models.Image, id=kwargs['pk'])
+        serializer = serializers.ImageSerializer(img)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+    def post(self, request, *args, **kwargs):
+        img = get_object_or_404(models.Image, id=kwargs['pk'])
+        suf, sha1, suf_jpeg = lungmap_utils.get_image_from_s3(img.s3key)
+        img.image_orig = suf
+        img.image_orig_sha1 = sha1
+        img.image_jpeg = suf_jpeg
+        img.save()
+        serializer = serializers.ImageSerializer(img)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED
+        )
 
 @api_view(['GET'])
 def get_image_jpeg(request, pk):
@@ -173,35 +135,7 @@ def get_image_jpeg(request, pk):
     :return: HttpResponse
     """
     image = get_object_or_404(models.Image, pk=pk)
-
     return HttpResponse(image.image_jpeg, content_type='image/jpeg')
-
-
-# noinspection PyClassHasNoInit
-class ExperimentProbeFilter(django_filters.rest_framework.FilterSet):
-    class Meta:
-        model = models.ExperimentProbeMap
-        fields = ['experiment']
-
-
-class ExperimentProbeList(generics.ListAPIView):
-    """
-    List all experiment probes
-    """
-
-    queryset = models.ExperimentProbeMap.objects.all()
-    serializer_class = serializers.ExperimentProbeSerializer
-    filter_class = ExperimentProbeFilter
-
-
-class ExperimentProbeDetail(generics.RetrieveAPIView):
-    """
-    Get an experiment probe
-    """
-
-    queryset = models.ExperimentProbeMap.objects.all()
-    serializer_class = serializers.ExperimentProbeSerializer
-
 
 # noinspection PyClassHasNoInit
 class LungmapSubregionFilter(django_filters.rest_framework.FilterSet):
