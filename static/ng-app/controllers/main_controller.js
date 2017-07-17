@@ -17,32 +17,7 @@ app.controller(
         'Experiment',
         'Imagesets',
         function ($scope, $q, LungMapExperiment, Experiment, Imagesets) {
-            var lm_experiments = LungMapExperiment.query({});
-            var experiments = Experiment.query({});
             $scope.imagesetsresults = Imagesets.query({});
-
-            // wait for both experiment lists to resolve,
-            // then build combined list
-            $q.all([
-                lm_experiments.$promise,
-                experiments.$promise
-            ]).then(function (results) {
-                $scope.all_experiments = {};
-
-                results[0].forEach(function(exp) {
-                    $scope.all_experiments[exp] = {
-                        'retrieved': false
-                    }
-                });
-
-                results[1].forEach(function(exp) {
-                    if ($scope.all_experiments.hasOwnProperty(exp.experiment_id)) {
-                        $scope.all_experiments[exp.experiment_id].retrieved = true;
-                        $scope.all_experiments[exp.experiment_id].retrieving = false;
-                    }
-                });
-
-            });
 
             $scope.retrieve_experiment = function (exp_id) {
                 $scope.all_experiments[exp_id].retrieving = true;
@@ -92,6 +67,8 @@ app.controller(
             $scope.poly_width = 862;
             $scope.classifications = Classification.query();
 
+            $scope.test = Image;
+
 
             $scope.animageset = Imagesets.get(
                 {
@@ -107,6 +84,22 @@ app.controller(
             //
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
+                if (!img.image_jpeg) {
+                    $window.alert(img.id);
+                    var save_response = Image.save(
+                        {
+                            'id': img.id
+                        },
+                        {}
+                    );
+
+                    save_response.$promise.then(function(data) {
+                        $scope.selected_image = data
+                    }, function (error) {
+                        // TODO: figure out how to turn retrieving off for experiment
+                        $window.alert(JSON.stringify(error, null, 4))
+                    });
+                }
 
             };
             //
@@ -114,9 +107,9 @@ app.controller(
             //     $scope.selected_subregion = classification;
             // }
             //
-            // $scope.set_mode = function (mode) {
-            //     $scope.mode = mode;
-            // };
+            $scope.set_mode = function (mode) {
+                $scope.mode = mode;
+            };
             //
             // $scope.undo = function(){
             //     $scope.points[$scope.activePolygon].splice(-1, 1);
