@@ -4,7 +4,7 @@
       <tr>
         <th class="center" colspan="50">
           <div style="position:relative">
-            <h4>Imageset: {{ experiment.experiment_id }}</h4>
+            <h4>Imageset: {{ animageset.image_set_name }}</h4>
           </div>
         </th>
       </tr>
@@ -17,41 +17,29 @@
       <thead>
         <tr>
           <th class="center" colspan="50">
-            <h5>Experiment Details</h5>
+            <h5>Imageset Details</h5>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Experiment Type:</td>
-          <td>{{ experiment.experiment_type }}</td>
+          <td>Magnification:</td>
+          <td>{{ animageset.magnification }}</td>
         </tr>
         <tr>
-          <td>Organism:</td>
-          <td>{{ experiment.organism }}</td>
+          <td>Species:</td>
+          <td>{{ animageset.species }}</td>
         </tr>
         <tr>
-          <td>Age:</td>
-          <td>{{ experiment.age }}</td>
-        </tr>
-        <tr>
-          <td>Sex:</td>
-          <td>{{ experiment.sex }}</td>
-        </tr>
-        <tr>
-          <td>Release Date:</td>
-          <td>{{ experiment.release_date }}</td>
-        </tr>
-        <tr>
-          <td>Platform:</td>
-          <td>{{ experiment.platform }}</td>
+          <td>Development Stage:</td>
+          <td>{{ animageset.development_stage }}</td>
         </tr>
         <tr>
           <td style="vertical-align: top !important;">Probes:</td>
           <td>
             <ul class="list-unstyled">
-              <li ng-repeat="p in probes">
-                <div class='color-square {{ p.color }}'></div>{{ p.label }} ({{ p.color }})
+              <li ng-repeat="p in animageset.probes">
+                <div class='color-square {{ p.color }}'></div>{{ p.probe_label }} ({{ p.color }})
               </li>
             </ul>
           </td>

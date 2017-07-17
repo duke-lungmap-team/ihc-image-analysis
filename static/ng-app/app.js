@@ -21,7 +21,7 @@ app.config(function($routeProvider) {
             controller: 'ExperimentListController'
         }
     ).when(
-        '/imagesets/:imagesest_id',
+        '/imagesets/:imagesets_id',
         {
             templateUrl: 'static/ng-app/partials/exp_detail.html',
             controller: 'ExperimentDetailController'

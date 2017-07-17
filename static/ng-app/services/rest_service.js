@@ -33,7 +33,7 @@ service.factory(
     'Imagesets',
     function ($resource) {
         return $resource(
-            URLS.imagesetsurl,
+            URLS.imagesetsurl + ':imagesets_id',
             {},
             {}
         );
