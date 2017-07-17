@@ -102,80 +102,80 @@ app.controller(
                 }
 
             };
-            //
-            // $scope.select_subregion = function(classification) {
-            //     $scope.selected_subregion = classification;
-            // }
-            //
+
+            $scope.select_subregion = function(classification) {
+                $scope.selected_subregion = classification;
+            }
+
             $scope.set_mode = function (mode) {
                 $scope.mode = mode;
             };
-            //
-            // $scope.undo = function(){
-            //     $scope.points[$scope.activePolygon].splice(-1, 1);
-            // };
-            //
-            // $scope.clearAll = function(){
-            //     $scope.points[$scope.activePolygon] = [];
-            // };
-            //
-            // $scope.removePolygon = function (index) {
-            //     $scope.points.splice(index, 1);
-            //     if(index <= $scope.activePolygon) {
-            //         --$scope.activePolygon;
-            //     }
-            //     if ($scope.points.length === 0) {
-            //         $scope.enabled = false;
-            //     }
-            // };
-            //
-            // $scope.add = function (index) {
-            //     $scope.enabled = true;
-            //     $scope.points.push([]);
-            //     $scope.activePolygon = $scope.points.length - 1;
-            // };
-            //
-            // $scope.delete_all_regions = function () {
-            //     $scope.$broadcast("ngAreas:remove_all");
-            // };
-            //
-            // $scope.zqwsd = Subregion;
-            //
-            // $scope.post_regions = function () {
-            //     // placeholder
-            //     var thesepoints = $scope.points[$scope.activePolygon];
-            //
-            //     if (thesepoints.length === 0) {
-            //         $window.alert('The current polygon has no points selected, please segment something first.');
-            //     }
-            //
-            //     if ($scope.selected_subregion === null) {
-            //         $window.alert('There is no label associated with the active polygon, please choose a label first.');
-            //     }
-            //
-            //     //TODO check logic here to ensure that I'm grabbing correct points
-            //     var payload = {};
-            //     var points = [];
-            //     //Get points
-            //     for (var i=0; i<thesepoints.length; i++) {
-            //         points.push(
-            //             {
-            //                 "x": thesepoints[i][2],
-            //                 "y": thesepoints[i][3],
-            //                 "order": i
-            //             }
-            //         );
-            //     }
-            //     payload.classification = $scope.selected_subregion.id;
-            //     payload.image = $scope.selected_image.id;
-            //     payload.points = points;
-            //
-            //     //How to get results of post to conditionally get ready for next
-            //     var newregion = Subregion.save(payload);
-            //     $scope.add();
-            //     $scope.selected_subregion = null;
-            //
-            // };
+
+            $scope.undo = function(){
+                $scope.points[$scope.activePolygon].splice(-1, 1);
+            };
+
+            $scope.clearAll = function(){
+                $scope.points[$scope.activePolygon] = [];
+            };
+
+            $scope.removePolygon = function (index) {
+                $scope.points.splice(index, 1);
+                if(index <= $scope.activePolygon) {
+                    --$scope.activePolygon;
+                }
+                if ($scope.points.length === 0) {
+                    $scope.enabled = false;
+                }
+            };
+
+            $scope.add = function (index) {
+                $scope.enabled = true;
+                $scope.points.push([]);
+                $scope.activePolygon = $scope.points.length - 1;
+            };
+
+            $scope.delete_all_regions = function () {
+                $scope.$broadcast("ngAreas:remove_all");
+            };
+
+            $scope.zqwsd = Subregion;
+
+            $scope.post_regions = function () {
+                // placeholder
+                var thesepoints = $scope.points[$scope.activePolygon];
+
+                if (thesepoints.length === 0) {
+                    $window.alert('The current polygon has no points selected, please segment something first.');
+                }
+
+                if ($scope.selected_subregion === null) {
+                    $window.alert('There is no label associated with the active polygon, please choose a label first.');
+                }
+
+                //TODO check logic here to ensure that I'm grabbing correct points
+                var payload = {};
+                var points = [];
+                //Get points
+                for (var i=0; i<thesepoints.length; i++) {
+                    points.push(
+                        {
+                            "x": thesepoints[i][2],
+                            "y": thesepoints[i][3],
+                            "order": i
+                        }
+                    );
+                }
+                payload.classification = $scope.selected_subregion.id;
+                payload.image = $scope.selected_image.id;
+                payload.points = points;
+
+                //How to get results of post to conditionally get ready for next
+                var newregion = Subregion.save(payload);
+                $scope.add();
+                $scope.selected_subregion = null;
+
+            };
 
         }
     ]
