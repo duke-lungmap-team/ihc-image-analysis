@@ -1,5 +1,5 @@
 from lungmap_client import lungmap_utils
-from analytics import models
+from analytics import models as mymodels
 
 image_sets = lungmap_utils.get_image_set_candidates()
 
@@ -8,17 +8,17 @@ image_sets = lungmap_utils.get_image_set_candidates()
 
 for key, value in image_sets.items():
     print('loading imageset ', key)
-    image_set = models.ImageSet.objects.create(
+    image_set = mymodels.ImageSet.objects.create(
         image_set_name = key,
         magnification = value['magnification'],
         species = value['species'],
         development_stage = value['development_stage']
     )
     for image in value['images']:
-        experiment, experiment_create = models.Experiment.objects.get_or_create(
+        experiment, experiment_create = mymodels.Experiment.objects.get_or_create(
             experiment_id = image['image_id'].split('_')[0]
         )
-        imageobject = models.Image.objects.create(
+        imageobject = mymodels.Image.objects.create(
             s3key = image['s3key'],
             image_name = image['image_name'],
             image_id = image['image_id'],
@@ -28,24 +28,23 @@ for key, value in image_sets.items():
             experiment_id = experiment
         )
     for probe in value['probes']:
-        probeobject, probeobject_create = models.Probe.objects.get_or_create(
+        probeobject, probeobject_create = mymodels.Probe.objects.get_or_create(
             label = probe['probe_label']
         )
-        imagesetprobemap = models.ImageSetProbeMap.objects.create(
+        imagesetprobemap = mymodels.ImageSetProbeMap.objects.create(
             color = probe['color'],
             probe_name = probeobject,
             image_set = image_set
         )
-        #TODO: find a way to load experimentprobemap, errors currently thrown
-        # for exp in value['experiments']:
-        #     experimentobject = models.Experiment.objects.get(
-        #         experiment_id = exp
-        #     )
-            # experimentprobemap = models.ExperimentProbeMap.objects.create(
-            #     color = probe['color'],
-            #     experiment_id = experimentobject,
-            #     probe_name=probeobject,
-            # )
+        for exp in value['experiments']:
+            experimentobject = mymodels.Experiment.objects.get(
+                experiment_id = exp
+            )
+            experimentprobemap = mymodels.ExperimentProbeMap.objects.create(
+                color = probe['color'],
+                experiment_id = experimentobject,
+                probe_name=probeobject,
+            )
 
 
 
