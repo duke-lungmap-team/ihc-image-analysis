@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import  static
+
 from analytics import api_views
 
 
@@ -12,4 +15,8 @@ urlpatterns = [
     url(r'^api/classifications/$', api_views.ClassificationList.as_view()),
     url(r'^api/imagesets/$', api_views.ImageSetList.as_view()),
     url(r'^api/imagesets/(?P<pk>[0-9]+)/$', api_views.ImageSetDetail.as_view()),
+
 ]
+
+#TODO: this is a no-no, but not sure how else to serve it, ng-src is calling /media not /api
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
