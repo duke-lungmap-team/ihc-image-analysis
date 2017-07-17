@@ -78,7 +78,11 @@ def get_image_jpeg(request, pk):
     :return: HttpResponse
     """
     image = get_object_or_404(models.Image, pk=pk)
-    return HttpResponse(image.image_jpeg, content_type='image/jpeg')
+    if image.image_jpeg.name == '':
+        content = {'image_jpeg': 'image not yet cached'}
+        return Response(content, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return HttpResponse(image.image_jpeg, content_type='image/jpeg')
 
 # noinspection PyClassHasNoInit
 class LungmapSubregionFilter(django_filters.rest_framework.FilterSet):
