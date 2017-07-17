@@ -105,9 +105,9 @@ app.controller(
             //     $scope.probes = ExperimentProbe.query({experiment: $routeParams.experiment_id});
             // });
             //
-            // $scope.image_selected = function(img) {
-            //     $scope.selected_image = img;
-            // };
+            $scope.image_selected = function(img) {
+                $scope.selected_image = img;
+            };
             //
             // $scope.select_subregion = function(classification) {
             //     $scope.selected_subregion = classification;
