@@ -1,15 +1,11 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import  static
+
 from analytics import api_views
 
 
 urlpatterns = [
-    url(r'^api/lungmapexperiments/', api_views.get_lung_map_experiments),
-    url(r'^api/experiments/$', api_views.ExperimentList.as_view()),
-    url(r'^api/experiments/(?P<experiment_id>[\w{}.-]{1,14})/$', api_views.ExperimentDetail.as_view()),
-    url(r'^api/probes/$', api_views.ProbeList.as_view()),
-    url(r'^api/probes/(?P<pk>[0-9]+)/$', api_views.ProbeDetail.as_view()),
-    url(r'^api/experiment_probes/$', api_views.ExperimentProbeList.as_view()),
-    url(r'^api/experiment_probes/(?P<pk>[0-9]+)/$', api_views.ExperimentProbeDetail.as_view()),
     url(r'^api/images/$', api_views.LungmapImageList.as_view()),
     url(r'^api/images/(?P<pk>[0-9]+)/$', api_views.LungmapImageDetail.as_view()),
     url(r'^api/images-jpeg/(?P<pk>[0-9]+)/$', api_views.get_image_jpeg, name='image-jpeg'),
@@ -20,4 +16,8 @@ urlpatterns = [
     url(r'^api/classifications/$', api_views.ClassificationList.as_view()),
     url(r'^api/imagesets/$', api_views.ImageSetList.as_view()),
     url(r'^api/imagesets/(?P<pk>[0-9]+)/$', api_views.ImageSetDetail.as_view()),
+
 ]
+
+#TODO: this is a no-no, but not sure how else to serve it, ng-src is calling /media not /api
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

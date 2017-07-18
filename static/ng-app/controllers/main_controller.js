@@ -17,32 +17,7 @@ app.controller(
         'Experiment',
         'Imagesets',
         function ($scope, $q, LungMapExperiment, Experiment, Imagesets) {
-            var lm_experiments = LungMapExperiment.query({});
-            var experiments = Experiment.query({});
             $scope.imagesetsresults = Imagesets.query({});
-
-            // wait for both experiment lists to resolve,
-            // then build combined list
-            $q.all([
-                lm_experiments.$promise,
-                experiments.$promise
-            ]).then(function (results) {
-                $scope.all_experiments = {};
-
-                results[0].forEach(function(exp) {
-                    $scope.all_experiments[exp] = {
-                        'retrieved': false
-                    }
-                });
-
-                results[1].forEach(function(exp) {
-                    if ($scope.all_experiments.hasOwnProperty(exp.experiment_id)) {
-                        $scope.all_experiments[exp.experiment_id].retrieved = true;
-                        $scope.all_experiments[exp.experiment_id].retrieving = false;
-                    }
-                });
-
-            });
 
             $scope.retrieve_experiment = function (exp_id) {
                 $scope.all_experiments[exp_id].retrieving = true;
@@ -71,12 +46,12 @@ app.controller(
         '$q',
         '$routeParams',
         '$window',
-        'Experiment',
+        'Imagesets',
         'Image',
         'Classification',
         'Subregion',
         'ExperimentProbe',
-        function ($scope, $q, $routeParams, $window, Experiment, Image, Classification, Subregion, ExperimentProbe) {
+        function ($scope, $q, $routeParams, $window, Imagesets, Image, Classification, Subregion, ExperimentProbe) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_subregion = null;
@@ -92,21 +67,40 @@ app.controller(
             $scope.poly_width = 862;
             $scope.classifications = Classification.query();
 
+            $scope.test = Image;
 
-            $scope.experiment = Experiment.get(
+
+            $scope.animageset = Imagesets.get(
                 {
-                    'experiment_id': $routeParams.experiment_id
+                    'imagesets_id': $routeParams.imagesets_id
                 }
             );
 
 
-            $scope.experiment.$promise.then(function (data) {
-                $scope.images = Image.query({experiment: $routeParams.experiment_id});
-                $scope.probes = ExperimentProbe.query({experiment: $routeParams.experiment_id});
-            });
-
+            // $scope.experiment.$promise.then(function (data) {
+            //     $scope.images = Image.query({experiment: $routeParams.experiment_id});
+            //     $scope.probes = ExperimentProbe.query({experiment: $routeParams.experiment_id});
+            // });
+            //
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
+                if (!img.image_jpeg) {
+                    $window.alert(img.id);
+                    var save_response = Image.get(
+                        {
+                            'id': img.id
+                        },
+                        {}
+                    );
+
+                    save_response.$promise.then(function(data) {
+                        $scope.selected_image = data
+                    }, function (error) {
+                        // TODO: figure out how to turn retrieving off for experiment
+                        $window.alert(JSON.stringify(error, null, 4))
+                    });
+                }
+
             };
 
             $scope.select_subregion = function(classification) {
