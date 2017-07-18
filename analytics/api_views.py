@@ -36,39 +36,6 @@ class ImageSetDetail(generics.RetrieveAPIView):
     queryset = models.ImageSet.objects.all()
     serializer_class = serializers.ImageSetDetailSerializer
 
-
-class ImageDetailView(APIView):
-    """
-    A view to get specific image metadata and to post to cache images
-    """
-    def get(self, request, *args, **kwargs):
-        img = get_object_or_404(models.Image, id=kwargs['pk'])
-        serializer = serializers.ImageSerializer(img)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
-        )
-
-    def post(self, request, *args, **kwargs):
-        try:
-            with transaction.atomic():
-                img = get_object_or_404(models.Image, id=kwargs['pk'])
-                suf, sha1, suf_jpeg = lungmap_utils.get_image_from_s3(img.s3key)
-                img.image_orig = suf
-                img.image_orig_sha1 = sha1
-                img.image_jpeg = suf_jpeg
-                img.save()
-                serializer = serializers.ImageSerializer(img)
-                return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED
-                )
-        except Exception as e:  # catch any exception to rollback changes
-            if hasattr(e, 'messages'):
-                return Response(data={'detail': e.messages}, status=400)
-            return Response(data={'detail': e.message}, status=400)
-
-
 # noinspection PyClassHasNoInit
 class LungmapImageFilter(django_filters.rest_framework.FilterSet):
     class Meta:
@@ -130,8 +97,11 @@ def get_image_jpeg(request, pk):
     :return: HttpResponse
     """
     image = get_object_or_404(models.Image, pk=pk)
-
-    return HttpResponse(image.image_jpeg, content_type='image/jpeg')
+    if image.image_jpeg.name == '':
+        content = {'image_jpeg': 'image not yet cached'}
+        return Response(content, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return HttpResponse(image.image_jpeg, content_type='image/jpeg')
 
 
 # noinspection PyClassHasNoInit
