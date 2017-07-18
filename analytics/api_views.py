@@ -69,6 +69,58 @@ class ImageDetailView(APIView):
             return Response(data={'detail': e.message}, status=400)
 
 
+# noinspection PyClassHasNoInit
+class LungmapImageFilter(django_filters.rest_framework.FilterSet):
+    class Meta:
+        model = models.Image
+        fields = ['experiment']
+
+
+class LungmapImageList(generics.ListAPIView):
+    """
+    List all images.
+    """
+
+    queryset = models.Image.objects.all()
+    serializer_class = serializers.LungmapImageSerializer
+    filter_class = LungmapImageFilter
+
+
+class LungmapImageDetail(generics.RetrieveAPIView):
+    """
+    Get an image
+    """
+
+    queryset = models.Image.objects.all()
+    serializer_class = serializers.LungmapImageSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer_context = {
+            'request': request
+        }
+        img = self.get_object()
+        try:
+            with transaction.atomic():
+                if img.image_orig_sha1 is None:
+                    suf, sha1, suf_jpeg = lungmap_utils.get_image_from_s3(img.s3key)
+                    img.image_orig = suf
+                    img.image_orig_sha1 = sha1
+                    img.image_jpeg = suf_jpeg
+                    img.save()
+                serializer = serializers.LungmapImageSerializer(
+                    img,
+                    context=serializer_context
+                )
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_200_OK
+                )
+        except Exception as e:  # catch any exception to rollback changes
+            if hasattr(e, 'messages'):
+                return Response(data={'detail': e.messages}, status=400)
+            return Response(data={'detail': e.message}, status=400)
+
+
 @api_view(['GET'])
 def get_image_jpeg(request, pk):
     """
@@ -78,11 +130,9 @@ def get_image_jpeg(request, pk):
     :return: HttpResponse
     """
     image = get_object_or_404(models.Image, pk=pk)
-    if image.image_jpeg.name == '':
-        content = {'image_jpeg': 'image not yet cached'}
-        return Response(content, status=status.HTTP_404_NOT_FOUND)
-    else:
-        return HttpResponse(image.image_jpeg, content_type='image/jpeg')
+
+    return HttpResponse(image.image_jpeg, content_type='image/jpeg')
+
 
 # noinspection PyClassHasNoInit
 class LungmapSubregionFilter(django_filters.rest_framework.FilterSet):

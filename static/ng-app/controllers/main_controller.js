@@ -86,7 +86,7 @@ app.controller(
                 $scope.selected_image = img;
                 if (!img.image_jpeg) {
                     $window.alert(img.id);
-                    var save_response = Image.save(
+                    var save_response = Image.get(
                         {
                             'id': img.id
                         },

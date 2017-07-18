@@ -74,7 +74,7 @@ service.factory(
     }
 ).factory('Image', function ($resource) {
         return  $resource(
-            URLS.images + ':id' + '/',
+            URLS.images + ':id',
             {},
             {}
         );

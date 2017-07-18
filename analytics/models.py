@@ -101,17 +101,17 @@ class Image(models.Model):
     image_orig = models.FileField(
         upload_to='images',
         blank=True,
-        null=False
+        null=True
     )
     image_orig_sha1 = models.CharField(
         max_length=40,
         blank=True,
-        null=False
+        null=True
     )
     image_jpeg = models.FileField(
         upload_to='images_jpeg',
         blank=True,
-        null=False
+        null=True
     )
 
     def __str__(self):
