@@ -111,7 +111,7 @@ class ImageSetProbeMapSerializer(serializers.ModelSerializer):
 
 class ImageSetDetailSerializer(serializers.ModelSerializer):
     probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
-    images = ImageSerializer(source='image_set', many=True)
+    images = LungmapImageSerializer(source='image_set', many=True)
 
     class Meta:
         model = models.ImageSet
