@@ -122,8 +122,3 @@ class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
-
-
-class ClassificationList(generics.ListAPIView):
-    queryset = models.Classification.objects.all()
-    serializer_class = serializers.ClassificationSerializer

@@ -127,24 +127,13 @@ class ExperimentProbeMap(models.Model):
         return '%s, %s (%s)' % (self.experiment_id, self.probe.label, self.color)
 
 
-class Classification(models.Model):
-    classification_name = models.CharField(
-        max_length=100
-    )
-
-    def __str__(self):
-        return '%s: %s' % (self.id, self.classification_name)
-
-
 class Subregion(models.Model):
-    classification = models.ForeignKey(Classification)
     image = models.ForeignKey(Image)
 
     def __str__(self):
-        return '%s, %s, %s' % (
+        return '%s, %s' % (
             self.id,
             self.image.image_name,
-            self.classification.classification_name
         )
 
 
@@ -156,3 +145,41 @@ class Points(models.Model):
 
     def __str__(self):
         return '%s %s #%s: [%s, %s]' % (self.id, self.subregion_id, self.order, self.x, self.y)
+
+
+class Cell(models.Model):
+    cell_name = models.CharField(
+        max_length=100
+    )
+
+    def __str__(self):
+        return '%s: %s' % (self.id, self.cell_name)
+
+
+class CellProbeMap(models.Model):
+    probe = models.ForeignKey(Probe)
+    cell = models.ForeignKey(Cell)
+
+    def __str__(self):
+        return '%s: <Probe: %s>, <Cell: %s>' % (self.id,
+                                                self.probe.label,
+                                                self.cell.cell_name)
+
+
+class Structure(models.Model):
+    structure_name = models.CharField(
+        max_length=100
+    )
+
+    def __str__(self):
+        return '%s: %s' % (self.id, self.structure_name)
+
+
+class StructureProbeMap(models.Model):
+    structure = models.ForeignKey(Structure)
+    probe = models.ForeignKey(Probe)
+
+    def __str__(self):
+        return '%s: <Probe: %s>, <Structure: %s>' % (self.id,
+                                                     self.probe.label,
+                                                     self.structure.structure_name)

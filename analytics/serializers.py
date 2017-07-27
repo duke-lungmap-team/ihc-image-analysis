@@ -64,12 +64,11 @@ class SubregionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Subregion
-        fields = ('id', 'classification', 'image', 'points')
+        fields = ('id', 'image', 'points')
 
     def to_representation(self, instance):
         data = super(SubregionSerializer, self).to_representation(instance)
         data['image'] = instance.image.image_name
-        data['classification'] = instance.classification.classification_name
         return data
 
     def create(self, validated_data):
@@ -78,13 +77,6 @@ class SubregionSerializer(serializers.ModelSerializer):
         for point_data in points_data:
             models.Points.objects.create(subregion=subregion, **point_data)
         return subregion
-
-
-class ClassificationSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Classification
-        fields = "__all__"
 
 
 class ImageSerializer(serializers.ModelSerializer):
