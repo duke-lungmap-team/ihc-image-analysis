@@ -1,5 +1,7 @@
 from django.db import models
 from lungmap_client import lungmap_utils as sparql_utils
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class Experiment(models.Model):
@@ -183,3 +185,13 @@ class StructureProbeMap(models.Model):
         return '%s: <Probe: %s>, <Structure: %s>' % (self.id,
                                                      self.probe.label,
                                                      self.structure.structure_name)
+
+
+class Classification(models.Model):
+    subregion = models.ForeignKey(Subregion)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return '%s: %s' % (self.id, self.subregion_id)

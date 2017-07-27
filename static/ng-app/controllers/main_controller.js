@@ -65,7 +65,7 @@ app.controller(
             $scope.label = [[]];
             $scope.poly_height = 862;
             $scope.poly_width = 862;
-            $scope.classifications = Classification.query();
+            // $scope.classifications = Classification.query();
 
             $scope.test = Image;
 
@@ -84,8 +84,7 @@ app.controller(
             //
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
-                if (!img.image_jpeg) {
-                    $window.alert(img.id);
+                if (!img.image_orig_sha1) {
                     var save_response = Image.get(
                         {
                             'id': img.id
