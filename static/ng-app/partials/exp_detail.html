@@ -72,7 +72,7 @@
       </div>
     </p>
     <img ng-if="selected_image && !selected_image.image_orig_sha1" src="/static/whirligig.gif">
-    <img ng-if="selected_image && selected_image.image_orig_sha1" ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image && mode == 'view'" width="862"/>
+    <img ng-if="selected_image.image_orig_sha1 && mode == 'view'" ng-src="{{ selected_image.image_jpeg }}" width="862"/>
 
     <div ng-if="selected_image && mode == 'train'">
       <div class="row margin-bottom-5">
