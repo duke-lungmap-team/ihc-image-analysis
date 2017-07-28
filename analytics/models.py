@@ -129,11 +129,28 @@ class ExperimentProbeMap(models.Model):
         return '%s, %s (%s)' % (self.experiment_id, self.probe.label, self.color)
 
 
+class Anatomy(models.Model):
+    name = models.CharField(
+        max_length=100,
+        unique=True
+    )
+
+    def __str__(self):
+        return '%s: %s' % (self.id, self.cell_name)
+
+
+class AnatomyProbeMap(models.Model):
+    probe = models.ForeignKey(Probe)
+    anatomy = models.ForeignKey(Anatomy)
+
+    def __str__(self):
+        return '%s: <Probe: %s>, <Cell: %s>' % (self.id,
+                                                self.probe.label,
+                                                self.anatomy.name)
+
 class Subregion(models.Model):
     image = models.ForeignKey(Image)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    anatomy = models.ForeignKey(Anatomy)
 
     def __str__(self):
         return '%s, %s' % (
@@ -142,7 +159,7 @@ class Subregion(models.Model):
         )
 
     class Meta:
-        unique_together = (("image", "object_id"))
+        unique_together = (("image", "anatomy"))
 
 
 class Points(models.Model):
@@ -154,43 +171,4 @@ class Points(models.Model):
     def __str__(self):
         return '%s %s #%s: [%s, %s]' % (self.id, self.subregion_id, self.order, self.x, self.y)
 
-
-class Cell(models.Model):
-    cell_name = models.CharField(
-        max_length=100
-    )
-    subregion = GenericRelation(Subregion)
-
-    def __str__(self):
-        return '%s: %s' % (self.id, self.cell_name)
-
-
-class CellProbeMap(models.Model):
-    probe = models.ForeignKey(Probe)
-    cell = models.ForeignKey(Cell)
-
-    def __str__(self):
-        return '%s: <Probe: %s>, <Cell: %s>' % (self.id,
-                                                self.probe.label,
-                                                self.cell.cell_name)
-
-
-class Structure(models.Model):
-    structure_name = models.CharField(
-        max_length=100
-    )
-    subregion = GenericRelation(Subregion)
-
-    def __str__(self):
-        return '%s: %s' % (self.id, self.structure_name)
-
-
-class StructureProbeMap(models.Model):
-    structure = models.ForeignKey(Structure)
-    probe = models.ForeignKey(Probe)
-
-    def __str__(self):
-        return '%s: <Probe: %s>, <Structure: %s>' % (self.id,
-                                                     self.probe.label,
-                                                     self.structure.structure_name)
 

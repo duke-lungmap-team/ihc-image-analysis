@@ -116,48 +116,35 @@ class ImageSetDetailSerializer(serializers.ModelSerializer):
                   'development_stage', 'probes', 'images')
 
 
-class CellSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = models.Cell
-        fields = ['cell_name']
-
-
-class StructureSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Structure
-        fields = ['structure_name']
-
-
-class ImagesetLabelSerializer(serializers.ModelSerializer):
-    cells = serializers.SerializerMethodField()
-    structures = serializers.SerializerMethodField()
-
-    def __init__(self, *args, **kwargs):
-        self.cellinstances, self.structureinstances = self.get_rel(args[0])
-        super().__init__(*args, **kwargs)
-
-    class Meta:
-        model = models.ImageSet
-        fields = ['cells', 'structures']
-
-    def get_rel(self, obj):
-        im_probe_query_set = models.ImageSetProbeMap.objects.filter(image_set_id=obj)
-        results = [x.probe for x in im_probe_query_set]
-        cpm = models.CellProbeMap.objects.filter(probe_id__in=results)
-        spm = models.StructureProbeMap.objects.filter(probe_id__in=results)
-        cells = [x.cell for x in cpm]
-        structures = [x.structure for x in spm]
-        return cells, structures
-
-    def get_cells(self, obj):
-        final = CellSerializer(self.cellinstances, many=True).data
-        return final
-
-    def get_structures(self, obj):
-        final = StructureSerializer(self.structureinstances, many=True).data
-        return final
+# class ImagesetLabelSerializer(serializers.ModelSerializer):
+#     cells = serializers.SerializerMethodField()
+#     structures = serializers.SerializerMethodField()
+#
+#     def __init__(self, *args, **kwargs):
+#         self.cellinstances, self.structureinstances = self.get_rel(args[0])
+#         super().__init__(*args, **kwargs)
+#
+#     class Meta:
+#         model = models.ImageSet
+#         fields = ['cells', 'structures']
+#
+#     def get_rel(self, obj):
+#         im_probe_query_set = models.ImageSetProbeMap.objects.filter(image_set_id=obj)
+#         results = [x.probe for x in im_probe_query_set]
+#         cpm = models.CellProbeMap.objects.filter(probe_id__in=results)
+#         spm = models.StructureProbeMap.objects.filter(probe_id__in=results)
+#         cells = [x.cell for x in cpm]
+#         structures = [x.structure for x in spm]
+#         return cells, structures
+#
+#     def get_cells(self, obj):
+#         final = CellSerializer(self.cellinstances, many=True).data
+#         return final
+#
+#     def get_structures(self, obj):
+#         final = StructureSerializer(self.structureinstances, many=True).data
+#         return final
 
 
 

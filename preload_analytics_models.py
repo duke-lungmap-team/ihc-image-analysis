@@ -51,31 +51,7 @@ for key, value in image_sets.items():
                 probe=probeobject,
             )
 
-#need to fill in with actual data from ontology
-def add_probe_classification(probe, class_name, class_type):
-    """
-    Add a probe/classification combo, this can be either cell or stucture as identified
-    by the class_type
-    :param probe: str: a probe name
-    :param class_name: str: a classficiation name
-    :param class_type: str: either 'cell' or 'structure'
-    :return:
-    """
-    probe_instance = models.Probe.objects.get(label=probe)
-    if class_type == 'structure':
-        structure = models.Structure.objects.create(structure_name=class_name)
-        ps_mapping = models.StructureProbeMap.objects.create(
-            probe = probe_instance,
-            structure = structure
-        )
-    elif class_type == 'cell':
-        cell = models.Cell.objects.create(cell_name=class_name)
-        pc_mapping = models.CellProbeMap.objects.create(
-            probe = probe_instance,
-            cell = cell
-        )
-
-add_probe_classification('Sox2', 'bronchiolar_epithelial_cell', 'cell')
-add_probe_classification('TTF-1', 'epithelial_cell_of_the_lung', 'cell')
-add_probe_classification('α-Smooth Muscle Actin', 'bronchiolar-associated_smooth_muscle_cell', 'cell')
-add_probe_classification('α-Smooth Muscle Actin', 'bronchiole', 'structure')
+models.Anatomy.objects.create(name='bronchiolar_epithelial_cell')
+models.Anatomy.objects.create(name='epithelial_cell_of_the_lung')
+models.Anatomy.objects.create(name='bronchiolar-associated_smooth_muscle_cell')
+models.Anatomy.objects.create(name='bronchiole')
