@@ -51,7 +51,9 @@ app.controller(
         'Classification',
         'Subregion',
         'ExperimentProbe',
-        function ($scope, $q, $routeParams, $window, Imagesets, Image, Classification, Subregion, ExperimentProbe) {
+        'ImageSetLabels',
+        function ($scope, $q, $routeParams, $window, Imagesets, Image,
+                  Classification, Subregion, ExperimentProbe, ImageSetLabels) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_subregion = null;
@@ -66,15 +68,22 @@ app.controller(
             $scope.poly_height = 862;
             $scope.poly_width = 862;
             // $scope.classifications = Classification.query();
+            $scope.testersss = ImageSetLabels;
 
-            $scope.test = Image;
 
+            $scope.animageset = Imagesets.get({'imagesets_id': $routeParams.imagesets_id});
+            var imagesetlabelpromise = ImageSetLabels.get({'imagesets_id': $routeParams.imagesets_id});
 
-            $scope.animageset = Imagesets.get(
-                {
-                    'imagesets_id': $routeParams.imagesets_id
-                }
-            );
+            imagesetlabelpromise.$promise.then((data) => {
+                var imagesetlabels = []
+                data.cells.forEach((cell) => {
+                    imagesetlabels.push(cell.cell_name)
+                })
+                data.structures.forEach((structure) => {
+                    imagesetlabels.push(structure.structure_name)
+                })
+                $scope.imagesetlabelscontainer = imagesetlabels
+            })
 
 
             // $scope.experiment.$promise.then(function (data) {
