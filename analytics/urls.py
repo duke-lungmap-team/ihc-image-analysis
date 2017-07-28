@@ -15,8 +15,6 @@ urlpatterns = [
     url(r'^api/subregion/(?P<pk>[0-9]+)/$', api_views.SubregionDetail.as_view()),
     url(r'^api/imagesets/$', api_views.ImageSetList.as_view()),
     url(r'^api/imagesets/(?P<pk>[0-9]+)/$', api_views.ImageSetDetail.as_view()),
+    url(r'^api/imagesetspotentiallabel/(?P<pk>[0-9]+)/$', api_views.ImageSetPotentialLabelList.as_view()),
 
 ]
-
-#TODO: this is a no-no, but not sure how else to serve it, ng-src is calling /media not /api
-# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

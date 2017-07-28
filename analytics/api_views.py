@@ -1,7 +1,7 @@
 from analytics import serializers, models
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from lungmap_client import lungmap_utils
 from rest_framework import generics, permissions, status
@@ -35,6 +35,20 @@ class ImageSetDetail(generics.RetrieveAPIView):
 
     queryset = models.ImageSet.objects.all()
     serializer_class = serializers.ImageSetDetailSerializer
+
+
+class ImageSetPotentialLabelList(APIView):
+    def get_object(self, pk):
+        try:
+            return models.ImageSet.objects.get(id=pk)
+        except models.ImageSet.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        imageset = self.get_object(pk)
+        serializer = serializers.ImagesetLabelSerializer(imageset)
+        return Response(serializer.data)
+
 
 # noinspection PyClassHasNoInit
 class LungmapImageFilter(django_filters.rest_framework.FilterSet):
