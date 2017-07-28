@@ -59,24 +59,29 @@ class PointsSerializer(serializers.ModelSerializer):
 
 
 class SubregionSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
-    points = PointsSerializer(many=True)
-
     class Meta:
         model = models.Subregion
-        fields = ('id', 'image', 'points')
+        fields = "__all__"
 
-    def to_representation(self, instance):
-        data = super(SubregionSerializer, self).to_representation(instance)
-        data['image'] = instance.image.image_name
-        return data
-
-    def create(self, validated_data):
-        points_data = validated_data.pop('points')
-        subregion = models.Subregion.objects.create(**validated_data)
-        for point_data in points_data:
-            models.Points.objects.create(subregion=subregion, **point_data)
-        return subregion
+# class SubregionSerializer(serializers.ModelSerializer):
+#
+#     points = PointsSerializer(many=True)
+#
+#     class Meta:
+#         model = models.Subregion
+#         fields = ('id', 'image', 'points')
+#
+#     def to_representation(self, instance):
+#         data = super(SubregionSerializer, self).to_representation(instance)
+#         data['image'] = instance.image.image_name
+#         return data
+#
+#     def create(self, validated_data):
+#         points_data = validated_data.pop('points')
+#         subregion = models.Subregion.objects.create(**validated_data)
+#         for point_data in points_data:
+#             models.Points.objects.create(subregion=subregion, **point_data)
+#         return subregion
 
 
 class ImageSerializer(serializers.ModelSerializer):

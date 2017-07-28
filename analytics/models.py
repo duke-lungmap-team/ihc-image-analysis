@@ -1,6 +1,6 @@
 from django.db import models
 from lungmap_client import lungmap_utils as sparql_utils
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -131,12 +131,18 @@ class ExperimentProbeMap(models.Model):
 
 class Subregion(models.Model):
     image = models.ForeignKey(Image)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
         return '%s, %s' % (
             self.id,
             self.image.image_name,
         )
+
+    class Meta:
+        unique_together = (("image", "object_id"))
 
 
 class Points(models.Model):
@@ -153,6 +159,7 @@ class Cell(models.Model):
     cell_name = models.CharField(
         max_length=100
     )
+    subregion = GenericRelation(Subregion)
 
     def __str__(self):
         return '%s: %s' % (self.id, self.cell_name)
@@ -172,6 +179,7 @@ class Structure(models.Model):
     structure_name = models.CharField(
         max_length=100
     )
+    subregion = GenericRelation(Subregion)
 
     def __str__(self):
         return '%s: %s' % (self.id, self.structure_name)
@@ -186,12 +194,3 @@ class StructureProbeMap(models.Model):
                                                      self.probe.label,
                                                      self.structure.structure_name)
 
-
-class Classification(models.Model):
-    subregion = models.ForeignKey(Subregion)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    def __str__(self):
-        return '%s: %s' % (self.id, self.subregion_id)

@@ -174,7 +174,7 @@ app.controller(
                         }
                     );
                 }
-                payload.classification = $scope.selected_subregion.id;
+                payload.classification = $scope.selected_subregion;
                 payload.image = $scope.selected_image.id;
                 payload.points = points;
 
