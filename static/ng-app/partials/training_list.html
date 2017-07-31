@@ -1,0 +1,24 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th colspan="3" class="center">
+        <div style="position:relative">
+          <h4>Training Sets<span class="badge badge-inverse align-top">{{ imagesetsresults.length }}</span></h4>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th>Imageset</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr ng-repeat="imset in imagesetsresults">
+      <td>
+        <a href="#/trainingsets/{{ imset.id }}">{{ imset.image_set_name }}</a>
+      </td>
+    </tr>
+
+  </tbody>
+</table>

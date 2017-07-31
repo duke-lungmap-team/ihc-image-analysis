@@ -27,10 +27,10 @@ app.config(function($routeProvider) {
             controller: 'ExperimentDetailController'
         }
     ).when(
-        '/probes/',
+        '/trainingsets/',
         {
-            templateUrl: 'static/ng-app/partials/probe_list.html',
-            controller: 'ProbeListController'
+            templateUrl: 'static/ng-app/partials/training_list.html',
+            controller: 'TrainingListController'
         }
     ).otherwise({ redirectTo: '/' });
 });
