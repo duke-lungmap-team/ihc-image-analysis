@@ -55,13 +55,23 @@ class PointsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Points
-        fields = ('x', 'y', 'order')
+        fields = ('id', 'x', 'y', 'order')
 
 
 class SubregionSerializer(serializers.ModelSerializer):
+    points = PointsSerializer(many=True)
+
     class Meta:
         model = models.Subregion
-        fields = "__all__"
+        fields = ["id", "image", "anatomy", "points"]
+
+    def create(self, validated_data):
+        points_data = validated_data.pop('points')
+        subregion = models.Subregion.objects.create(**validated_data)
+        for point_data in points_data:
+            point = models.Points.objects.create(subregion=subregion,
+                                                 **point_data)
+        return subregion
 
 
 class ImageSerializer(serializers.ModelSerializer):

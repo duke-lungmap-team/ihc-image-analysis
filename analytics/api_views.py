@@ -118,10 +118,12 @@ class LungmapSubregionFilter(django_filters.rest_framework.FilterSet):
 
 
 class SubregionList(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
     filter_class = LungmapSubregionFilter
+    #TODO: wrap this view in an atomic transaction, can cause serious bugs
+    #TODO: handling this with UI conditionals at the moment, but should be here as well
 
 
 class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):

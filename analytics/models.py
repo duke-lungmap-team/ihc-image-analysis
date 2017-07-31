@@ -136,7 +136,7 @@ class Anatomy(models.Model):
     )
 
     def __str__(self):
-        return '%s: %s' % (self.id, self.cell_name)
+        return '%s: %s' % (self.id, self.name)
 
 
 class AnatomyProbeMap(models.Model):
@@ -148,6 +148,7 @@ class AnatomyProbeMap(models.Model):
                                                 self.probe.label,
                                                 self.anatomy.name)
 
+
 class Subregion(models.Model):
     image = models.ForeignKey(Image)
     anatomy = models.ForeignKey(Anatomy)
@@ -158,12 +159,10 @@ class Subregion(models.Model):
             self.image.image_name,
         )
 
-    class Meta:
-        unique_together = (("image", "anatomy"))
 
 
 class Points(models.Model):
-    subregion = models.ForeignKey(Subregion)
+    subregion = models.ForeignKey(Subregion, related_name='points')
     x = models.IntegerField()
     y = models.IntegerField()
     order = models.IntegerField()

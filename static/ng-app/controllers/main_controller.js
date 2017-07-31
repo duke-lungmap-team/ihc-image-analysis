@@ -160,35 +160,33 @@ app.controller(
 
                 if (thesepoints.length === 0) {
                     $window.alert('The current polygon has no points selected, please segment something first.');
-                }
-
-                if ($scope.selected_subregion === null) {
+                } else if ($scope.selected_subregion === null) {
                     $window.alert('There is no label associated with the active polygon, please choose a label first.');
+                } else {
+                    //TODO check logic here to ensure that I'm grabbing correct points
+                    var payload = {};
+                    var points = [];
+                    //Get points
+                    for (var i = 0; i < thesepoints.length; i++) {
+                        points.push(
+                            {
+                                "x": thesepoints[i][2],
+                                "y": thesepoints[i][3],
+                                "order": i
+                            }
+                        );
+                    }
+                    payload.anatomy = $scope.selected_subregion.anatomy_id;
+                    payload.image = $scope.selected_image.id;
+                    payload.points = points;
+
+                    //How to get results of post to conditionally get ready for next
+                    var newregion = Subregion.save(payload);
+                    $scope.add();
+                    $scope.selected_subregion = null;
+
                 }
-
-                //TODO check logic here to ensure that I'm grabbing correct points
-                var payload = {};
-                var points = [];
-                //Get points
-                for (var i=0; i<thesepoints.length; i++) {
-                    points.push(
-                        {
-                            "x": thesepoints[i][2],
-                            "y": thesepoints[i][3],
-                            "order": i
-                        }
-                    );
-                }
-                payload.classification = $scope.selected_subregion;
-                payload.image = $scope.selected_image.id;
-                payload.points = points;
-
-                //How to get results of post to conditionally get ready for next
-                var newregion = Subregion.save(payload);
-                $scope.add();
-                $scope.selected_subregion = null;
-
-            };
+            }
 
         }
     ]
