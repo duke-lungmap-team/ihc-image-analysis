@@ -59,6 +59,15 @@ class LungmapImageList(generics.ListAPIView):
     filter_class = LungmapImageFilter
 
 
+class AnatomyList(generics.RetrieveAPIView):
+    """
+    List all images.
+    """
+
+    queryset = models.Anatomy.objects.all()
+    serializer_class = serializers.AnatomyModelSerializer
+
+
 class LungmapImageDetail(generics.RetrieveAPIView):
     """
     Get an image

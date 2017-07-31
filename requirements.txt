@@ -4,6 +4,7 @@ coreapi==2.3.0
 coreschema==0.0.4
 Django==1.10.6
 django-filter==1.0.2
+django-rest-swagger==2.1.2
 djangorestframework==3.6.2
 docutils==0.13.1
 gunicorn==19.7.1
