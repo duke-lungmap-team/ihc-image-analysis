@@ -7,7 +7,7 @@ var URLS = {
     'classifications': '/api/classifications/',
     'subregion': '/api/subregion/',
     'imagesetsurl': '/api/imagesets/',
-    'imagesetlabels': '/api/imagesetspotentiallabel/'
+    'anatomybyprobe': '/api/anatomybyprobe/'
 };
 
 var service = angular.module('IHCApp');
@@ -58,10 +58,10 @@ service.factory(
         );
     }
 ).factory(
-    'ImageSetLabels',
+    'AnatomyByProbe',
     function ($resource) {
         return $resource(
-            URLS.imagesetlabels + ':imagesets_id',
+            URLS.anatomybyprobe + ':probe_id',
             {},
             {}
         );

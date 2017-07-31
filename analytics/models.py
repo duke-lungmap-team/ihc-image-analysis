@@ -144,7 +144,7 @@ class AnatomyProbeMap(models.Model):
     anatomy = models.ForeignKey(Anatomy)
 
     def __str__(self):
-        return '%s: <Probe: %s>, <Cell: %s>' % (self.id,
+        return '%s: <Probe: %s>, <Anatomy: %s>' % (self.id,
                                                 self.probe.label,
                                                 self.anatomy.name)
 

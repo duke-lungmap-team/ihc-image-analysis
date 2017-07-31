@@ -83,15 +83,15 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-label-button">
-              <li ng-repeat="classification in imagesetlabelscontainer">
-                <a ng-click="select_subregion(classification)">{{classification}}</a>
+              <li ng-repeat="anatomy in anatomies_now">
+                <a ng-click="select_subregion(anatomy)">{{ anatomy.anatomy_name }}</a>
               </li>
             </ul>
           </div>
         </div>
         <div class="col-md-7 col-md-offset-2">
           <span class="text-center">
-            <strong>{{ selected_subregion }}</strong>
+            <strong>{{ selected_subregion.anatomy_name }}</strong>
           </span>
         </div>
       </div>

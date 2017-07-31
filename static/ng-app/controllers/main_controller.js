@@ -51,9 +51,9 @@ app.controller(
         'Classification',
         'Subregion',
         'ExperimentProbe',
-        'ImageSetLabels',
+        'AnatomyByProbe',
         function ($scope, $q, $routeParams, $window, Imagesets, Image,
-                  Classification, Subregion, ExperimentProbe, ImageSetLabels) {
+                  Classification, Subregion, ExperimentProbe, AnatomyByProbe) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_subregion = null;
@@ -68,29 +68,34 @@ app.controller(
             $scope.poly_height = 862;
             $scope.poly_width = 862;
             // $scope.classifications = Classification.query();
-            $scope.testersss = ImageSetLabels;
+            $scope.tester = AnatomyByProbe;
 
 
-            $scope.animageset = Imagesets.get({'imagesets_id': $routeParams.imagesets_id});
-            var imagesetlabelpromise = ImageSetLabels.get({'imagesets_id': $routeParams.imagesets_id});
+            var imageset = Imagesets.get({'imagesets_id': $routeParams.imagesets_id});
 
-            imagesetlabelpromise.$promise.then((data) => {
-                var imagesetlabels = []
-                data.cells.forEach((cell) => {
-                    imagesetlabels.push(cell.cell_name)
+            imageset.$promise.then((data) => {
+                $scope.anatomies = [];
+                $scope.animageset = data
+                angular.forEach(data.probes, (probe) => {
+                    $scope.anatomies.push(AnatomyByProbe.get({'probe_id': probe.probe}).$promise)
+
                 })
-                data.structures.forEach((structure) => {
-                    imagesetlabels.push(structure.structure_name)
-                })
-                $scope.imagesetlabelscontainer = imagesetlabels
+
+                $q.all($scope.anatomies).then(function (results) {
+                    $scope.anatomies_now = [];
+                    results.forEach(function(exp) {
+                        $scope.anatomies_now.push.apply($scope.anatomies_now, exp.anatomies);
+                    });
+
+                    }, function(reason) {
+                        // Error callback where reason is the value of the first rejected promise
+                        $window.alert(JSON.stringify(reason, null, 4));
+                });
             })
 
 
-            // $scope.experiment.$promise.then(function (data) {
-            //     $scope.images = Image.query({experiment: $routeParams.experiment_id});
-            //     $scope.probes = ExperimentProbe.query({experiment: $routeParams.experiment_id});
-            // });
-            //
+
+
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
                 if (!img.image_orig_sha1) {

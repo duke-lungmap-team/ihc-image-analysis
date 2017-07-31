@@ -63,26 +63,6 @@ class SubregionSerializer(serializers.ModelSerializer):
         model = models.Subregion
         fields = "__all__"
 
-# class SubregionSerializer(serializers.ModelSerializer):
-#
-#     points = PointsSerializer(many=True)
-#
-#     class Meta:
-#         model = models.Subregion
-#         fields = ('id', 'image', 'points')
-#
-#     def to_representation(self, instance):
-#         data = super(SubregionSerializer, self).to_representation(instance)
-#         data['image'] = instance.image.image_name
-#         return data
-#
-#     def create(self, validated_data):
-#         points_data = validated_data.pop('points')
-#         subregion = models.Subregion.objects.create(**validated_data)
-#         for point_data in points_data:
-#             models.Points.objects.create(subregion=subregion, **point_data)
-#         return subregion
-
 
 class ImageSerializer(serializers.ModelSerializer):
 
@@ -116,35 +96,24 @@ class ImageSetDetailSerializer(serializers.ModelSerializer):
                   'development_stage', 'probes', 'images')
 
 
+class AnatomyProbeMapSerializer(serializers.ModelSerializer):
+    anatomy_name = serializers.CharField(source='anatomy.name')
+    anatomy_id = serializers.CharField(source='anatomy.id')
+    probe_id = serializers.CharField(source='probe.id')
 
-# class ImagesetLabelSerializer(serializers.ModelSerializer):
-#     cells = serializers.SerializerMethodField()
-#     structures = serializers.SerializerMethodField()
-#
-#     def __init__(self, *args, **kwargs):
-#         self.cellinstances, self.structureinstances = self.get_rel(args[0])
-#         super().__init__(*args, **kwargs)
-#
-#     class Meta:
-#         model = models.ImageSet
-#         fields = ['cells', 'structures']
-#
-#     def get_rel(self, obj):
-#         im_probe_query_set = models.ImageSetProbeMap.objects.filter(image_set_id=obj)
-#         results = [x.probe for x in im_probe_query_set]
-#         cpm = models.CellProbeMap.objects.filter(probe_id__in=results)
-#         spm = models.StructureProbeMap.objects.filter(probe_id__in=results)
-#         cells = [x.cell for x in cpm]
-#         structures = [x.structure for x in spm]
-#         return cells, structures
-#
-#     def get_cells(self, obj):
-#         final = CellSerializer(self.cellinstances, many=True).data
-#         return final
-#
-#     def get_structures(self, obj):
-#         final = StructureSerializer(self.structureinstances, many=True).data
-#         return final
+    class Meta:
+        model = models.AnatomyProbeMap
+        fields = ['anatomy_name', 'anatomy_id', 'probe_id']
+
+
+class AnatomySerializer(serializers.ModelSerializer):
+    anatomies = AnatomyProbeMapSerializer(source='anatomyprobemap_set', many=True)
+
+    class Meta:
+        model = models.Probe
+        fields = ['anatomies']
+
+
 
 
 
