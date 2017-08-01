@@ -52,20 +52,18 @@ class LungmapImageSerializer(serializers.ModelSerializer):
 
 
 class PointsSerializer(serializers.ModelSerializer):
-    points_id = serializers.CharField(source='id')
 
     class Meta:
         model = models.Points
-        fields = ('points_id', 'x', 'y', 'order')
+        fields = ('x', 'y', 'order')
 
 
 class SubregionSerializer(serializers.ModelSerializer):
-    subregion_id = serializers.CharField(source='id')
     points = PointsSerializer(many=True)
 
     class Meta:
         model = models.Subregion
-        fields = ["subregion_id", "image", "anatomy", "points"]
+        fields = ["image", "anatomy", "points"]
 
     def create(self, validated_data):
         points_data = validated_data.pop('points')
