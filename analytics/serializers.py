@@ -161,6 +161,11 @@ class CountImages(serializers.ModelSerializer):
         fields = ['imageset_name', 'imageset_id', 'images']
 
 
+class SubregionAnatomyAggregationSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    anatomy_id = serializers.IntegerField()
+    anatomy__name = serializers.CharField()
+
 
 
 

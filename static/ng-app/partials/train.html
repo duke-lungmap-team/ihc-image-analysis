@@ -4,9 +4,9 @@
 <table class="table table-hover">
   <thead>
     <tr>
-      <th colspan="3" class="center">
+      <th colspan="2" class="center">
         <div style="position:relative">
-          <h4>Training Data Summary<span class="badge badge-inverse align-top">N=({{ imagesetscounts.length }})</span></h4>
+          <h4>Training Data Summary</h4>
         </div>
       </th>
     </tr>
@@ -18,17 +18,12 @@
 
   <tbody>
 
-    <tr ng-repeat="imset in imagesetscounts">
+    <tr ng-repeat="anatomy in subregionanatomycounts">
       <td>
-        <a href="#/imagesets/{{ imset.imageset_id }}">{{ imset.imageset_name }}</a>      </td>
-      <td>
-          {{ imset.image_count }}
+          {{ anatomy.anatomy__name }}
       </td>
       <td>
-          {{ imset.image_subregion_count }}
-      </td>
-      <td>
-          {{ imset.subregion_count }}
+          {{ anatomy.count }}
       </td>
     </tr>
 

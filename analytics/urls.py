@@ -13,9 +13,11 @@ urlpatterns = [
     url(r'^api/users/(?P<pk>[0-9]+)/$', api_views.UserDetail.as_view()),
     url(r'^api/subregion/$', api_views.SubregionList.as_view()),
     url(r'^api/subregion/(?P<pk>[0-9]+)/$', api_views.SubregionDetail.as_view()),
+    url(r'^api/subregion-anatomy-count/$', api_views.SubregionAnatomyAggregation.as_view()),
     url(r'^api/imagesets/$', api_views.ImageSetList.as_view()),
     url(r'^api/imagesets/(?P<pk>[0-9]+)/$', api_views.ImageSetDetail.as_view()),
     url(r'^api/anatomy/(?P<pk>[0-9]+)/$', api_views.AnatomyList.as_view()),
     url(r'^api/anatomybyprobe/(?P<pk>[0-9]+)/$', api_views.AnatomyByProbeList.as_view()),
-    url(r'^api/imageset-subregion-count/$', api_views.ImagesetSubregionCountList.as_view())
+    url(r'^api/imageset-subregion-count/$', api_views.ImagesetSubregionCountList.as_view()),
+
 ]

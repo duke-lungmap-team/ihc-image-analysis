@@ -248,8 +248,13 @@ app.controller(
     [
         '$scope',
         '$q',
-        'ImagesetSubregionCount',
-        function ($scope, $q, ImagesetSubregionCount) {
+        'SubregionAnatomyCount',
+        function ($scope, $q, SubregionAnatomyCount) {
+
+            var sacs = SubregionAnatomyCount.query({})
+            sacs.$promise.then((results) => {
+                $scope.subregionanatomycounts = results
+            })
 
         }
     ]

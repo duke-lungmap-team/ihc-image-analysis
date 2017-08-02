@@ -1,6 +1,7 @@
 from analytics import serializers, models
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.db.models import Sum, Count
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from lungmap_client import lungmap_utils
@@ -140,6 +141,17 @@ class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
 
+
 class ImagesetSubregionCountList(generics.ListAPIView):
     queryset = models.ImageSet.objects.all()
     serializer_class = serializers.CountImages
+
+
+class SubregionAnatomyAggregation(generics.ListAPIView):
+    queryset = models.Subregion.objects.all()
+    serializer_class = serializers.SubregionAnatomyAggregationSerializer
+
+    def get_queryset(self):
+        return models.Subregion.objects.select_related().values(
+            'anatomy__name','anatomy_id').annotate(count=Count('anatomy_id'))
+
