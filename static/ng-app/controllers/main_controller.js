@@ -242,3 +242,15 @@ app.controller(
         }
     ]
 );
+
+app.controller(
+    'TrainController',
+    [
+        '$scope',
+        '$q',
+        'ImagesetSubregionCount',
+        function ($scope, $q, ImagesetSubregionCount) {
+
+        }
+    ]
+);

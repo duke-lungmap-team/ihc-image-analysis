@@ -32,6 +32,12 @@ app.config(function($routeProvider) {
             templateUrl: 'static/ng-app/partials/training_list.html',
             controller: 'TrainingListController'
         }
+    ).when(
+        '/train/',
+        {
+            templateUrl: 'static/ng-app/partials/train.html',
+            controller: 'TrainController'
+        }
     ).otherwise({ redirectTo: '/' });
 });
 
