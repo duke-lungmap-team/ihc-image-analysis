@@ -139,3 +139,7 @@ class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
+
+class ImagesetSubregionCountList(generics.ListAPIView):
+    queryset = models.ImageSet.objects.all()
+    serializer_class = serializers.CountImages

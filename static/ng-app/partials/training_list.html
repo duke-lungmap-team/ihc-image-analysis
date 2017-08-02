@@ -3,20 +3,31 @@
     <tr>
       <th colspan="3" class="center">
         <div style="position:relative">
-          <h4>Training Sets<span class="badge badge-inverse align-top">{{ imagesetsresults.length }}</span></h4>
+          <h4>ImageSets with Training Data<span class="badge badge-inverse align-top">{{ imagesetscounts.length }}</span></h4>
         </div>
       </th>
     </tr>
     <tr>
       <th>Imageset</th>
+        <th>Images</th>
+        <th>Images w/ Subregions</th>
+      <th>Subregions</th>
     </tr>
   </thead>
 
   <tbody>
 
-    <tr ng-repeat="imset in imagesetsresults">
+    <tr ng-repeat="imset in imagesetscounts">
       <td>
-        <a href="#/trainingsets/{{ imset.id }}">{{ imset.image_set_name }}</a>
+        <a href="#/imagesets/{{ imset.imageset_id }}">{{ imset.imageset_name }}</a>      </td>
+      <td>
+          {{ imset.image_count }}
+      </td>
+      <td>
+          {{ imset.image_subregion_count }}
+      </td>
+      <td>
+          {{ imset.subregion_count }}
       </td>
     </tr>
 

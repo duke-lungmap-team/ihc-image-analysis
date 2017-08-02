@@ -7,7 +7,8 @@ var URLS = {
     'classifications': '/api/classifications/',
     'subregion': '/api/subregion/',
     'imagesetsurl': '/api/imagesets/',
-    'anatomybyprobe': '/api/anatomybyprobe/'
+    'anatomybyprobe': '/api/anatomybyprobe/',
+    'imagesetsubregioncount': '/api/imageset-subregion-count/'
 };
 
 var service = angular.module('IHCApp');
@@ -17,6 +18,15 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.lm_exp + ':id',
+            {},
+            {}
+        );
+    }
+).factory(
+    'ImagesetSubregionCount',
+    function ($resource) {
+        return $resource(
+            URLS.imagesetsubregioncount,
             {},
             {}
         );

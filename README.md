@@ -77,4 +77,8 @@ We then load our `.owl` file. This is a way more performant way to make our SPAR
 You can demo this resource [here](http://rapid-609.vm.duke.edu:3030).
 
 
+#acinar tubules
+green = proximal
+not = distal
+
 
