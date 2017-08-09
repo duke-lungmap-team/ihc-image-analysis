@@ -171,3 +171,13 @@ class Points(models.Model):
         return '%s %s #%s: [%s, %s]' % (self.id, self.subregion_id, self.order, self.x, self.y)
 
 
+class TrainedModel(models.Model):
+    imageset = models.ForeignKey(ImageSet)
+    model_object = models.FileField(
+        upload_to='trained_models',
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return '<TrainedModel %s: %s' % (self.id, self.imageset_id)
