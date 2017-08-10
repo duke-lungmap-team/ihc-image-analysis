@@ -97,14 +97,39 @@ class ImageSetProbeMapSerializer(serializers.ModelSerializer):
         fields = ['color', 'probe', 'probe_label']
 
 
+class TrainedModelSerializer(serializers.ModelSerializer):
+    trained_models_id = serializers.CharField(source='id')
+
+    class Meta:
+        model = models.TrainedModel
+        fields = "__all__"
+
+
+class TrainedModelCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TrainedModel
+        fields = ['imageset']
+
+
+class ClassifyPointsSerializer(serializers.ModelSerializer):
+    points = PointsSerializer(source='subregion_set__points_set', many=True)
+    image_id = serializers.CharField(source='id')
+
+    class Meta:
+        model = models.Image
+        fields = ['points', 'image_id']
+
+
 class ImageSetDetailSerializer(serializers.ModelSerializer):
+    model = TrainedModelSerializer(source='trainedmodel_set', many=True)
     probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
     images = LungmapImageSerializer(source='image_set', many=True)
 
     class Meta:
         model = models.ImageSet
         fields = ('image_set_name', 'magnification', 'species',
-                  'development_stage', 'probes', 'images')
+                  'development_stage', 'probes', 'images', 'model')
 
 
 class AnatomyProbeMapSerializer(serializers.ModelSerializer):

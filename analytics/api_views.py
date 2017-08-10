@@ -1,14 +1,19 @@
 from analytics import serializers, models
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Sum, Count
-from django.http import HttpResponse, Http404
+from django.db.models import Count
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from lungmap_client import lungmap_utils
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.core.files.base import ContentFile
+from lung_map_utils import utils
+import numpy as np
+import pandas as pd
+import pickle
+import cv2
 import django_filters
 
 
@@ -98,10 +103,49 @@ class LungmapImageDetail(generics.RetrieveAPIView):
                     serializer.data,
                     status=status.HTTP_200_OK
                 )
+        except Exception as e:
+            if hasattr(e, 'messages'):
+                return Response(data={'detail': e.messages}, status=400)
+            return Response(data={'detail': e}, status=400)
+
+
+class TrainAModelCreate(generics.CreateAPIView):
+    queryset = models.TrainedModel.objects.all()
+    serializer_class = serializers.TrainedModelCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            print(request.data['imageset'])
+            imset = models.ImageSet.objects.get(id=request.data['imageset'])
+            images = imset.image_set.prefetch_related('subregion_set')
+            training_data = []
+            for image in images:
+                subregions = image.subregion_set.all()
+                if len(subregions) > 0:
+                    # TODO: don't use the file path in case you're moving to S3 or something else
+                    sub_img = cv2.imread(image.image_orig.path)
+                    sub_img = cv2.cvtColor(sub_img, cv2.COLOR_BGR2HSV)
+                    for subregion in subregions:
+                        points = subregion.points.all()
+                        thismask = np.empty((0, 2), dtype='int')
+                        for point in points:
+                            thismask = np.append(thismask, [[point.x, point.y]], axis=0)
+                        training_data.append(utils.generate_custom_features(hsv_img_as_numpy=sub_img,
+                                                                    polygon_points=thismask,
+                                                                    label=subregion.anatomy.name))
+            thispipe = utils.pipe
+            trainingdata = pd.DataFrame(training_data)
+            thispipe.fit(trainingdata.drop('label', axis=1), trainingdata['label'])
+            content = pickle.dumps(thispipe)
+            ex = ContentFile(content)
+            ex.name = imset.image_set_name + '.pkl'
+            final = models.TrainedModel(imageset=imset, model_object=ex)
+            final.save()
+            return Response(serializers.TrainedModelSerializer(final).data, status=status.HTTP_201_CREATED)
         except Exception as e:  # catch any exception to rollback changes
             if hasattr(e, 'messages'):
                 return Response(data={'detail': e.messages}, status=400)
-            return Response(data={'detail': e.message}, status=400)
+            return Response(data={'detail': e}, status=400)
 
 
 @api_view(['GET'])
@@ -118,6 +162,18 @@ def get_image_jpeg(request, pk):
         return Response(content, status=status.HTTP_404_NOT_FOUND)
     else:
         return HttpResponse(image.image_jpeg, content_type='image/jpeg')
+
+
+class ClassifySubregion(generics.GenericAPIView):
+    queryset = models.Image.objects.all()
+    serializer_class = serializers.ClassifyPointsSerializer
+
+    def post(self, request, format=None):
+        image = request.data['image_id']
+        points = request.data['points']
+        for point in points:
+            print(point)
+        return Response(request.data, status=status.HTTP_200_OK)
 
 
 # noinspection PyClassHasNoInit

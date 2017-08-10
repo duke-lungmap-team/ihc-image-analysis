@@ -160,7 +160,6 @@ class Subregion(models.Model):
         )
 
 
-
 class Points(models.Model):
     subregion = models.ForeignKey(Subregion, related_name='points')
     x = models.IntegerField()
