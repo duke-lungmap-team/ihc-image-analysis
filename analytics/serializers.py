@@ -59,32 +59,15 @@ class PointsSerializer(serializers.ModelSerializer):
 
 
 class SubregionSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
     points = PointsSerializer(many=True)
 
     class Meta:
         model = models.Subregion
-        fields = ('id', 'classification', 'image', 'points')
-
-    def to_representation(self, instance):
-        data = super(SubregionSerializer, self).to_representation(instance)
-        data['image'] = instance.image.image_name
-        data['classification'] = instance.classification.classification_name
-        return data
+        fields = ["image", "anatomy", "points"]
 
     def create(self, validated_data):
-        points_data = validated_data.pop('points')
         subregion = models.Subregion.objects.create(**validated_data)
-        for point_data in points_data:
-            models.Points.objects.create(subregion=subregion, **point_data)
         return subregion
-
-
-class ClassificationSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Classification
-        fields = "__all__"
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -109,11 +92,98 @@ class ImageSetProbeMapSerializer(serializers.ModelSerializer):
         fields = ['color', 'probe', 'probe_label']
 
 
+class TrainedModelSerializer(serializers.ModelSerializer):
+    trained_models_id = serializers.CharField(source='id')
+
+    class Meta:
+        model = models.TrainedModel
+        fields = "__all__"
+
+
+class TrainedModelCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TrainedModel
+        fields = ['imageset']
+
+
+class ClassifyPointsSerializer(serializers.ModelSerializer):
+    points = PointsSerializer(source='subregion_set__points_set', many=True)
+    image_id = serializers.CharField(source='id')
+
+    class Meta:
+        model = models.Image
+        fields = ['points', 'image_id']
+
+
 class ImageSetDetailSerializer(serializers.ModelSerializer):
+    model = TrainedModelSerializer(source='trainedmodel_set', many=True)
     probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
     images = LungmapImageSerializer(source='image_set', many=True)
 
     class Meta:
         model = models.ImageSet
         fields = ('image_set_name', 'magnification', 'species',
-                  'development_stage', 'probes', 'images')
+                  'development_stage', 'probes', 'images', 'model')
+
+
+class AnatomyProbeMapSerializer(serializers.ModelSerializer):
+    anatomy_name = serializers.CharField(source='anatomy.name')
+    anatomy_id = serializers.CharField(source='anatomy.id')
+    probe_id = serializers.CharField(source='probe.id')
+
+    class Meta:
+        model = models.AnatomyProbeMap
+        fields = ['anatomy_name', 'anatomy_id', 'probe_id']
+
+
+class AnatomySerializer(serializers.ModelSerializer):
+    anatomies = AnatomyProbeMapSerializer(source='anatomyprobemap_set', many=True)
+
+    class Meta:
+        model = models.Probe
+        fields = ['anatomies']
+
+
+class AnatomyModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Anatomy
+        fields = "__all__"
+
+
+class SubregionModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Subregion
+        fields = "__all__"
+
+
+class ImageSubregionSerializers(serializers.ModelSerializer):
+    image_id = serializers.CharField(source='id')
+    subregion_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Image
+        fields = ['image_id', 'subregion_count']
+
+    # noinspection PyMethodMayBeStatic
+    def get_subregion_count(self, obj):
+        return obj.subregion_set.count()
+
+
+class CountImages(serializers.ModelSerializer):
+    imageset_name = serializers.CharField(source='image_set_name')
+    imageset_id = serializers.CharField(source='id')
+    images = ImageSubregionSerializers(source='image_set', many=True)
+
+    class Meta:
+        model = models.ImageSet
+        fields = ['imageset_name', 'imageset_id', 'images']
+
+
+# noinspection PyAbstractClass
+class SubregionAnatomyAggregationSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    anatomy_id = serializers.IntegerField()
+    anatomy__name = serializers.CharField()

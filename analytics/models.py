@@ -1,5 +1,6 @@
 from django.db import models
 from lungmap_client import lungmap_utils as sparql_utils
+from django.contrib.contenttypes.models import ContentType
 
 
 class Experiment(models.Model):
@@ -127,32 +128,54 @@ class ExperimentProbeMap(models.Model):
         return '%s, %s (%s)' % (self.experiment_id, self.probe.label, self.color)
 
 
-class Classification(models.Model):
-    classification_name = models.CharField(
-        max_length=100
+class Anatomy(models.Model):
+    name = models.CharField(
+        max_length=100,
+        unique=True
     )
 
     def __str__(self):
-        return '%s: %s' % (self.id, self.classification_name)
+        return '%s: %s' % (self.id, self.name)
+
+
+class AnatomyProbeMap(models.Model):
+    probe = models.ForeignKey(Probe)
+    anatomy = models.ForeignKey(Anatomy)
+
+    def __str__(self):
+        return '%s: <Probe: %s>, <Anatomy: %s>' % (self.id,
+                                                   self.probe.label,
+                                                   self.anatomy.name)
 
 
 class Subregion(models.Model):
-    classification = models.ForeignKey(Classification)
     image = models.ForeignKey(Image)
+    anatomy = models.ForeignKey(Anatomy)
 
     def __str__(self):
-        return '%s, %s, %s' % (
+        return '%s, %s' % (
             self.id,
             self.image.image_name,
-            self.classification.classification_name
         )
 
 
 class Points(models.Model):
-    subregion = models.ForeignKey(Subregion)
+    subregion = models.ForeignKey(Subregion, related_name='points')
     x = models.IntegerField()
     y = models.IntegerField()
     order = models.IntegerField()
 
     def __str__(self):
         return '%s %s #%s: [%s, %s]' % (self.id, self.subregion_id, self.order, self.x, self.y)
+
+
+class TrainedModel(models.Model):
+    imageset = models.ForeignKey(ImageSet)
+    model_object = models.FileField(
+        upload_to='trained_models',
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return '<TrainedModel %s: %s' % (self.id, self.imageset_id)

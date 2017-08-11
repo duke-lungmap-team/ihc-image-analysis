@@ -26,12 +26,6 @@ app.config(function($routeProvider) {
             templateUrl: 'static/ng-app/partials/exp_detail.html',
             controller: 'ExperimentDetailController'
         }
-    ).when(
-        '/probes/',
-        {
-            templateUrl: 'static/ng-app/partials/probe_list.html',
-            controller: 'ProbeListController'
-        }
     ).otherwise({ redirectTo: '/' });
 });
 

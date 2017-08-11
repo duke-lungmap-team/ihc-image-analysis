@@ -11,8 +11,8 @@
     </thead>
   </table>
 </div>
-<div class="row">
-  <div class="col-md-4 well well-sm">
+  <div class="col-md-4">
+    <div class="row  well well-sm">
     <table class="table">
       <thead>
         <tr>
@@ -46,7 +46,39 @@
         </tr>
       </tbody>
     </table>
-  </div>
+    </div>
+    <div class="row  well well-sm">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="center" colspan="50">
+            <h5>Imageset Model Details</h5>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Accuracy:</td>
+          <td>{{ animageset.magnification }}</td>
+        </tr>
+        <tr>
+          <td>Sample Size Used:</td>
+          <td>{{ animageset.species }}</td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top !important;">Anatomy Used:</td>
+          <td>
+            <ul class="list-unstyled">
+              <li ng-repeat="p in animageset.probes">
+                {{ p.probe_label }} ({{ p.color }})
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+</div>
   <div class="col-md-8">
     <div class="btn-group" uib-dropdown>
       <button id="choose-img-button" type="button" class="btn btn-default">Choose Image</button>
@@ -71,8 +103,8 @@
         <strong>{{ selected_image.image_name }}</strong>
       </div>
     </p>
-    <img ng-if="selected_image && !selected_image.image_jpeg" src="/static/whirligig.gif">
-    <img ng-src="{{ selected_image.image_jpeg }}" ng-if="selected_image && mode == 'view'" width="862"/>
+    <img ng-if="selected_image && !selected_image.image_orig_sha1" src="/static/whirligig.gif">
+    <img ng-if="selected_image.image_orig_sha1 && mode == 'view'" ng-src="{{ selected_image.image_jpeg }}" width="862"/>
 
     <div ng-if="selected_image && mode == 'train'">
       <div class="row margin-bottom-5">
@@ -83,15 +115,15 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-label-button">
-              <li ng-repeat="classification in classifications">
-                <a ng-click="select_subregion(classification)">{{classification.classification_name}}</a>
+              <li ng-repeat="anatomy in anatomies_now">
+                <a ng-click="select_subregion(anatomy)">{{ anatomy.anatomy_name }}</a>
               </li>
             </ul>
           </div>
         </div>
         <div class="col-md-7 col-md-offset-2">
           <span class="text-center">
-            <strong>{{ selected_subregion.classification_name }}</strong>
+            <strong>{{ selected_subregion.anatomy_name }}</strong>
           </span>
         </div>
       </div>

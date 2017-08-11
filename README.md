@@ -48,7 +48,7 @@ docker run -d \
 -p 8000:8000 \
 -v $(pwd):/ihc-image-analysis \
 --restart always \
-lap 
+lap
   
 #Interactive
 docker run -it \
@@ -76,5 +76,9 @@ stain/jena-fuseki
 We then load our `.owl` file. This is a way more performant way to make our SPARQL queries.
 You can demo this resource [here](http://rapid-609.vm.duke.edu:3030).
 
+
+#acinar tubules
+green = proximal
+not = distal
 
 

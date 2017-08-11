@@ -6,7 +6,10 @@ var URLS = {
     'images': '/api/images/',
     'classifications': '/api/classifications/',
     'subregion': '/api/subregion/',
-    'imagesetsurl': '/api/imagesets/'
+    'imagesetsurl': '/api/imagesets/',
+    'anatomybyprobe': '/api/anatomybyprobe/',
+    'imagesetsubregioncount': '/api/imageset-subregion-count/',
+    'subregionanatomycount': '/api/subregion-anatomy-count',
 };
 
 var service = angular.module('IHCApp');
@@ -16,6 +19,24 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.lm_exp + ':id',
+            {},
+            {}
+        );
+    }
+).factory(
+    'ImagesetSubregionCount',
+    function ($resource) {
+        return $resource(
+            URLS.imagesetsubregioncount,
+            {},
+            {}
+        );
+    }
+).factory(
+    'SubregionAnatomyCount',
+    function ($resource) {
+        return $resource(
+            URLS.subregionanatomycount,
             {},
             {}
         );
@@ -52,6 +73,15 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.exp_probes + ':experiment_probe_id',
+            {},
+            {}
+        );
+    }
+).factory(
+    'AnatomyByProbe',
+    function ($resource) {
+        return $resource(
+            URLS.anatomybyprobe + ':probe_id',
             {},
             {}
         );

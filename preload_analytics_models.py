@@ -50,3 +50,28 @@ for key, value in image_sets.items():
                 experiment_id=experimentobject,
                 probe=probeobject,
             )
+
+#need to fill in with actual data from ontology
+def add_probe_anatomy(probe, class_name):
+    """
+    Add a probe/classification combo, this can be either cell or stucture as identified
+    by the class_type
+    :param probe: str: a probe name
+    :param class_name: str: a classficiation name
+    :param class_type: str: either 'cell' or 'structure'
+    :return:
+    """
+    probe_instance = models.Probe.objects.get(label=probe)
+    anatomy = models.Anatomy.objects.create(name=class_name)
+    pc_mapping = models.AnatomyProbeMap.objects.create(
+        probe = probe_instance,
+        anatomy = anatomy
+    )
+
+add_probe_anatomy('Sox2', 'bronchiolar_epithelial_cell')
+add_probe_anatomy('TTF-1', 'epithelial_cell_of_the_lung')
+add_probe_anatomy('α-Smooth Muscle Actin', 'bronchiolar-associated_smooth_muscle_cell')
+add_probe_anatomy('α-Smooth Muscle Actin', 'bronchiole')
+add_probe_anatomy('Sox9', 'distal_acinar_tubule')
+add_probe_anatomy('α-Smooth Muscle Actin', 'proximal_acinar_tubule')
+add_probe_anatomy('α-Smooth Muscle Actin', 'blood_vessel')
