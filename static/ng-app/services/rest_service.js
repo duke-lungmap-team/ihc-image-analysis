@@ -9,7 +9,7 @@ var URLS = {
     'imagesetsurl': '/api/imagesets/',
     'anatomybyprobe': '/api/anatomybyprobe/',
     'imagesetsubregioncount': '/api/imageset-subregion-count/',
-    'subregionanatomycount': '/api/subregion-anatomy-count',
+    'subregionanatomycount': '/api/subregion-anatomy-count'
 };
 
 var service = angular.module('IHCApp');
