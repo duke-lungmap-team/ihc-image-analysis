@@ -140,9 +140,9 @@ class TrainAModelCreate(generics.CreateAPIView):
             trainingdata = pd.DataFrame(training_data)
             pipe.fit(trainingdata.drop('label', axis=1), trainingdata['label'])
             content = pickle.dumps(pipe)
-            ex = ContentFile(content)
-            ex.name = imset.image_set_name + '.pkl'
-            final = models.TrainedModel(imageset=imset, model_object=ex)
+            pickled_model = ContentFile(content)
+            pickled_model.name = imset.image_set_name + '.pkl'
+            final = models.TrainedModel(imageset=imset, model_object=pickled_model)
             final.save()
             return Response(serializers.TrainedModelSerializer(final).data, status=status.HTTP_201_CREATED)
         except Exception as e:  # catch any exception to rollback changes
