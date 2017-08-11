@@ -1,3 +1,4 @@
+# noinspection PyPackageRequirements
 import ontospy
 
 SPARQL_CELL_PROBE = """
@@ -37,9 +38,9 @@ SPARQL_CELL_TISSUE_STRUCTURE = """
 """
 
 
-model = ontospy.Ontospy("playground/histology of lung E16.5AMM1_v2.owl")
+onto = ontospy.Ontospy("histology of lung E16.5AMM1_v2.owl")
 
-cell_probe_combos = model.query(SPARQL_CELL_PROBE)
+cell_probe_combos = onto.sparql(SPARQL_CELL_PROBE)
 
 probe_struct_list = []
 
@@ -49,7 +50,7 @@ for cp in cell_probe_combos:
 
     sparql_cell_tissue_structure = SPARQL_CELL_TISSUE_STRUCTURE % cell_uri
 
-    result = model.query(sparql_cell_tissue_structure)
+    result = onto.sparql(sparql_cell_tissue_structure)
 
     if len(result) > 0:
         probe_struct_list.append(
