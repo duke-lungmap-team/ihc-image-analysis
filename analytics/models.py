@@ -1,6 +1,5 @@
 from django.db import models
 from lungmap_client import lungmap_utils as sparql_utils
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -145,8 +144,8 @@ class AnatomyProbeMap(models.Model):
 
     def __str__(self):
         return '%s: <Probe: %s>, <Anatomy: %s>' % (self.id,
-                                                self.probe.label,
-                                                self.anatomy.name)
+                                                   self.probe.label,
+                                                   self.anatomy.name)
 
 
 class Subregion(models.Model):

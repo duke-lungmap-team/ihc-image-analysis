@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from analytics import models
 from django.contrib.auth.models import User
-import pprint
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -67,11 +66,7 @@ class SubregionSerializer(serializers.ModelSerializer):
         fields = ["image", "anatomy", "points"]
 
     def create(self, validated_data):
-        points_data = validated_data.pop('points')
         subregion = models.Subregion.objects.create(**validated_data)
-        for point_data in points_data:
-            point = models.Points.objects.create(subregion=subregion,
-                                                 **point_data)
         return subregion
 
 
@@ -169,9 +164,10 @@ class ImageSubregionSerializers(serializers.ModelSerializer):
     subregion_count = serializers.SerializerMethodField()
 
     class Meta:
-        model=models.Image
+        model = models.Image
         fields = ['image_id', 'subregion_count']
 
+    # noinspection PyMethodMayBeStatic
     def get_subregion_count(self, obj):
         return obj.subregion_set.count()
 
@@ -186,14 +182,8 @@ class CountImages(serializers.ModelSerializer):
         fields = ['imageset_name', 'imageset_id', 'images']
 
 
+# noinspection PyAbstractClass
 class SubregionAnatomyAggregationSerializer(serializers.Serializer):
     count = serializers.IntegerField()
     anatomy_id = serializers.IntegerField()
     anatomy__name = serializers.CharField()
-
-
-
-
-
-
-

@@ -13,6 +13,7 @@ from lung_map_utils import utils
 import numpy as np
 import pandas as pd
 import pickle
+# noinspection PyPackageRequirements
 import cv2
 import django_filters
 
@@ -123,7 +124,9 @@ class TrainAModelCreate(generics.CreateAPIView):
                 subregions = image.subregion_set.all()
                 if len(subregions) > 0:
                     # TODO: don't use the file path in case you're moving to S3 or something else
+                    # noinspection PyUnresolvedReferences
                     sub_img = cv2.imread(image.image_orig.path)
+                    # noinspection PyUnresolvedReferences
                     sub_img = cv2.cvtColor(sub_img, cv2.COLOR_BGR2HSV)
                     for subregion in subregions:
                         points = subregion.points.all()
@@ -131,12 +134,12 @@ class TrainAModelCreate(generics.CreateAPIView):
                         for point in points:
                             thismask = np.append(thismask, [[point.x, point.y]], axis=0)
                         training_data.append(utils.generate_custom_features(hsv_img_as_numpy=sub_img,
-                                                                    polygon_points=thismask,
-                                                                    label=subregion.anatomy.name))
-            thispipe = utils.pipe
+                                                                            polygon_points=thismask,
+                                                                            label=subregion.anatomy.name))
+            pipe = utils.pipe
             trainingdata = pd.DataFrame(training_data)
-            thispipe.fit(trainingdata.drop('label', axis=1), trainingdata['label'])
-            content = pickle.dumps(thispipe)
+            pipe.fit(trainingdata.drop('label', axis=1), trainingdata['label'])
+            content = pickle.dumps(pipe)
             ex = ContentFile(content)
             ex.name = imset.image_set_name + '.pkl'
             final = models.TrainedModel(imageset=imset, model_object=ex)
@@ -152,9 +155,6 @@ class TrainAModelCreate(generics.CreateAPIView):
 def get_image_jpeg(request, pk):
     """
     Get JPEG version of a single image
-    :param request: HttpRequest
-    :param pk: Primary key of an image
-    :return: HttpResponse
     """
     image = get_object_or_404(models.Image, pk=pk)
     if image.image_jpeg.name == '':
@@ -164,12 +164,12 @@ def get_image_jpeg(request, pk):
         return HttpResponse(image.image_jpeg, content_type='image/jpeg')
 
 
-class ClassifySubregion(generics.GenericAPIView):
+class ClassifySubRegion(generics.GenericAPIView):
     queryset = models.Image.objects.all()
     serializer_class = serializers.ClassifyPointsSerializer
 
-    def post(self, request, format=None):
-        image = request.data['image_id']
+    # noinspection PyMethodMayBeStatic
+    def post(self, request):
         points = request.data['points']
         for point in points:
             print(point)
@@ -177,7 +177,7 @@ class ClassifySubregion(generics.GenericAPIView):
 
 
 # noinspection PyClassHasNoInit
-class LungmapSubregionFilter(django_filters.rest_framework.FilterSet):
+class LungmapSubRegionFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = models.Subregion
         fields = ['image']
@@ -187,9 +187,9 @@ class SubregionList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
-    filter_class = LungmapSubregionFilter
-    #TODO: wrap this view in an atomic transaction, can cause serious bugs
-    #TODO: handling this with UI conditionals at the moment, but should be here as well
+    filter_class = LungmapSubRegionFilter
+    # TODO: wrap this view in an atomic transaction, can cause serious bugs
+    # TODO: handling this with UI conditionals at the moment, but should be here as well
 
 
 class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -198,7 +198,7 @@ class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.SubregionSerializer
 
 
-class ImagesetSubregionCountList(generics.ListAPIView):
+class ImagesetSubRegionCountList(generics.ListAPIView):
     queryset = models.ImageSet.objects.all()
     serializer_class = serializers.CountImages
 
@@ -209,5 +209,4 @@ class SubregionAnatomyAggregation(generics.ListAPIView):
 
     def get_queryset(self):
         return models.Subregion.objects.select_related().values(
-            'anatomy__name','anatomy_id').annotate(count=Count('anatomy_id'))
-
+            'anatomy__name', 'anatomy_id').annotate(count=Count('anatomy_id'))
