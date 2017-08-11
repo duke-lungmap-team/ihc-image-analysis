@@ -16,31 +16,31 @@ app.controller(
         'ImagesetSubregionCount',
         function ($scope, $q, ImagesetSubregionCount) {
             $scope.tempers = ImagesetSubregionCount;
-            var imagesetcounts = ImagesetSubregionCount.query({});
+            var image_set_counts = ImagesetSubregionCount.query({});
 
-            imagesetcounts.$promise.then((results) => {
-                $scope.imagesetscounts = []
-                results.forEach((result) => {
-                    var temp = {}
-                    temp['imageset_name'] = result['imageset_name']
-                    temp['imageset_id'] = result['imageset_id']
-                    var image_count = 0
-                    var image_subregion_count = 0
-                    var subregion_count=0
-                    result['images'].forEach((image) =>{
-                        image_count+=1
+            image_set_counts.$promise.then(function(results) {
+                $scope.imagesetscounts = [];
+                results.forEach(function(result) {
+                    var temp = {};
+                    temp['imageset_name'] = result['imageset_name'];
+                    temp['imageset_id'] = result['imageset_id'];
+                    var image_count = 0;
+                    var image_subregion_count = 0;
+                    var subregion_count=0;
+                    result['images'].forEach(function(image) {
+                        image_count += 1;
                         if (image.subregion_count>0) {
-                            image_subregion_count+=1
+                            image_subregion_count+=1;
                             subregion_count+=image.subregion_count
                         }
 
-                    })
+                    });
                     temp['image_count'] = image_count;
                     temp['image_subregion_count'] = image_subregion_count;
                     temp['subregion_count'] = subregion_count;
                     $scope.imagesetscounts.push(temp);
                 })
-            })
+            });
         }
     ]
 );
@@ -79,13 +79,14 @@ app.controller(
 
             var imageset = Imagesets.get({'imagesets_id': $routeParams.imagesets_id});
 
-            imageset.$promise.then((data) => {
+            imageset.$promise.then(function(data) {
                 $scope.anatomies = [];
-                $scope.animageset = data
-                angular.forEach(data.probes, (probe) => {
-                    $scope.anatomies.push(AnatomyByProbe.get({'probe_id': probe.probe}).$promise)
-
-                })
+                $scope.animageset = data;
+                data.probes.forEach(function(probe) {
+                    $scope.anatomies.push(AnatomyByProbe.get(
+                        {'probe_id': probe.probe}).$promise
+                    )
+                });
 
                 $q.all($scope.anatomies).then(function (results) {
                     $scope.anatomies_now = [];
@@ -97,10 +98,7 @@ app.controller(
                         // Error callback where reason is the value of the first rejected promise
                         $window.alert(JSON.stringify(reason, null, 4));
                 });
-            })
-
-
-
+            });
 
             $scope.image_selected = function(img) {
                 $scope.selected_image = img;
@@ -124,7 +122,7 @@ app.controller(
 
             $scope.select_subregion = function(classification) {
                 $scope.selected_subregion = classification;
-            }
+            };
 
             $scope.set_mode = function (mode) {
                 $scope.mode = mode;
@@ -172,6 +170,7 @@ app.controller(
                     //TODO check logic here to ensure that I'm grabbing correct points
                     var payload = {};
                     var points = [];
+
                     //Get points
                     for (var i = 0; i < thesepoints.length; i++) {
                         points.push(
@@ -193,7 +192,6 @@ app.controller(
 
                 }
             }
-
         }
     ]
 );
