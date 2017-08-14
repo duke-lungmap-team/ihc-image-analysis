@@ -16,6 +16,8 @@ import pickle
 # noinspection PyPackageRequirements
 import cv2
 import django_filters
+# noinspection PyPackageRequirements
+from sklearn.externals import joblib
 
 
 class UserList(generics.ListAPIView):
@@ -175,16 +177,34 @@ def get_image_jpeg(request, pk):
         return HttpResponse(image.image_jpeg, content_type='image/jpeg')
 
 
-class ClassifySubRegion(generics.GenericAPIView):
+class ClassifySubRegion(generics.CreateAPIView):
     queryset = models.Image.objects.all()
     serializer_class = serializers.ClassifyPointsSerializer
 
     # noinspection PyMethodMayBeStatic
-    def post(self, request):
+    def create(self, request, *args, **kwargs):
+        image_id = request.data['image_id']
         points = request.data['points']
+        image_object = models.Image.objects.get(id=image_id)
+        image_set = models.ImageSet.objects.get(id=image_object.image_set_id)
+        this_model = joblib.load(image_set.trainedmodel.model_object)
+        this_mask = np.empty((0, 2), dtype='int')
         for point in points:
-            print(point)
-        return Response(request.data, status=status.HTTP_200_OK)
+            this_mask = np.append(this_mask, [[point['x'], point['y']]], axis=0)
+        # TODO: FIND A WAY TO NOT USE THE ACUTAL PATH
+        # noinspection PyUnresolvedReferences
+        image_as_numpy = cv2.imread(image_object.image_orig.path)
+        # noinspection PyUnresolvedReferences
+        image_as_numpy = cv2.cvtColor(image_as_numpy, cv2.COLOR_BGR2HSV)
+        features = utils.generate_custom_features(hsv_img_as_numpy=image_as_numpy,
+                                                  polygon_points=this_mask)
+        features_data_frame = pd.DataFrame([features])
+        model_classes = list(this_model.named_steps['classification'].best_estimator_.classes_)
+        probabilities = this_model.predict_proba(features_data_frame.drop('label', axis=1))
+        assert (len(model_classes) == probabilities.shape[1])
+        results = {"results": []}
+        results['results'].extend([{a: probabilities[0][i]} for i, a in enumerate(model_classes)])
+        return Response(results, status=status.HTTP_200_OK)
 
 
 # noinspection PyClassHasNoInit
