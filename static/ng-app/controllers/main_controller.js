@@ -54,12 +54,12 @@ app.controller(
         '$window',
         'Imagesets',
         'Image',
-        'Classification',
         'Subregion',
         'ExperimentProbe',
         'AnatomyByProbe',
+        'Classify',
         function ($scope, $q, $routeParams, $window, Imagesets, Image,
-                  Classification, Subregion, ExperimentProbe, AnatomyByProbe) {
+                  Subregion, ExperimentProbe, AnatomyByProbe, Classify) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_subregion = null;
@@ -73,7 +73,6 @@ app.controller(
             $scope.label = [[]];
             $scope.poly_height = 862;
             $scope.poly_width = 862;
-            // $scope.classifications = Classification.query();
             $scope.tester = AnatomyByProbe;
 
 
@@ -191,6 +190,39 @@ app.controller(
                     $scope.selected_subregion = null;
 
                 }
+            }
+
+            $scope.classify_region = function () {
+                var thesepoints = $scope.points[$scope.activePolygon];
+
+                if (thesepoints.length === 0) {
+                    $window.alert('The current polygon has no points selected, please segment something first.');
+                } else {
+                    //TODO check logic here to ensure that I'm grabbing correct points
+                    var payload = {};
+                    var points = [];
+
+                    //Get points
+                    for (var i = 0; i < thesepoints.length; i++) {
+                        points.push(
+                            {
+                                "x": thesepoints[i][2],
+                                "y": thesepoints[i][3],
+                                "order": i
+                            }
+                        );
+                    }
+                    payload.image_id = $scope.selected_image.id;
+                    payload.points = points;
+
+                    //How to get results of post to conditionally get ready for next
+                    var classified_region = Classify.save(payload);
+                    classified_region.$promise.then(function(results) {
+                        $window.alert(JSON.stringify(results, null, 4))
+                    });
+
+                }
+
             }
         }
     ]

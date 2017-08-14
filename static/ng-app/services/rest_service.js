@@ -4,7 +4,7 @@ var URLS = {
     'probes': '/api/probes/',
     'exp_probes': '/api/experiment_probes/',
     'images': '/api/images/',
-    'classifications': '/api/classifications/',
+    'classify': '/api/classify/',
     'subregion': '/api/subregion/',
     'imagesetsurl': '/api/imagesets/',
     'anatomybyprobe': '/api/anatomybyprobe/',
@@ -86,10 +86,10 @@ service.factory(
             {}
         );
     }
-).factory('Classification',
+).factory('Classify',
     function($resource) {
         return $resource(
-            URLS.classifications,
+            URLS.classify,
             {},
             {}
         );

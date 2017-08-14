@@ -93,11 +93,11 @@ class ImageSetProbeMapSerializer(serializers.ModelSerializer):
 
 
 class TrainedModelSerializer(serializers.ModelSerializer):
-    trained_models_id = serializers.CharField(source='id')
+    trained_model_id = serializers.CharField(source='id')
 
     class Meta:
         model = models.TrainedModel
-        fields = "__all__"
+        fields = ["trained_model_id"]
 
 
 class TrainedModelCreateSerializer(serializers.ModelSerializer):
@@ -117,7 +117,7 @@ class ClassifyPointsSerializer(serializers.ModelSerializer):
 
 
 class ImageSetDetailSerializer(serializers.ModelSerializer):
-    model = TrainedModelSerializer(source='trainedmodel_set', many=True)
+    model = TrainedModelSerializer(source='trainedmodel')
     probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
     images = LungmapImageSerializer(source='image_set', many=True)
 
