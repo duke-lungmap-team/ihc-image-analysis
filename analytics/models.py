@@ -170,7 +170,7 @@ class Points(models.Model):
 
 
 class TrainedModel(models.Model):
-    imageset = models.ForeignKey(ImageSet)
+    imageset = models.OneToOneField(ImageSet)
     model_object = models.FileField(
         upload_to='trained_models',
         blank=True,
