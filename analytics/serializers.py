@@ -123,7 +123,7 @@ class ImageSetDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ImageSet
-        fields = ('image_set_name', 'magnification', 'species',
+        fields = ('id', 'image_set_name', 'magnification', 'species',
                   'development_stage', 'probes', 'images', 'model')
 
 
