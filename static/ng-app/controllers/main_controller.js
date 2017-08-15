@@ -116,10 +116,9 @@ app.controller(
                         $window.alert(JSON.stringify(error, null, 4))
                     });
                 }
-
             };
 
-            $scope.select_subregion = function(classification) {
+            $scope.select_classification = function(classification) {
                 $scope.selected_classification = classification;
             };
 

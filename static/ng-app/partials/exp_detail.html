@@ -116,14 +116,14 @@
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-label-button">
               <li ng-repeat="anatomy in anatomies_now">
-                <a ng-click="select_subregion(anatomy)">{{ anatomy.anatomy_name }}</a>
+                <a ng-click="select_classification(anatomy)">{{ anatomy.anatomy_name }}</a>
               </li>
             </ul>
           </div>
         </div>
         <div class="col-md-7 col-md-offset-2">
           <span class="text-center">
-            <strong>{{ selected_subregion.anatomy_name }}</strong>
+            <strong>{{ selected_classification.anatomy_name }}</strong>
           </span>
         </div>
       </div>
@@ -149,7 +149,7 @@
       <div ng-poly-draw points="points"
            active="activePolygon" image-url="selected_image.image_jpeg"
            width="poly_width" height="poly_height"
-           enabled="enabled" palette="colorArray">
+           enabled="enabled" palette="colorArray" new-points="new_points">
 
       </div>
     </div>

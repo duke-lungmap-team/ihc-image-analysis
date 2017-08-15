@@ -34,7 +34,8 @@ polyDraw.directive('ngPolyDraw', [function () {
             points: '=',
             active: '=',
             width: '=',
-            height: '='
+            height: '=',
+            newPoints: '='
         },
         controller: function () {
             this.dotLineLength = function(x, y, x0, y0, x1, y1, o) {
@@ -261,9 +262,11 @@ polyDraw.directive('ngPolyDraw', [function () {
                 }
                 for(var p = 0; p < scope.points.length; ++p) {
                     var points = scope.points[p];
+
                     if (points.length === 0 || scope.active === p) {
                         continue;
                     }
+
                     scope.drawSingle(points, p);
                 }
             };
@@ -302,6 +305,32 @@ polyDraw.directive('ngPolyDraw', [function () {
 
             scope.$watch('active', function (newVal, oldVal) {
                 if (newVal != oldVal) scope.draw();
+            });
+
+            // setup watch for new_points, these would be updated by the ctrl
+            scope.$watch('newPoints', function() {
+                var tmp_points = [];
+
+                scope.newPoints.forEach(function(region) {
+                    var new_region_points = [];
+
+                    region.forEach(function(p) {
+                        new_region_points.push(
+                            [
+                                Math.floor(p[0] / settings.img_scale_x),
+                                Math.floor(p[1] / settings.img_scale_y),
+                                p[0],
+                                p[1]
+                            ]
+                        )
+                    });
+
+                    tmp_points.push(new_region_points);
+                });
+
+                if (tmp_points.length > 0) {
+                    scope.points = tmp_points;
+                }
             });
 
             $canvas.on('mousedown', scope.mousedown);
