@@ -15,13 +15,13 @@ app.config(function($resourceProvider) {
 
 app.config(function($routeProvider) {
     $routeProvider.when(
-        '/imagesets/',
+        '/image-sets/',
         {
             templateUrl: 'static/ng-app/partials/exp_list.html',
             controller: 'ExperimentListController'
         }
     ).when(
-        '/imagesets/:imagesets_id',
+        '/image-sets/:image_set_id',
         {
             templateUrl: 'static/ng-app/partials/exp_detail.html',
             controller: 'ExperimentDetailController'

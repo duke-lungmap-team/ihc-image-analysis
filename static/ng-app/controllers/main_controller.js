@@ -51,14 +51,15 @@ app.controller(
         '$q',
         '$routeParams',
         '$window',
-        'Imagesets',
+        'ImageSet',
         'Image',
         'Subregion',
         'ExperimentProbe',
         'AnatomyByProbe',
         'Classify',
-        function ($scope, $q, $routeParams, $window, Imagesets, Image,
-                  Subregion, ExperimentProbe, AnatomyByProbe, Classify) {
+        'TrainModel',
+        function ($scope, $q, $routeParams, $window, ImageSet, Image,
+                  Subregion, ExperimentProbe, AnatomyByProbe, Classify, TrainModel) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_classification = null;
@@ -77,7 +78,7 @@ app.controller(
             $scope.poly_width = 862;
             $scope.tester = AnatomyByProbe;
 
-            var imageset = Imagesets.get({'imagesets_id': $routeParams.imagesets_id});
+            var imageset = ImageSet.get({'image_set_id': $routeParams.image_set_id});
 
             imageset.$promise.then(function(data) {
                 $scope.anatomies = [];
@@ -259,6 +260,14 @@ app.controller(
                         $window.alert(JSON.stringify(error.data, null, 4))
                     });
                 }
+            };
+
+            $scope.train_model = function () {
+                TrainModel.save(
+                    {
+                        'imageset': imageset.id
+                    }
+                );
             };
 
             $scope.classify_region = function () {

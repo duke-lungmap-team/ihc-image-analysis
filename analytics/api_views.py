@@ -113,7 +113,7 @@ class LungmapImageDetail(generics.RetrieveAPIView):
             return Response(data={'detail': e}, status=400)
 
 
-class TrainAModelCreate(generics.CreateAPIView):
+class TrainedModelCreate(generics.CreateAPIView):
     queryset = models.TrainedModel.objects.all()
     serializer_class = serializers.TrainedModelCreateSerializer
 

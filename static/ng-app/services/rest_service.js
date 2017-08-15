@@ -6,10 +6,11 @@ var URLS = {
     'images': '/api/images/',
     'classify': '/api/classify/',
     'subregion': '/api/subregion/',
-    'imagesetsurl': '/api/imagesets/',
+    'image_sets': '/api/image-sets/',
     'anatomybyprobe': '/api/anatomybyprobe/',
     'imagesetsubregioncount': '/api/imageset-subregion-count/',
-    'subregionanatomycount': '/api/subregion-anatomy-count'
+    'subregionanatomycount': '/api/subregion-anatomy-count',
+    'train_model': '/api/train-model/'
 };
 
 var service = angular.module('IHCApp');
@@ -51,10 +52,10 @@ service.factory(
         );
     }
 ).factory(
-    'Imagesets',
+    'ImageSet',
     function ($resource) {
         return $resource(
-            URLS.imagesetsurl + ':imagesets_id',
+            URLS.image_sets + ':image_set_id',
             {},
             {}
         );
@@ -94,7 +95,8 @@ service.factory(
             {}
         );
     }
-).factory('Subregion',
+).factory(
+    'Subregion',
     function($resource) {
         return $resource(
             URLS.subregion,
@@ -107,10 +109,22 @@ service.factory(
             }
         );
     }
-).factory('Image', function ($resource) {
+).factory(
+    'Image',
+    function ($resource) {
         return  $resource(
             URLS.images + ':id',
             {},
             {}
         );
-});
+    }
+).factory(
+    'TrainModel',
+    function ($resource) {
+        return  $resource(
+            URLS.train_model,
+            {},
+            {}
+        );
+    }
+);
