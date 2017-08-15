@@ -99,7 +99,12 @@ service.factory(
         return $resource(
             URLS.subregion,
             {},
-            {}
+            {
+                save: {
+                    method: 'POST',
+                    isArray: true
+                }
+            }
         );
     }
 ).factory('Image', function ($resource) {

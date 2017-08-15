@@ -62,7 +62,7 @@ app.controller(
                   Subregion, ExperimentProbe, AnatomyByProbe, Classify) {
             $scope.images = [];
             $scope.selected_image = null;
-            $scope.selected_subregion = null;
+            $scope.selected_classification = null;
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
 
             // training mode vars
@@ -70,11 +70,11 @@ app.controller(
             $scope.colorArray = ['#00FF00'];
             $scope.activePolygon = 0;
             $scope.points = [[]];
+            $scope.new_points = [];
             $scope.label = [[]];
             $scope.poly_height = 862;
             $scope.poly_width = 862;
             $scope.tester = AnatomyByProbe;
-
 
             var imageset = Imagesets.get({'imagesets_id': $routeParams.imagesets_id});
 
@@ -120,7 +120,7 @@ app.controller(
             };
 
             $scope.select_subregion = function(classification) {
-                $scope.selected_subregion = classification;
+                $scope.selected_classification = classification;
             };
 
             $scope.set_mode = function (mode) {
@@ -155,42 +155,69 @@ app.controller(
                 $scope.$broadcast("ngAreas:remove_all");
             };
 
-            $scope.zqwsd = Subregion;
-
             $scope.post_regions = function () {
-                // placeholder
-                var thesepoints = $scope.points[$scope.activePolygon];
+                // will post all the regions for this classification in bulk,
+                // since there cannot be any existing regions for the image / class combo.
+                var regions = [];
 
-                if (thesepoints.length === 0) {
-                    $window.alert('The current polygon has no points selected, please segment something first.');
-                } else if ($scope.selected_subregion === null) {
+                if ($scope.points.length === 0) {
+                    $window.alert('There are no regions drawn, please segment something first.');
+                } else if ($scope.selected_classification === null) {
                     $window.alert('There is no label associated with the active polygon, please choose a label first.');
                 } else {
-                    //TODO check logic here to ensure that I'm grabbing correct points
-                    var payload = {};
-                    var points = [];
+                    $scope.points.forEach(function(p) {
+                        var region = {};
+                        var region_points = [];
 
-                    //Get points
-                    for (var i = 0; i < thesepoints.length; i++) {
-                        points.push(
-                            {
-                                "x": thesepoints[i][2],
-                                "y": thesepoints[i][3],
-                                "order": i
-                            }
-                        );
-                    }
-                    payload.anatomy = $scope.selected_subregion.anatomy_id;
-                    payload.image = $scope.selected_image.id;
-                    payload.points = points;
+                        //Get points
+                        for (var i = 0; i < p.length; i++) {
+                            region_points.push(
+                                {
+                                    "x": p[i][2],
+                                    "y": p[i][3],
+                                    "order": i
+                                }
+                            );
+                        }
 
-                    //How to get results of post to conditionally get ready for next
-                    var newregion = Subregion.save(payload);
-                    $scope.add();
-                    $scope.selected_subregion = null;
+                        region.anatomy = $scope.selected_classification.anatomy_id;
+                        region.image = $scope.selected_image.id;
+                        region.points = region_points;
 
+                        regions.push(region)
+                    });
+
+                    // How to get results of post to conditionally get ready for next
+                    var post_region_response = Subregion.save(regions);
+
+                    var new_regions = [];
+                    var new_region_points =[];
+
+                    post_region_response.$promise.then(function(data) {
+                        data.forEach(function(region) {
+                            // empty array for our new region
+                            new_region_points = [];
+
+                            region.points.forEach(function(p) {
+                                new_region_points.push(
+                                    [
+                                        p.x,
+                                        p.y
+                                    ]
+                                );
+                            });
+
+                            new_regions.push(new_region_points);
+                        });
+
+                        if (new_regions.length > 0) {
+                            $scope.new_points = new_regions;
+                        }
+                    }, function (error) {
+                        $window.alert(JSON.stringify(error.data, null, 4))
+                    });
                 }
-            }
+            };
 
             $scope.classify_region = function () {
                 var thesepoints = $scope.points[$scope.activePolygon];
