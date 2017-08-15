@@ -18,6 +18,7 @@ import cv2
 import django_filters
 # noinspection PyPackageRequirements
 from sklearn.externals import joblib
+import rest_framework.serializers as drf_serializers
 
 
 class UserList(generics.ListAPIView):
@@ -191,7 +192,7 @@ class ClassifySubRegion(generics.CreateAPIView):
         this_mask = np.empty((0, 2), dtype='int')
         for point in points:
             this_mask = np.append(this_mask, [[point['x'], point['y']]], axis=0)
-        # TODO: FIND A WAY TO NOT USE THE ACUTAL PATH
+        # TODO: FIND A WAY TO NOT USE THE ACTUAL PATH
         # noinspection PyUnresolvedReferences
         image_as_numpy = cv2.imread(image_object.image_orig.path)
         # noinspection PyUnresolvedReferences
@@ -211,7 +212,7 @@ class ClassifySubRegion(generics.CreateAPIView):
 class LungmapSubRegionFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = models.Subregion
-        fields = ['image']
+        fields = ['image', 'anatomy']
 
 
 class SubregionList(generics.ListCreateAPIView):
@@ -221,6 +222,76 @@ class SubregionList(generics.ListCreateAPIView):
     filter_class = LungmapSubRegionFilter
     # TODO: wrap this view in an atomic transaction, can cause serious bugs
     # TODO: handling this with UI conditionals at the moment, but should be here as well
+
+    def create(self, request, *args, **kwargs):
+        """
+        A bit of a special case with this API endpoint. We don't allow the creation of
+        new sub-regions for a image / anatomy class combination if there are existing
+        sub-regions for that pair. So, a POST will take a list of sub-regions and check
+        that none exist before saving them in bulk within an atomic transaction.
+
+        The save will also fail if there are a mixture of different image or anatomy IDs,
+        all sub-regions in the list must have the same image ID and anatomy ID.
+        """
+
+        # first check the first region image / anatomy combo and check if there are any
+        # existing sub-regions with this combo
+        image_id = request.data[0]['image']
+        anatomy_id = request.data[0]['anatomy']
+        existing_sub_regions = models.Subregion.objects.filter(
+            image=image_id,
+            anatomy=anatomy_id
+        )
+
+        if existing_sub_regions.count() > 0:
+            raise drf_serializers.ValidationError(
+                "Sub-regions already exist for this image / anatomy"
+            )
+
+        sub_regions = []
+
+        try:
+            with transaction.atomic():
+                for r in request.data:
+                    if image_id != r['image']:
+                        raise drf_serializers.ValidationError(
+                            "All sub-regions must reference the same image"
+                        )
+
+                    if anatomy_id != r['anatomy']:
+                        raise drf_serializers.ValidationError(
+                            "All sub-regions must reference the same anatomy class"
+                        )
+
+                    subregion = models.Subregion.objects.create(
+                        image_id=image_id,
+                        anatomy_id=anatomy_id
+                    )
+
+                    for p in r['points']:
+                        models.Points.objects.create(
+                            subregion=subregion,
+                            x=p['x'],
+                            y=p['y'],
+                            order=p['order']
+                        )
+
+                    sub_regions.append(subregion)
+        except Exception as e:  # catch any exception to rollback changes
+            return Response(data={'detail': e.message}, status=400)
+
+        serializer = serializers.SubregionSerializer(
+            sub_regions,
+            context={'request': request},
+            many=True
+        )
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
 
 class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
