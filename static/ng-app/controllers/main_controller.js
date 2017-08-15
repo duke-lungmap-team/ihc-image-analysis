@@ -65,7 +65,7 @@ app.controller(
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
 
             // training mode vars
-            $scope.enabled = true;
+            $scope.enabled = false;
             $scope.colorArray = ['#00FF00'];
             $scope.activePolygon = 0;
             $scope.regions = {
