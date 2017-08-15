@@ -120,6 +120,39 @@ app.controller(
 
             $scope.select_classification = function(classification) {
                 $scope.selected_classification = classification;
+
+                var existing_sub_regions = Subregion.query(
+                    {
+                        'image': $scope.selected_image.id,
+                        'anatomy': classification.id
+                    }
+                );
+
+                var new_regions = [];
+                var new_region_points =[];
+
+                existing_sub_regions.$promise.then(function(data) {
+                    data.forEach(function(region) {
+                        // empty array for our new region
+                        new_region_points = [];
+
+                        region.points.forEach(function(p) {
+                            new_region_points.push(
+                                [
+                                    p.x,
+                                    p.y
+                                ]
+                            );
+                        });
+
+                        new_regions.push(new_region_points);
+                    });
+
+                    if (new_regions.length > 0) {
+                        $scope.new_points = new_regions;
+                    }
+
+                });
             };
 
             $scope.set_mode = function (mode) {
