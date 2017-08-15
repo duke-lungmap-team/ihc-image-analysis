@@ -68,7 +68,9 @@ app.controller(
             $scope.enabled = true;
             $scope.colorArray = ['#00FF00'];
             $scope.activePolygon = 0;
-            $scope.points = [[]];
+            $scope.regions = {
+                'points': [[]]
+            };
             $scope.new_points = [];
             $scope.label = [[]];
             $scope.poly_height = 862;
@@ -123,7 +125,7 @@ app.controller(
                 var existing_sub_regions = Subregion.query(
                     {
                         'image': $scope.selected_image.id,
-                        'anatomy': classification.id
+                        'anatomy': classification.anatomy_id
                     }
                 );
 
@@ -148,7 +150,14 @@ app.controller(
                     });
 
                     if (new_regions.length > 0) {
+                        $scope.activePolygon = -1;
                         $scope.new_points = new_regions;
+                        $scope.enabled = false;
+                    } else {
+                        $scope.activePolygon = -1;
+                        $scope.regions.points.splice(0, $scope.regions.points.length);
+                        $scope.enabled = true;
+                        $scope.add();
                     }
                 });
             };
@@ -158,27 +167,28 @@ app.controller(
             };
 
             $scope.undo = function(){
-                $scope.points[$scope.activePolygon].splice(-1, 1);
+                if ($scope.enabled) {
+                    $scope.regions.points[$scope.activePolygon].splice(-1, 1);
+                }
             };
 
             $scope.clearAll = function(){
-                $scope.points[$scope.activePolygon] = [];
+                $scope.regions.points[$scope.activePolygon] = [];
             };
 
             $scope.removePolygon = function (index) {
-                $scope.points.splice(index, 1);
+                $scope.regions.points.splice(index, 1);
                 if(index <= $scope.activePolygon) {
                     --$scope.activePolygon;
-                }
-                if ($scope.points.length === 0) {
-                    $scope.enabled = false;
                 }
             };
 
             $scope.add = function (index) {
-                $scope.enabled = true;
-                $scope.points.push([]);
-                $scope.activePolygon = $scope.points.length - 1;
+                if (!$scope.enabled) {
+                    return false;
+                }
+                $scope.regions.points.push([]);
+                $scope.activePolygon = $scope.regions.points.length - 1;
             };
 
             $scope.delete_all_regions = function () {
@@ -190,12 +200,12 @@ app.controller(
                 // since there cannot be any existing regions for the image / class combo.
                 var regions = [];
 
-                if ($scope.points.length === 0) {
+                if ($scope.regions.points.length === 0) {
                     $window.alert('There are no regions drawn, please segment something first.');
                 } else if ($scope.selected_classification === null) {
                     $window.alert('There is no label associated with the active polygon, please choose a label first.');
                 } else {
-                    $scope.points.forEach(function(p) {
+                    $scope.regions.points.forEach(function(p) {
                         var region = {};
                         var region_points = [];
 
@@ -241,7 +251,9 @@ app.controller(
                         });
 
                         if (new_regions.length > 0) {
+                            $scope.activePolygon = -1;
                             $scope.new_points = new_regions;
+                            $scope.enabled = false;
                         }
                     }, function (error) {
                         $window.alert(JSON.stringify(error.data, null, 4))
@@ -250,7 +262,7 @@ app.controller(
             };
 
             $scope.classify_region = function () {
-                var thesepoints = $scope.points[$scope.activePolygon];
+                var thesepoints = $scope.regions.points[$scope.activePolygon];
 
                 if (thesepoints.length === 0) {
                     $window.alert('The current polygon has no points selected, please segment something first.');

@@ -257,7 +257,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                 //noinspection SillyAssignmentJS
                 ctx.canvas.width = ctx.canvas.width;
 
-                if(scope.points.length > 0) {
+                if(scope.points.length > 0 && scope.active >= 0) {
                     scope.drawSingle(scope.points[scope.active], scope.active);
                 }
                 for(var p = 0; p < scope.points.length; ++p) {
@@ -281,7 +281,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                 ctx.beginPath();
                 // ctx.moveTo(points[0], points[1]);
                 for (var i = 0; i < points.length; ++i) {
-                    if (scope.active === p) {
+                    if (scope.active === p && scope.enabled) {
                         ctx.fillRect(points[i][0] - 2, points[i][1] - 2, 4, 4);
                         ctx.strokeRect(points[i][0] - 2, points[i][1] - 2, 4, 4);
                     }
@@ -328,9 +328,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                     tmp_points.push(new_region_points);
                 });
 
-                if (tmp_points.length > 0) {
-                    scope.points = tmp_points;
-                }
+                scope.points = tmp_points;
             });
 
             $canvas.on('mousedown', scope.mousedown);
