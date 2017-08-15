@@ -33,7 +33,6 @@ app.controller(
                             image_subregion_count+=1;
                             subregion_count+=image.subregion_count
                         }
-
                     });
                     temp['image_count'] = image_count;
                     temp['image_subregion_count'] = image_subregion_count;
@@ -151,7 +150,6 @@ app.controller(
                     if (new_regions.length > 0) {
                         $scope.new_points = new_regions;
                     }
-
                 });
             };
 
@@ -279,9 +277,7 @@ app.controller(
                     classified_region.$promise.then(function(results) {
                         $window.alert(JSON.stringify(results, null, 4))
                     });
-
                 }
-
             }
         }
     ]
