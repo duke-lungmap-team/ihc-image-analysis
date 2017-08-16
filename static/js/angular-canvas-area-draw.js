@@ -171,7 +171,8 @@ polyDraw.directive('ngPolyDraw', [function () {
                     e.offsetX = (e.pageX - $(e.target).offset().left);
                     e.offsetY = (e.pageY - $(e.target).offset().top);
                 }
-                var x = e.offsetX, y = e.offsetY;
+                var x = e.offsetX;
+                var y = e.offsetY;
                 var points = scope.points[scope.active];
                 for (var i = 0; i < points.length; ++i) {
                     var dis = Math.sqrt(Math.pow(x - points[i][0], 2) + Math.pow(y - points[i][1], 2));
@@ -192,11 +193,8 @@ polyDraw.directive('ngPolyDraw', [function () {
                 var points = scope.points[scope.active];
                 var x, y, dis, minDis = 0, minDisIndex = -1, lineDis, insertAt = points.length;
 
+                // is this necessary?
                 e.preventDefault();
-                if(!e.offsetX) {
-                    e.offsetX = (e.pageX - $(e.target).offset().left);
-                    e.offsetY = (e.pageY - $(e.target).offset().top);
-                }
 
                 var mousePos = ctrl.getMousePos($canvas[0], e);
                 x = mousePos.x;
