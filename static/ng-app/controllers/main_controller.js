@@ -220,10 +220,6 @@ app.controller(
                 }
             };
 
-            $scope.delete_all_regions = function () {
-                $scope.$broadcast("ngAreas:remove_all");
-            };
-
             $scope.post_regions = function () {
                 // will post all the regions for this classification in bulk,
                 // since there cannot be any existing regions for the image / class combo.
