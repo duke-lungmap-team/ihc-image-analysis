@@ -201,12 +201,22 @@ app.controller(
                 }
 
                 $scope.regions.points.splice(index, 1);
-                if(index <= $scope.activePolygon) {
+
+                // if no regions remain, need to re-initialize with a new one,
+                // though I wonder if this functionality should just be in the
+                // directive itself?
+                // -or-
+                // if the index removed was before the active region, need
+                // to decrement the activePolygon
+                if ($scope.regions.points.length === 0) {
+                    $scope.add();
+                }
+                else if (index <= $scope.activePolygon) {
                     --$scope.activePolygon;
                 }
             };
 
-            $scope.add = function (index) {
+            $scope.add = function () {
                 if (!$scope.enabled) {
                     return false;
                 }
