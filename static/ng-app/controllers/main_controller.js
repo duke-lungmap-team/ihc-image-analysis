@@ -23,7 +23,7 @@ app.controller(
                 results.forEach(function(result) {
                     var temp = {};
                     temp['imageset_name'] = result['imageset_name'];
-                    temp['imageset_id'] = result['imageset_id'];
+                    temp['image_set_id'] = result['imageset_id'];
                     var image_count = 0;
                     var image_subregion_count = 0;
                     var subregion_count=0;
