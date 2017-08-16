@@ -188,10 +188,18 @@ app.controller(
             };
 
             $scope.clearAll = function(){
+                if (!$scope.enabled) {
+                    return false;
+                }
+
                 $scope.regions.points[$scope.activePolygon] = [];
             };
 
             $scope.removePolygon = function (index) {
+                if (!$scope.enabled) {
+                    return false;
+                }
+
                 $scope.regions.points.splice(index, 1);
                 if(index <= $scope.activePolygon) {
                     --$scope.activePolygon;
