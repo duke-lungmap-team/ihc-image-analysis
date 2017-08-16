@@ -186,15 +186,11 @@ polyDraw.directive('ngPolyDraw', [function () {
             };
 
             scope.mousedown = function(e) {
-                if (!scope.enabled) {
+                if (!scope.enabled || e.which ===3) {
                     return false;
                 }
                 var points = scope.points[scope.active];
                 var x, y, dis, minDis = 0, minDisIndex = -1, lineDis, insertAt = points.length;
-
-                if (e.which === 3) {
-                    return false;
-                }
 
                 e.preventDefault();
                 if(!e.offsetX) {
@@ -203,7 +199,8 @@ polyDraw.directive('ngPolyDraw', [function () {
                 }
 
                 var mousePos = ctrl.getMousePos($canvas[0], e);
-                x = mousePos.x; y = mousePos.y;
+                x = mousePos.x;
+                y = mousePos.y;
                 for (var i = 0; i < points.length; ++i) {
                     dis = Math.sqrt(Math.pow(x - points[i][0], 2) + Math.pow(y - points[i][1], 2));
                     if(minDisIndex === -1 || minDis > dis) {
@@ -211,24 +208,12 @@ polyDraw.directive('ngPolyDraw', [function () {
                         minDisIndex = i;
                     }
                 }
+
+                // if within 6px of existing point, assume the user wants to move it
                 if ( minDis < 6 && minDisIndex >= 0 ) {
                     activePoint = minDisIndex;
                     element.on('mousemove', scope.move);
                     return false;
-                }
-
-                for (i = 0; i < points.length; ++i) {
-                    if (i > 1) {
-                        lineDis = ctrl.dotLineLength(
-                            x, y,
-                            points[i][0], points[i][1],
-                            points[i-1][0], points[i-1][1],
-                            true
-                        );
-                        if (lineDis < 6) {
-                            insertAt = i;
-                        }
-                    }
                 }
 
                 points.splice(
