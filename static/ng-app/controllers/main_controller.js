@@ -70,7 +70,8 @@ app.controller(
             $scope.colorArray = ['#00FF00'];
             $scope.activePolygon = 0;
             $scope.regions = {
-                'points': [[]]
+                'points': [[]],
+                'classify_points': [[]]
             };
             $scope.new_points = [];
             $scope.label = [[]];
@@ -165,6 +166,19 @@ app.controller(
 
             $scope.set_mode = function (mode) {
                 $scope.mode = mode;
+
+                if (mode === 'classify') {
+                    $scope.enabled = true;
+
+                    $scope.activePolygon = -1;
+                    $scope.regions.classify_points.splice(
+                        0,
+                        $scope.regions.classify_points.length
+                    );
+                    $scope.add();
+                } else {
+                    $scope.enabled = false;
+                }
             };
 
             $scope.undo = function(){
@@ -188,8 +202,14 @@ app.controller(
                 if (!$scope.enabled) {
                     return false;
                 }
-                $scope.regions.points.push([]);
-                $scope.activePolygon = $scope.regions.points.length - 1;
+
+                if ($scope.mode === 'classify') {
+                    $scope.regions.classify_points.push([]);
+                    $scope.activePolygon = $scope.regions.classify_points.length - 1;
+                } else {
+                    $scope.regions.points.push([]);
+                    $scope.activePolygon = $scope.regions.points.length - 1;
+                }
             };
 
             $scope.delete_all_regions = function () {
@@ -271,7 +291,7 @@ app.controller(
             };
 
             $scope.classify_region = function () {
-                var thesepoints = $scope.regions.points[$scope.activePolygon];
+                var thesepoints = $scope.regions.classify_points[$scope.activePolygon];
 
                 if (thesepoints.length === 0) {
                     $window.alert('The current polygon has no points selected, please segment something first.');
@@ -293,8 +313,9 @@ app.controller(
                     payload.image_id = $scope.selected_image.id;
                     payload.points = points;
 
-                    //How to get results of post to conditionally get ready for next
+                    // How to get results of post to conditionally get ready for next
                     var classified_region = Classify.save(payload);
+
                     classified_region.$promise.then(function(results) {
                         $window.alert(JSON.stringify(results, null, 4))
                     });
