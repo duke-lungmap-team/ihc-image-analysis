@@ -1,6 +1,8 @@
 from lungmap_client import lungmap_utils
 import django
+import os
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lap.settings")
 django.setup()
 
 from analytics import models

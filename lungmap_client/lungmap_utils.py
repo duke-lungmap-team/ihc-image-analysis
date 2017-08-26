@@ -1,5 +1,6 @@
 # noinspection PyPackageRequirements
 import cv2
+from lap import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from io import BytesIO
 from lungmap_client import lungmap_sparql_queries as sparql_queries
@@ -15,8 +16,11 @@ import warnings
 
 lungmap_sparql_server = "http://data.lungmap.net/sparql"
 
-
-session = boto3.Session(profile_name='lungmap')
+session = boto3.Session(
+    aws_secret_access_key=settings.LUNGMAP_AWS_SECRET,
+    aws_access_key_id=settings.LUNGMAP_AWS_ACCESS,
+    region_name=settings.LUNGMAP_AWS_REGION
+)
 s3 = session.resource('s3')
 bucket = s3.Bucket('lungmap-breath-data')
 
