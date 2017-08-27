@@ -54,7 +54,7 @@ class ImageSetDetail(generics.RetrieveAPIView):
     """
 
     queryset = models.ImageSet.objects.all()
-    serializer_class = serializers.ImageSetDetailSerializer
+    serializer_class = serializers.ImageSetSerializer
 
 
 class AnatomyByProbeList(generics.RetrieveAPIView):
@@ -75,7 +75,7 @@ class LungmapImageList(generics.ListAPIView):
     """
 
     queryset = models.Image.objects.all()
-    serializer_class = serializers.LungmapImageSerializer
+    serializer_class = serializers.ImageSerializer
     filter_class = LungmapImageFilter
 
 
@@ -88,13 +88,13 @@ class AnatomyList(generics.RetrieveAPIView):
     serializer_class = serializers.AnatomyModelSerializer
 
 
-class LungmapImageDetail(generics.RetrieveAPIView):
+class ImageDetail(generics.RetrieveAPIView):
     """
     Get an image
     """
 
     queryset = models.Image.objects.all()
-    serializer_class = serializers.LungmapImageSerializer
+    serializer_class = serializers.ImageSerializer
 
     def retrieve(self, request, *args, **kwargs):
         serializer_context = {
@@ -109,7 +109,7 @@ class LungmapImageDetail(generics.RetrieveAPIView):
                     img.image_orig_sha1 = sha1
                     img.image_jpeg = suf_jpeg
                     img.save()
-                serializer = serializers.LungmapImageSerializer(
+                serializer = serializers.ImageSerializer(
                     img,
                     context=serializer_context
                 )
@@ -200,11 +200,14 @@ class ClassifySubRegion(generics.CreateAPIView):
         image_set = models.ImageSet.objects.get(id=image_object.image_set_id)
         this_model = joblib.load(image_set.trainedmodel.model_object)
         this_mask = np.empty((0, 2), dtype='int')
+
         for point in points:
             this_mask = np.append(this_mask, [[point['x'], point['y']]], axis=0)
+
         # TODO: FIND A WAY TO NOT USE THE ACTUAL PATH
         # noinspection PyUnresolvedReferences
         image_as_numpy = cv2.imread(image_object.image_orig.path)
+
         # noinspection PyUnresolvedReferences
         image_as_numpy = cv2.cvtColor(image_as_numpy, cv2.COLOR_BGR2HSV)
         features = utils.generate_custom_features(hsv_img_as_numpy=image_as_numpy,
@@ -212,9 +215,14 @@ class ClassifySubRegion(generics.CreateAPIView):
         features_data_frame = pd.DataFrame([features])
         model_classes = list(this_model.named_steps['classification'].best_estimator_.classes_)
         probabilities = this_model.predict_proba(features_data_frame.drop('label', axis=1))
+
         assert (len(model_classes) == probabilities.shape[1])
+
         results = {"results": []}
-        results['results'].extend([{a: probabilities[0][i]} for i, a in enumerate(model_classes)])
+        results['results'].extend(
+            [{a: probabilities[0][i]} for i, a in enumerate(model_classes)]
+        )
+
         return Response(results, status=status.HTTP_200_OK)
 
 
@@ -308,11 +316,6 @@ class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
-
-
-class ImagesetSubRegionCountList(generics.ListAPIView):
-    queryset = models.ImageSet.objects.all()
-    serializer_class = serializers.CountImages
 
 
 class SubregionAnatomyAggregation(generics.ListAPIView):
