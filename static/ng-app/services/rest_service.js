@@ -1,6 +1,7 @@
 var URLS = {
     'species': '/api/species/',
     'magnifications': '/api/magnifications/',
+    'development_stages': '/api/development_stages/',
     'lm_exp': '/api/lungmapexperiments/',
     'exp': '/api/experiments/',
     'probes': '/api/probes/',
@@ -30,6 +31,15 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.magnifications,
+            {},
+            {}
+        );
+    }
+).factory(
+    'DevelopmentStages',
+    function ($resource) {
+        return $resource(
+            URLS.development_stages,
             {},
             {}
         );
