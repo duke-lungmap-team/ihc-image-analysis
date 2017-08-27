@@ -97,13 +97,6 @@ class SubregionSerializer(serializers.ModelSerializer):
         return subregion
 
 
-class ProbeNameSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Probe
-        fields = ['label']
-
-
 class ClassifyPointsSerializer(serializers.ModelSerializer):
     points = PointsSerializer(source='subregion_set__points_set', many=True)
     image_id = serializers.CharField(source='id')
