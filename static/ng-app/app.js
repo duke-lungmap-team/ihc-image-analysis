@@ -15,7 +15,7 @@ app.config(function($resourceProvider) {
 
 app.config(function($routeProvider) {
     $routeProvider.when(
-        '/image-sets/',
+        '/',
         {
             templateUrl: 'static/ng-app/partials/img_set_list.html',
             controller: 'ExperimentListController'
