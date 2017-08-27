@@ -49,6 +49,18 @@
 
         <hr/>
 
+        <b>Development Stage</b>
+        <ul class="list-unstyled">
+          <li ng-repeat="d in development_stages">
+            <label>
+              <input type="checkbox" ng-model="d.query" />
+              {{ d.name }}
+            </label>
+          </li>
+        </ul>
+
+        <hr/>
+
       </form>
     </div>
   </div>
