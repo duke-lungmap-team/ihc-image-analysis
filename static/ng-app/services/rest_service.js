@@ -9,7 +9,6 @@ var URLS = {
     'subregion': '/api/subregion/',
     'image_sets': '/api/image-sets/',
     'anatomybyprobe': '/api/anatomybyprobe/',
-    'imagesetsubregioncount': '/api/imageset-subregion-count/',
     'subregionanatomycount': '/api/subregion-anatomy-count',
     'train_model': '/api/train-model/'
 };
@@ -30,15 +29,6 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.lm_exp + ':id',
-            {},
-            {}
-        );
-    }
-).factory(
-    'ImagesetSubregionCount',
-    function ($resource) {
-        return $resource(
-            URLS.imagesetsubregioncount,
             {},
             {}
         );
