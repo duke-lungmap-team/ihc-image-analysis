@@ -13,19 +13,19 @@ app.controller(
     [
         '$scope',
         '$q',
-        'ImagesetSubregionCount',
+        'ImageSet',
         'Species',
-        function ($scope, $q, ImagesetSubregionCount, Species) {
+        function ($scope, $q, ImageSet, Species) {
             $scope.species = Species.query();
 
-            var image_set_counts = ImagesetSubregionCount.query({});
+            var image_set_counts = ImageSet.query({});
 
             image_set_counts.$promise.then(function(results) {
                 $scope.imagesetscounts = [];
                 results.forEach(function(result) {
                     var temp = {};
-                    temp['imageset_name'] = result['imageset_name'];
-                    temp['image_set_id'] = result['imageset_id'];
+                    temp['image_set_name'] = result['image_set_name'];
+                    temp['id'] = result['id'];
                     var image_count = 0;
                     var image_subregion_count = 0;
                     var subregion_count=0;
