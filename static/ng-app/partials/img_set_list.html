@@ -3,7 +3,7 @@
     <tr>
       <th colspan="50" class="center">
         <div style="position:relative">
-          <h4>Image Sets <span class="badge badge-inverse align-top">{{ imagesetscounts.length }}</span></h4>
+          <h4>Image Sets <span class="badge badge-inverse align-top">{{ image_sets.length }}</span></h4>
         </div>
       </th>
     </tr>
@@ -17,7 +17,7 @@
         <div style="position: relative">
           <h4>Filter</h4>
           <div style="position: absolute; right:0;top:0;">
-            <button class="btn btn-default btn-sm" ng-click="apply_filter()">
+            <button class="btn btn-default btn-sm" ng-click="filter_image_sets()">
               Apply
             </button>
           </div>
@@ -29,8 +29,8 @@
         <ul class="list-unstyled">
           <li ng-repeat="s in species">
             <label>
-              <input type="checkbox" ng-model="filter.species" />
-              {{ s }}
+              <input type="checkbox" ng-model="s.query" />
+              {{ s.name }}
             </label>
           </li>
         </ul>
@@ -54,7 +54,7 @@
 
       <tbody>
 
-        <tr ng-repeat="imset in imagesetscounts">
+        <tr ng-repeat="imset in image_sets">
           <td>
             <a href="#/image-sets/{{ imset.id }}">{{ imset.image_set_name }}</a>      </td>
           <td>

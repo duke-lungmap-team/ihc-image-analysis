@@ -16,32 +16,61 @@ app.controller(
         'ImageSet',
         'Species',
         function ($scope, $q, ImageSet, Species) {
-            $scope.species = Species.query();
+            $scope.species = [];
 
-            var image_set_counts = ImageSet.query({});
-
-            image_set_counts.$promise.then(function(results) {
-                $scope.imagesetscounts = [];
-                results.forEach(function(result) {
-                    var temp = {};
-                    temp['image_set_name'] = result['image_set_name'];
-                    temp['id'] = result['id'];
-                    var image_count = 0;
-                    var image_subregion_count = 0;
-                    var subregion_count=0;
-                    result['images'].forEach(function(image) {
-                        image_count += 1;
-                        if (image.subregion_count>0) {
-                            image_subregion_count+=1;
-                            subregion_count+=image.subregion_count
+            var species = Species.query();
+            species.$promise.then(function (data) {
+                data.forEach(function (s) {
+                    $scope.species.push(
+                        {
+                            'name': s,
+                            'query': false
                         }
-                    });
-                    temp['image_count'] = image_count;
-                    temp['image_subregion_count'] = image_subregion_count;
-                    temp['subregion_count'] = subregion_count;
-                    $scope.imagesetscounts.push(temp);
-                })
+                    )
+                });
             });
+
+            $scope.filter_image_sets = function () {
+                var species_filters = [];
+                $scope.species.forEach(function (s) {
+                    if (s.query) {
+                        species_filters.push(s.name);
+                    }
+                });
+
+                var image_sets = ImageSet.query(
+                    {
+                        'species': species_filters
+                    }
+                );
+
+                image_sets.$promise.then(function(results) {
+                    $scope.image_sets = [];
+                    results.forEach(function(result) {
+                        var temp = {};
+                        temp['image_set_name'] = result['image_set_name'];
+                        temp['id'] = result['id'];
+                        var image_count = 0;
+                        var image_subregion_count = 0;
+                        var subregion_count=0;
+
+                        result['images'].forEach(function(image) {
+                            image_count += 1;
+
+                            if (image.subregion_count>0) {
+                                image_subregion_count+=1;
+                                subregion_count+=image.subregion_count
+                            }
+                        });
+
+                        temp['image_count'] = image_count;
+                        temp['image_subregion_count'] = image_subregion_count;
+                        temp['subregion_count'] = subregion_count;
+
+                        $scope.image_sets.push(temp);
+                    })
+                });
+            };
         }
     ]
 );
