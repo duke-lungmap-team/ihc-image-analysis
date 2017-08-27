@@ -106,7 +106,8 @@ app.controller(
                     {
                         'species': species_filters,
                         'magnification': mag_filters,
-                        'development_stage': dev_stage_filters
+                        'development_stage': dev_stage_filters,
+                        'probe': probe_filters
                     }
                 );
 

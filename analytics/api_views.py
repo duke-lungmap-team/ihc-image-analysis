@@ -76,9 +76,14 @@ class ProbeList(generics.ListAPIView):
 
 # noinspection PyClassHasNoInit
 class ImageSetFilter(django_filters.rest_framework.FilterSet):
+    probe = django_filters.ModelMultipleChoiceFilter(
+        queryset=models.Probe.objects.all(),
+        name='imagesetprobemap__probe'
+    )
+
     class Meta:
         model = models.ImageSet
-        fields = ['species', 'magnification', 'development_stage']
+        fields = ['species', 'magnification', 'development_stage', 'probe']
 
 
 class ImageSetList(generics.ListAPIView):
