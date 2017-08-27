@@ -61,6 +61,16 @@
 
         <hr/>
 
+        <b>Probe</b>
+        <ul class="list-unstyled">
+          <li ng-repeat="p in probes">
+            <label>
+              <input type="checkbox" ng-model="p.query" />
+              {{ p.name }}
+            </label>
+          </li>
+        </ul>
+
       </form>
     </div>
   </div>

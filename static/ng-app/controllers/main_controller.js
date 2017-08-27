@@ -17,10 +17,12 @@ app.controller(
         'Species',
         'Magnification',
         'DevelopmentStages',
-        function ($scope, $q, ImageSet, Species, Magnification, DevelopmentStages) {
+        'Probe',
+        function ($scope, $q, ImageSet, Species, Magnification, DevelopmentStages, Probe) {
             $scope.species = [];
             $scope.magnifications = [];
             $scope.development_stages = [];
+            $scope.probes = [];
 
             var species = Species.query();
             species.$promise.then(function (data) {
@@ -58,6 +60,19 @@ app.controller(
                 });
             });
 
+            var probes = Probe.query();
+            probes.$promise.then(function (data) {
+                data.forEach(function (p) {
+                    $scope.probes.push(
+                        {
+                            'id': p.id,
+                            'name': p.label,
+                            'query': false
+                        }
+                    )
+                });
+            });
+
             $scope.filter_image_sets = function () {
                 var species_filters = [];
                 $scope.species.forEach(function (s) {
@@ -77,6 +92,13 @@ app.controller(
                 $scope.development_stages.forEach(function (d) {
                     if (d.query) {
                         dev_stage_filters.push(d.name);
+                    }
+                });
+
+                var probe_filters = [];
+                $scope.probes.forEach(function (p) {
+                    if (p.query) {
+                        probe_filters.push(p.id);
                     }
                 });
 
