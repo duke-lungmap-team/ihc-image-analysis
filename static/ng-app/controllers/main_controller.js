@@ -10,12 +10,11 @@ app.controller(
 
 app.controller(
     'ExperimentListController',
-       [
+    [
         '$scope',
         '$q',
         'ImagesetSubregionCount',
         function ($scope, $q, ImagesetSubregionCount) {
-            $scope.tempers = ImagesetSubregionCount;
             var image_set_counts = ImagesetSubregionCount.query({});
 
             image_set_counts.$promise.then(function(results) {
