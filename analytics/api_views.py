@@ -65,6 +65,15 @@ def get_development_stage_list(request):
     return Response(sorted(list(dev_stages)))
 
 
+class ProbeList(generics.ListAPIView):
+    """
+    List all probes
+    """
+
+    queryset = models.Probe.objects.all()
+    serializer_class = serializers.ProbeSerializer
+
+
 # noinspection PyClassHasNoInit
 class ImageSetFilter(django_filters.rest_framework.FilterSet):
     class Meta:
@@ -146,7 +155,7 @@ class ImageList(generics.ListAPIView):
 
 class AnatomyList(generics.RetrieveAPIView):
     """
-    List all images.
+    List all anatomical structures
     """
 
     queryset = models.Anatomy.objects.all()

@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^api/species/$', api_views.get_species_list, name='species-list'),
     url(r'^api/magnifications/$', api_views.get_magnification_list, name='magnification-list'),
     url(r'^api/development_stages/$', api_views.get_development_stage_list, name='development-stage-list'),
+    url(r'^api/probes/$', api_views.ProbeList.as_view()),
     url(r'^api/images/$', api_views.ImageList.as_view()),
     url(r'^api/images/(?P<pk>[0-9]+)/$', api_views.ImageDetail.as_view()),
     url(r'^api/images-jpeg/(?P<pk>[0-9]+)/$', api_views.get_image_jpeg, name='image-jpeg'),
