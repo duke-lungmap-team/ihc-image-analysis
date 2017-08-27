@@ -7,29 +7,70 @@
         </div>
       </th>
     </tr>
-    <tr>
-      <th>Image Set</th>
-      <th>Images</th>
-      <th>Images w/ Subregions</th>
-      <th>Subregions</th>
-    </tr>
   </thead>
-
-  <tbody>
-
-    <tr ng-repeat="imset in imagesetscounts">
-      <td>
-        <a href="#/image-sets/{{ imset.image_set_id }}">{{ imset.imageset_name }}</a>      </td>
-      <td>
-        {{ imset.image_count }}
-      </td>
-      <td>
-          {{ imset.image_subregion_count }}
-      </td>
-      <td>
-        {{ imset.subregion_count }}
-      </td>
-    </tr>
-
-  </tbody>
 </table>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="well">
+      <form id="img-set-filter-form" method="get">
+        <div style="position: relative">
+          <h4>Filter</h4>
+          <div style="position: absolute; right:0;top:0;">
+            <button class="btn btn-default btn-sm" ng-click="apply_filter()">
+              Apply
+            </button>
+          </div>
+        </div>
+
+        <hr/>
+
+        <b>Species</b>
+        <ul class="list-unstyled">
+          <li ng-repeat="s in species">
+            <label>
+              <input type="checkbox" ng-model="filter.species" />
+              {{ s }}
+            </label>
+          </li>
+        </ul>
+
+        <hr/>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Image Set</th>
+          <th>Images</th>
+          <th>Images w/ Subregions</th>
+          <th>Subregions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr ng-repeat="imset in imagesetscounts">
+          <td>
+            <a href="#/image-sets/{{ imset.image_set_id }}">{{ imset.imageset_name }}</a>      </td>
+          <td>
+            {{ imset.image_count }}
+          </td>
+          <td>
+              {{ imset.image_subregion_count }}
+          </td>
+          <td>
+            {{ imset.subregion_count }}
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
