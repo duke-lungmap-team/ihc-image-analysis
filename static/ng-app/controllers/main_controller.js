@@ -64,17 +64,14 @@ app.controller(
             $scope.selected_image = null;
             $scope.selected_classification = null;
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
-            $scope.label = [[]];
 
             // drw-poly vars
             $scope.enabled = false;
             $scope.regions = {
-                'trained': [],
-                'classify': [],
                 'svg': []
             };
-            $scope.poly_height = 862;
-            $scope.poly_width = 862;
+            $scope.poly_height = 997;
+            $scope.poly_width = 997;
 
             var imageset = ImageSet.get({'image_set_id': $routeParams.image_set_id});
 

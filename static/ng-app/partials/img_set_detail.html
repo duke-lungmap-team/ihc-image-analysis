@@ -1,85 +1,73 @@
 <div class="row">
-  <table class="table">
-    <thead>
-      <tr>
-        <th class="center" colspan="50">
-          <div style="position:relative">
-            <h4>Imageset: {{ animageset.image_set_name }}</h4>
-          </div>
-        </th>
-      </tr>
-    </thead>
-  </table>
-</div>
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="row  well well-sm">
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="center" colspan="50">
-            <h5>Imageset Details</h5>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Magnification:</td>
-          <td>{{ animageset.magnification }}</td>
-        </tr>
-        <tr>
-          <td>Species:</td>
-          <td>{{ animageset.species }}</td>
-        </tr>
-        <tr>
-          <td>Development Stage:</td>
-          <td>{{ animageset.development_stage }}</td>
-        </tr>
-        <tr>
-          <td style="vertical-align: top !important;">Probes:</td>
-          <td>
-            <ul class="list-unstyled">
-              <li ng-repeat="p in animageset.probes">
-                <div class='color-square {{ p.color }}'></div>{{ p.probe_label }} ({{ p.color }})
-              </li>
-            </ul>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="center" colspan="50">
+              <h5>Image Set Details</h5>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Magnification:</td>
+            <td>{{ animageset.magnification }}</td>
+          </tr>
+          <tr>
+            <td>Species:</td>
+            <td>{{ animageset.species }}</td>
+          </tr>
+          <tr>
+            <td>Development Stage:</td>
+            <td>{{ animageset.development_stage }}</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top !important;">Probes:</td>
+            <td>
+              <ul class="list-unstyled">
+                <li ng-repeat="p in animageset.probes">
+                  <div class='color-square {{ p.color }}'></div>{{ p.probe_label }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="row  well well-sm">
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="center" colspan="50">
-            <h5>Imageset Model Details</h5>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Accuracy:</td>
-          <td>{{ animageset.magnification }}</td>
-        </tr>
-        <tr>
-          <td>Sample Size Used:</td>
-          <td>{{ animageset.species }}</td>
-        </tr>
-        <tr>
-          <td style="vertical-align: top !important;">Anatomy Used:</td>
-          <td>
-            <ul class="list-unstyled">
-              <li ng-repeat="p in animageset.probes">
-                {{ p.probe_label }} ({{ p.color }})
-              </li>
-            </ul>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="center" colspan="50">
+              <h5>Imageset Model Details</h5>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Accuracy:</td>
+            <td>{{ animageset.magnification }}</td>
+          </tr>
+          <tr>
+            <td>Sample Size Used:</td>
+            <td>{{ animageset.species }}</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top !important;">Anatomy Used:</td>
+            <td>
+              <ul class="list-unstyled">
+                <li ng-repeat="p in animageset.probes">
+                  {{ p.probe_label }} ({{ p.color }})
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-</div>
-  <div class="col-md-8">
+  </div>
+  <div class="col-md-9">
     <div class="btn-group" uib-dropdown>
       <button id="choose-img-button" type="button" class="btn btn-default">Choose Image</button>
       <button type="button" class="btn btn-default" uib-dropdown-toggle>
