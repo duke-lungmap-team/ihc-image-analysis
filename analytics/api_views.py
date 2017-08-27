@@ -43,9 +43,17 @@ def get_species_list(request):
     return Response(list(species))
 
 
+# noinspection PyClassHasNoInit
+class ImageSetFilter(django_filters.rest_framework.FilterSet):
+    class Meta:
+        model = models.ImageSet
+        fields = ['species']
+
+
 class ImageSetList(generics.ListAPIView):
     queryset = models.ImageSet.objects.all()
     serializer_class = serializers.ImageSetSerializer
+    filter_class = ImageSetFilter
 
 
 class ImageSetDetail(generics.RetrieveAPIView):
