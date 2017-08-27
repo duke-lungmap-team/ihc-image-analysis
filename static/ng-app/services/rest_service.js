@@ -1,4 +1,5 @@
 var URLS = {
+    'species': '/api/species/',
     'lm_exp': '/api/lungmapexperiments/',
     'exp': '/api/experiments/',
     'probes': '/api/probes/',
@@ -16,6 +17,15 @@ var URLS = {
 var service = angular.module('IHCApp');
 
 service.factory(
+    'Species',
+    function ($resource) {
+        return $resource(
+            URLS.species,
+            {},
+            {}
+        );
+    }
+).factory(
     'LungMapExperiment',
     function ($resource) {
         return $resource(
