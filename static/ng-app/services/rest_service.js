@@ -84,7 +84,7 @@ service.factory(
     'Probe',
     function ($resource) {
         return $resource(
-            URLS.probes + ':probe_id',
+            URLS.probes,
             {},
             {}
         );
