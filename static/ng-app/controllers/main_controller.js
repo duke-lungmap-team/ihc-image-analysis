@@ -14,7 +14,10 @@ app.controller(
         '$scope',
         '$q',
         'ImagesetSubregionCount',
-        function ($scope, $q, ImagesetSubregionCount) {
+        'Species',
+        function ($scope, $q, ImagesetSubregionCount, Species) {
+            $scope.species = Species.query();
+
             var image_set_counts = ImagesetSubregionCount.query({});
 
             image_set_counts.$promise.then(function(results) {
