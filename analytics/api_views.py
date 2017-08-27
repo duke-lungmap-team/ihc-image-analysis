@@ -43,11 +43,21 @@ def get_species_list(request):
     return Response(list(species))
 
 
+# noinspection PyUnusedLocal
+@api_view(['GET'])
+def get_magnification_list(request):
+    """
+    Get list of distinct magnification names
+    """
+    mags = models.ImageSet.objects.order_by().values_list('magnification', flat=True).distinct()
+    return Response(list(mags))
+
+
 # noinspection PyClassHasNoInit
 class ImageSetFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = models.ImageSet
-        fields = ['species']
+        fields = ['species', 'magnification']
 
 
 class ImageSetList(generics.ListAPIView):
