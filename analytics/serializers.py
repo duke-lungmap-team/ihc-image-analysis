@@ -10,11 +10,46 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username')
 
 
+class ImageSerializer(serializers.ModelSerializer):
+    image_jpeg = serializers.HyperlinkedIdentityField('image-jpeg', read_only=True)
+
+    class Meta:
+        model = models.Image
+        fields = "__all__"
+
+
+class TrainedModelSerializer(serializers.ModelSerializer):
+    trained_model_id = serializers.CharField(source='id')
+
+    class Meta:
+        model = models.TrainedModel
+        fields = ["trained_model_id"]
+
+
+class TrainedModelCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TrainedModel
+        fields = ['imageset']
+
+
+class ImageSetProbeMapSerializer(serializers.ModelSerializer):
+    probe_label = serializers.CharField(source='probe.label')
+
+    class Meta:
+        model = models.ImageSetProbeMap
+        fields = ['color', 'probe', 'probe_label']
+
+
 class ImageSetSerializer(serializers.ModelSerializer):
+    model = TrainedModelSerializer(source='trainedmodel')
+    probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
+    images = ImageSerializer(source='image_set', many=True)
 
     class Meta:
         model = models.ImageSet
-        fields = "__all__"
+        fields = ('id', 'image_set_name', 'magnification', 'species',
+                  'development_stage', 'probes', 'images', 'model')
 
 
 class ExperimentSerializer(serializers.ModelSerializer):
@@ -43,14 +78,6 @@ class ExperimentProbeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class LungmapImageSerializer(serializers.ModelSerializer):
-    image_jpeg = serializers.HyperlinkedIdentityField('image-jpeg', read_only=True)
-
-    class Meta:
-        model = models.Image
-        fields = "__all__"
-
-
 class PointsSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -70,41 +97,11 @@ class SubregionSerializer(serializers.ModelSerializer):
         return subregion
 
 
-class ImageSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Image
-        fields = "__all__"
-
-
 class ProbeNameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Probe
         fields = ['label']
-
-
-class ImageSetProbeMapSerializer(serializers.ModelSerializer):
-    probe_label = serializers.CharField(source='probe.label')
-
-    class Meta:
-        model = models.ImageSetProbeMap
-        fields = ['color', 'probe', 'probe_label']
-
-
-class TrainedModelSerializer(serializers.ModelSerializer):
-    trained_model_id = serializers.CharField(source='id')
-
-    class Meta:
-        model = models.TrainedModel
-        fields = ["trained_model_id"]
-
-
-class TrainedModelCreateSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.TrainedModel
-        fields = ['imageset']
 
 
 class ClassifyPointsSerializer(serializers.ModelSerializer):
@@ -114,17 +111,6 @@ class ClassifyPointsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Image
         fields = ['points', 'image_id']
-
-
-class ImageSetDetailSerializer(serializers.ModelSerializer):
-    model = TrainedModelSerializer(source='trainedmodel')
-    probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
-    images = LungmapImageSerializer(source='image_set', many=True)
-
-    class Meta:
-        model = models.ImageSet
-        fields = ('id', 'image_set_name', 'magnification', 'species',
-                  'development_stage', 'probes', 'images', 'model')
 
 
 class AnatomyProbeMapSerializer(serializers.ModelSerializer):
@@ -170,16 +156,6 @@ class ImageSubregionSerializers(serializers.ModelSerializer):
     # noinspection PyMethodMayBeStatic
     def get_subregion_count(self, obj):
         return obj.subregion_set.count()
-
-
-class CountImages(serializers.ModelSerializer):
-    imageset_name = serializers.CharField(source='image_set_name')
-    imageset_id = serializers.CharField(source='id')
-    images = ImageSubregionSerializers(source='image_set', many=True)
-
-    class Meta:
-        model = models.ImageSet
-        fields = ['imageset_name', 'imageset_id', 'images']
 
 
 # noinspection PyAbstractClass
