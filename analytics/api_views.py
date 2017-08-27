@@ -62,32 +62,6 @@ class AnatomyByProbeList(generics.RetrieveAPIView):
     serializer_class = serializers.AnatomySerializer
 
 
-# noinspection PyClassHasNoInit
-class LungmapImageFilter(django_filters.rest_framework.FilterSet):
-    class Meta:
-        model = models.Image
-        fields = ['experiment']
-
-
-class LungmapImageList(generics.ListAPIView):
-    """
-    List all images.
-    """
-
-    queryset = models.Image.objects.all()
-    serializer_class = serializers.ImageSerializer
-    filter_class = LungmapImageFilter
-
-
-class AnatomyList(generics.RetrieveAPIView):
-    """
-    List all images.
-    """
-
-    queryset = models.Anatomy.objects.all()
-    serializer_class = serializers.AnatomyModelSerializer
-
-
 class ImageDetail(generics.RetrieveAPIView):
     """
     Get an image
@@ -121,6 +95,32 @@ class ImageDetail(generics.RetrieveAPIView):
             if hasattr(e, 'messages'):
                 return Response(data={'detail': e.messages}, status=400)
             return Response(data={'detail': e}, status=400)
+
+
+# noinspection PyClassHasNoInit
+class ImageFilter(django_filters.rest_framework.FilterSet):
+    class Meta:
+        model = models.Image
+        fields = ['experiment']
+
+
+class ImageList(generics.ListAPIView):
+    """
+    List all images.
+    """
+
+    queryset = models.Image.objects.all()
+    serializer_class = serializers.ImageSerializer
+    filter_class = ImageFilter
+
+
+class AnatomyList(generics.RetrieveAPIView):
+    """
+    List all images.
+    """
+
+    queryset = models.Anatomy.objects.all()
+    serializer_class = serializers.AnatomyModelSerializer
 
 
 class TrainedModelCreate(generics.CreateAPIView):
