@@ -3,6 +3,7 @@ from analytics import api_views
 
 
 urlpatterns = [
+    url(r'^api/species/$', api_views.get_species_list, name='species-list'),
     url(r'^api/images/$', api_views.LungmapImageList.as_view()),
     url(r'^api/images/(?P<pk>[0-9]+)/$', api_views.LungmapImageDetail.as_view()),
     url(r'^api/images-jpeg/(?P<pk>[0-9]+)/$', api_views.get_image_jpeg, name='image-jpeg'),

@@ -33,6 +33,16 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = serializers.UserSerializer
 
 
+# noinspection PyUnusedLocal
+@api_view(['GET'])
+def get_species_list(request):
+    """
+    Get list of distinct species labels
+    """
+    species = models.ImageSet.objects.order_by().values_list('species', flat=True).distinct()
+    return Response(list(species))
+
+
 class ImageSetList(generics.ListAPIView):
     queryset = models.ImageSet.objects.all()
     serializer_class = serializers.ImageSetSerializer
