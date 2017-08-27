@@ -5,7 +5,7 @@ var app = angular.module(
         'ngRoute',
         'ngCookies',
         'ui.bootstrap',
-        'ngPolyDraw'
+        'drwPolygon'
     ]
 );
 

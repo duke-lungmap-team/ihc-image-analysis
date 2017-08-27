@@ -8,6 +8,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/drw-poly.css' %}">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,600,700,300' rel='stylesheet' type='text/css'>
     {% block extra_head %}{% endblock %}
   </head>
@@ -48,12 +49,17 @@
 
     <!-- Javascript at the end of the document so pages load faster -->
     <script src="{% static 'js/jquery.js' %}"></script>
+    <script
+      src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+      integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+      crossorigin="anonymous">
+    </script>
     <script src="{% static 'js/angular.js' %}"></script>
     <script src="{% static 'js/angular-resource.js' %}"></script>
     <script src="{% static 'js/angular-route.js' %}"></script>
     <script src="{% static 'js/angular-cookies.js' %}"></script>
     <script src="{% static 'js/ui-bootstrap-tpls-2.4.0.min.js' %}"></script>
-    <script src="{% static 'js/angular-canvas-area-draw.js' %}"></script>
+    <script src="{% static 'js/drw-poly.js' %}"></script>
     <script src="{% static 'ng-app/app.js' %}"></script>
     <script src="{% static 'ng-app/services/rest_service.js' %}"></script>
     <script src="{% static 'ng-app/controllers/main_controller.js' %}"></script>

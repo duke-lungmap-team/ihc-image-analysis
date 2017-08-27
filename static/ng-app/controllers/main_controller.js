@@ -64,20 +64,17 @@ app.controller(
             $scope.selected_image = null;
             $scope.selected_classification = null;
             $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
-
-            // training mode vars
-            $scope.enabled = false;
-            $scope.colorArray = ['#00FF00'];
-            $scope.activePolygon = 0;
-            $scope.regions = {
-                'points': [[]],
-                'classify_points': [[]]
-            };
-            $scope.new_points = [];
             $scope.label = [[]];
+
+            // drw-poly vars
+            $scope.enabled = false;
+            $scope.regions = {
+                'trained': [],
+                'classify': [],
+                'svg': []
+            };
             $scope.poly_height = 862;
             $scope.poly_width = 862;
-            $scope.tester = AnatomyByProbe;
 
             var imageset = ImageSet.get({'image_set_id': $routeParams.image_set_id});
 
@@ -152,14 +149,11 @@ app.controller(
                     });
 
                     if (new_regions.length > 0) {
-                        $scope.activePolygon = -1;
-                        $scope.new_points = new_regions;
+                        $scope.regions.svg = new_regions;
                         $scope.enabled = false;
                     } else {
-                        $scope.activePolygon = -1;
-                        $scope.regions.points.splice(0, $scope.regions.points.length);
+                        $scope.regions.svg = [];
                         $scope.enabled = true;
-                        $scope.add();
                     }
                 });
             };
@@ -170,63 +164,14 @@ app.controller(
                 if (mode === 'classify') {
                     $scope.enabled = true;
 
-                    $scope.activePolygon = -1;
-                    $scope.regions.classify_points.splice(
+                    $scope.regions.classify.splice(
                         0,
-                        $scope.regions.classify_points.length
+                        $scope.regions.classify.length
                     );
-                    $scope.add();
+                } else if (mode === 'train') {
+                    $scope.enabled = true;
                 } else {
                     $scope.enabled = false;
-                }
-            };
-
-            $scope.undo = function(){
-                if ($scope.enabled) {
-                    $scope.regions.points[$scope.activePolygon].splice(-1, 1);
-                }
-            };
-
-            $scope.clearAll = function(){
-                if (!$scope.enabled) {
-                    return false;
-                }
-
-                $scope.regions.points[$scope.activePolygon] = [];
-            };
-
-            $scope.removePolygon = function (index) {
-                if (!$scope.enabled) {
-                    return false;
-                }
-
-                $scope.regions.points.splice(index, 1);
-
-                // if no regions remain, need to re-initialize with a new one,
-                // though I wonder if this functionality should just be in the
-                // directive itself?
-                // -or-
-                // if the index removed was before the active region, need
-                // to decrement the activePolygon
-                if ($scope.regions.points.length === 0) {
-                    $scope.add();
-                }
-                else if (index <= $scope.activePolygon) {
-                    --$scope.activePolygon;
-                }
-            };
-
-            $scope.add = function () {
-                if (!$scope.enabled) {
-                    return false;
-                }
-
-                if ($scope.mode === 'classify') {
-                    $scope.regions.classify_points.push([]);
-                    $scope.activePolygon = $scope.regions.classify_points.length - 1;
-                } else {
-                    $scope.regions.points.push([]);
-                    $scope.activePolygon = $scope.regions.points.length - 1;
                 }
             };
 
@@ -235,12 +180,12 @@ app.controller(
                 // since there cannot be any existing regions for the image / class combo.
                 var regions = [];
 
-                if ($scope.regions.points.length === 0) {
+                if ($scope.regions.svg.length === 0) {
                     $window.alert('There are no regions drawn, please segment something first.');
                 } else if ($scope.selected_classification === null) {
                     $window.alert('There is no label associated with the active polygon, please choose a label first.');
                 } else {
-                    $scope.regions.points.forEach(function(p) {
+                    $scope.regions.svg.forEach(function(p) {
                         var region = {};
                         var region_points = [];
 
@@ -248,8 +193,8 @@ app.controller(
                         for (var i = 0; i < p.length; i++) {
                             region_points.push(
                                 {
-                                    "x": p[i][2],
-                                    "y": p[i][3],
+                                    "x": p[i][0],
+                                    "y": p[i][1],
                                     "order": i
                                 }
                             );
@@ -286,8 +231,7 @@ app.controller(
                         });
 
                         if (new_regions.length > 0) {
-                            $scope.activePolygon = -1;
-                            $scope.new_points = new_regions;
+                            $scope.regions.svg = new_regions;
                             $scope.enabled = false;
                         }
                     }, function (error) {
@@ -305,21 +249,21 @@ app.controller(
             };
 
             $scope.classify_region = function () {
-                var thesepoints = $scope.regions.classify_points[$scope.activePolygon];
+                // TODO: setup a for loop to classify all drawn regions
+                var classify_points = $scope.regions.classify[0];
 
-                if (thesepoints.length === 0) {
+                if (classify_points.length === 0) {
                     $window.alert('The current polygon has no points selected, please segment something first.');
                 } else {
-                    //TODO check logic here to ensure that I'm grabbing correct points
                     var payload = {};
                     var points = [];
 
                     //Get points
-                    for (var i = 0; i < thesepoints.length; i++) {
+                    for (var i = 0; i < classify_points.length; i++) {
                         points.push(
                             {
-                                "x": thesepoints[i][2],
-                                "y": thesepoints[i][3],
+                                "x": classify_points[i][0],
+                                "y": classify_points[i][1],
                                 "order": i
                             }
                         );
