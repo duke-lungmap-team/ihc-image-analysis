@@ -40,7 +40,7 @@ def get_species_list(request):
     Get list of distinct species labels
     """
     species = models.ImageSet.objects.order_by().values_list('species', flat=True).distinct()
-    return Response(list(species))
+    return Response(sorted(list(species)))
 
 
 # noinspection PyUnusedLocal
@@ -50,14 +50,26 @@ def get_magnification_list(request):
     Get list of distinct magnification names
     """
     mags = models.ImageSet.objects.order_by().values_list('magnification', flat=True).distinct()
-    return Response(list(mags))
+    return Response(sorted(list(mags)))
+
+
+# noinspection PyUnusedLocal
+@api_view(['GET'])
+def get_development_stage_list(request):
+    """
+    Get list of distinct development stage names
+    """
+    dev_stages = models.ImageSet.objects.order_by().values_list(
+        'development_stage',
+        flat=True).distinct()
+    return Response(sorted(list(dev_stages)))
 
 
 # noinspection PyClassHasNoInit
 class ImageSetFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = models.ImageSet
-        fields = ['species', 'magnification']
+        fields = ['species', 'magnification', 'development_stage']
 
 
 class ImageSetList(generics.ListAPIView):
