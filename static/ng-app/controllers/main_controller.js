@@ -83,8 +83,10 @@ app.controller(
                 $scope.animageset = data;
                 data.probes.forEach(function(probe) {
                     $scope.anatomies.push(AnatomyByProbe.get(
-                        {'probe_id': probe.probe}).$promise
-                    )
+                        {
+                            'probe_id': probe.probe
+                        }).$promise
+                    );
                 });
 
                 $q.all($scope.anatomies).then(function (results) {
@@ -160,16 +162,14 @@ app.controller(
 
             $scope.set_mode = function (mode) {
                 $scope.mode = mode;
+                $scope.regions.svg = [];
 
                 if (mode === 'classify') {
                     $scope.enabled = true;
-
-                    $scope.regions.classify.splice(
-                        0,
-                        $scope.regions.classify.length
-                    );
                 } else if (mode === 'train') {
-                    $scope.enabled = true;
+                    if ($scope.selected_classification !== null) {
+                        $scope.select_classification($scope.selected_classification);
+                    }
                 } else {
                     $scope.enabled = false;
                 }
@@ -249,21 +249,18 @@ app.controller(
             };
 
             $scope.classify_region = function () {
-                // TODO: setup a for loop to classify all drawn regions
-                var classify_points = $scope.regions.classify[0];
+                var classify_promises = [];
 
-                if (classify_points.length === 0) {
-                    $window.alert('The current polygon has no points selected, please segment something first.');
-                } else {
+                $scope.regions.svg.forEach(function (region) {
                     var payload = {};
                     var points = [];
 
                     //Get points
-                    for (var i = 0; i < classify_points.length; i++) {
+                    for (var i = 0; i < region.length; i++) {
                         points.push(
                             {
-                                "x": classify_points[i][0],
-                                "y": classify_points[i][1],
+                                "x": region[i][0],
+                                "y": region[i][1],
                                 "order": i
                             }
                         );
@@ -272,12 +269,13 @@ app.controller(
                     payload.points = points;
 
                     // How to get results of post to conditionally get ready for next
-                    var classified_region = Classify.save(payload);
+                    classify_promises.push(Classify.save(payload).$promise);
+                });
 
-                    classified_region.$promise.then(function(results) {
-                        $window.alert(JSON.stringify(results, null, 4))
-                    });
-                }
+                $q.all(classify_promises).then(function (results) {
+                    console.log(results);
+                    $window.alert(JSON.stringify(results, null, 4));
+                });
             }
         }
     ]
