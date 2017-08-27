@@ -37,6 +37,18 @@
 
         <hr/>
 
+        <b>Magnification</b>
+        <ul class="list-unstyled">
+          <li ng-repeat="m in magnifications">
+            <label>
+              <input type="checkbox" ng-model="m.query" />
+              {{ m.name }}
+            </label>
+          </li>
+        </ul>
+
+        <hr/>
+
       </form>
     </div>
   </div>

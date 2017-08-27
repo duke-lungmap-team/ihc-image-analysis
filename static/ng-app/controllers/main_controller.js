@@ -15,8 +15,10 @@ app.controller(
         '$q',
         'ImageSet',
         'Species',
-        function ($scope, $q, ImageSet, Species) {
+        'Magnification',
+        function ($scope, $q, ImageSet, Species, Magnification) {
             $scope.species = [];
+            $scope.magnifications = [];
 
             var species = Species.query();
             species.$promise.then(function (data) {
@@ -24,6 +26,18 @@ app.controller(
                     $scope.species.push(
                         {
                             'name': s,
+                            'query': false
+                        }
+                    )
+                });
+            });
+
+            var magnifications = Magnification.query();
+            magnifications.$promise.then(function (data) {
+                data.forEach(function (m) {
+                    $scope.magnifications.push(
+                        {
+                            'name': m,
                             'query': false
                         }
                     )
@@ -38,9 +52,17 @@ app.controller(
                     }
                 });
 
+                var mag_filters = [];
+                $scope.magnifications.forEach(function (m) {
+                    if (m.query) {
+                        mag_filters.push(m.name);
+                    }
+                });
+
                 var image_sets = ImageSet.query(
                     {
-                        'species': species_filters
+                        'species': species_filters,
+                        'magnification': mag_filters
                     }
                 );
 
