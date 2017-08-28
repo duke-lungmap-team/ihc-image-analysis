@@ -76,29 +76,46 @@
   </div>
 
   <div class="col-md-8">
-    <table class="table table-hover">
+    <table class="table table-hover table-striped">
       <thead>
         <tr>
-          <th>Image Set</th>
+          <th></th>
+          <th>Details</th>
+          <th>Probes</th>
           <th>Images</th>
-          <th>Images w/ Subregions</th>
-          <th>Subregions</th>
+          <th>Trained Images</th>
+          <th>Sub-regions</th>
         </tr>
       </thead>
 
       <tbody>
 
-        <tr ng-repeat="imset in image_sets">
+        <tr ng-repeat="img_set in image_sets">
           <td>
-            <a href="#/image-sets/{{ imset.id }}">{{ imset.image_set_name }}</a>      </td>
-          <td>
-            {{ imset.image_count }}
+            <a href="#/image-sets/{{ img_set.id }}">View</a>
           </td>
           <td>
-              {{ imset.image_subregion_count }}
+            <div class="no-wrap">
+              Species: {{ img_set.species }}<br/>
+              Development Stage: {{ img_set.development_stage }}<br/>
+              Magnification: {{ img_set.magnification }}
+            </div>
           </td>
           <td>
-            {{ imset.subregion_count }}
+            <ul class="list-unstyled">
+              <li ng-repeat="p in img_set.probes">
+                <div class='color-square {{ p.color }}'></div>{{ p.probe_label }}
+              </li>
+            </ul>
+          </td>
+          <td>
+            {{ img_set.image_count }}
+          </td>
+          <td>
+              {{ img_set.image_subregion_count }}
+          </td>
+          <td>
+            {{ img_set.subregion_count }}
           </td>
         </tr>
 
