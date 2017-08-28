@@ -24,7 +24,7 @@ Our first page provides functionality to narrow focus to imagesets by allowing u
 variables.
 
 ### Side Panel <a id="side-panel"></a>
-The `side panel` allows users to subset `ImageSets`. Here is a quick overview of the side panel:
+The `side panel` allows users to subset `ImageSets`. Here is a quick overview of the side panel:  
 ![mail](ui-instructions/sidepanel.png)
 
 To utilize the side panel to narrow the scope of available `ImageSets`, it is important to remeber that all chosen 
@@ -37,6 +37,7 @@ Once the results have been narrowed sufficiently, a user will want to choose a g
 the results. Once filtered, results are displayed to the right of the side panel:
 
 ![mail](ui-instructions/imagesets_results.png)
+        ui-instructions/imagesets_results.png
 
 To actually filter the results, click the `View` button and a new user interface will be given.
 
