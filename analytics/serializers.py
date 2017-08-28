@@ -45,11 +45,12 @@ class ImageSetSerializer(serializers.ModelSerializer):
     model = TrainedModelSerializer(source='trainedmodel')
     probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
     images = ImageSerializer(source='image_set', many=True)
+    image_count = serializers.IntegerField(source='image_set.count')
 
     class Meta:
         model = models.ImageSet
         fields = ('id', 'image_set_name', 'magnification', 'species',
-                  'development_stage', 'probes', 'images', 'model')
+                  'development_stage', 'probes', 'images', 'model', 'image_count')
 
 
 class ExperimentSerializer(serializers.ModelSerializer):
