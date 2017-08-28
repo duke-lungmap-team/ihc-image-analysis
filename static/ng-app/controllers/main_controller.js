@@ -182,16 +182,23 @@ app.controller(
                     );
 
                     save_response.$promise.then(function(data) {
-                        $scope.selected_image = data
+                        $scope.selected_image = data;
+                        $scope.select_classification($scope.selected_classification);
                     }, function (error) {
                         // TODO: figure out how to turn retrieving off for experiment
                         $window.alert(JSON.stringify(error, null, 4))
                     });
+                } else {
+                    $scope.select_classification($scope.selected_classification);
                 }
             };
 
             $scope.select_classification = function(classification) {
                 $scope.selected_classification = classification;
+
+                if ($scope.selected_classification === null) {
+                    return false;
+                }
 
                 var existing_sub_regions = Subregion.query(
                     {
