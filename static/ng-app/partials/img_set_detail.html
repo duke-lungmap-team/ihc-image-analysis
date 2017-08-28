@@ -11,6 +11,10 @@
         </thead>
         <tbody>
           <tr>
+            <td>Image Count:</td>
+            <td>{{ image_set.image_count }}</td>
+          </tr>
+          <tr>
             <td>Magnification:</td>
             <td>{{ image_set.magnification }}</td>
           </tr>
@@ -34,34 +38,23 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div class="row  well well-sm">
+
       <table class="table">
         <thead>
           <tr>
             <th class="center" colspan="50">
-              <h5>Imageset Model Details</h5>
+              <h5>Training Data Summary</h5>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Accuracy:</td>
-            <td>{{ image_set.magnification }}</td>
+            <td>Images with Sub-regions:</td>
+            <td>{{ image_set.images_with_subregion_count }}</td>
           </tr>
           <tr>
-            <td>Sample Size Used:</td>
-            <td>{{ image_set.species }}</td>
-          </tr>
-          <tr>
-            <td style="vertical-align: top !important;">Anatomy Used:</td>
-            <td>
-              <ul class="list-unstyled">
-                <li ng-repeat="p in image_set.probes">
-                  {{ p.probe_label }} ({{ p.color }})
-                </li>
-              </ul>
-            </td>
+            <td>Sub-region Count:</td>
+            <td>{{ image_set.subregion_count }}</td>
           </tr>
         </tbody>
       </table>
