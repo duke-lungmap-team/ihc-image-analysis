@@ -63,6 +63,12 @@ class ImageSet(models.Model):
     def get_subregion_count(self):
         return Subregion.objects.filter(image__image_set=self).count()
 
+    def get_images_with_subregion_count(self):
+        return Image.objects.annotate(subregion_count=models.Count('subregion')).filter(
+            image_set=self,
+            subregion_count__gt=0
+        ).count()
+
 
 class Probe(models.Model):
     label = models.CharField(
