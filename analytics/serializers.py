@@ -46,11 +46,22 @@ class ImageSetSerializer(serializers.ModelSerializer):
     probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
     images = ImageSerializer(source='image_set', many=True)
     image_count = serializers.IntegerField(source='image_set.count')
+    subregion_count = serializers.IntegerField(source='get_subregion_count')
 
     class Meta:
         model = models.ImageSet
-        fields = ('id', 'image_set_name', 'magnification', 'species',
-                  'development_stage', 'probes', 'images', 'model', 'image_count')
+        fields = (
+            'id',
+            'image_set_name',
+            'magnification',
+            'species',
+            'development_stage',
+            'probes',
+            'images',
+            'model',
+            'image_count',
+            'subregion_count'
+        )
 
 
 class ExperimentSerializer(serializers.ModelSerializer):
