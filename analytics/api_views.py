@@ -145,7 +145,7 @@ class ImageDetail(generics.RetrieveAPIView):
 class ImageFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = models.Image
-        fields = ['experiment']
+        fields = ['experiment', 'image_set']
 
 
 class ImageList(generics.ListAPIView):
