@@ -12,21 +12,21 @@
         <tbody>
           <tr>
             <td>Magnification:</td>
-            <td>{{ animageset.magnification }}</td>
+            <td>{{ image_set.magnification }}</td>
           </tr>
           <tr>
             <td>Species:</td>
-            <td>{{ animageset.species }}</td>
+            <td>{{ image_set.species }}</td>
           </tr>
           <tr>
             <td>Development Stage:</td>
-            <td>{{ animageset.development_stage }}</td>
+            <td>{{ image_set.development_stage }}</td>
           </tr>
           <tr>
             <td style="vertical-align: top !important;">Probes:</td>
             <td>
               <ul class="list-unstyled">
-                <li ng-repeat="p in animageset.probes">
+                <li ng-repeat="p in image_set.probes">
                   <div class='color-square {{ p.color }}'></div>{{ p.probe_label }}
                 </li>
               </ul>
@@ -47,17 +47,17 @@
         <tbody>
           <tr>
             <td>Accuracy:</td>
-            <td>{{ animageset.magnification }}</td>
+            <td>{{ image_set.magnification }}</td>
           </tr>
           <tr>
             <td>Sample Size Used:</td>
-            <td>{{ animageset.species }}</td>
+            <td>{{ image_set.species }}</td>
           </tr>
           <tr>
             <td style="vertical-align: top !important;">Anatomy Used:</td>
             <td>
               <ul class="list-unstyled">
-                <li ng-repeat="p in animageset.probes">
+                <li ng-repeat="p in image_set.probes">
                   {{ p.probe_label }} ({{ p.color }})
                 </li>
               </ul>
@@ -74,7 +74,7 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-img-button">
-        <li ng-repeat="img in animageset.images">
+        <li ng-repeat="img in images">
           <a ng-click="image_selected(img)">{{img.image_name}}</a>
         </li>
       </ul>

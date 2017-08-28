@@ -145,11 +145,12 @@ app.controller(
             $scope.poly_height = 997;
             $scope.poly_width = 997;
 
-            var imageset = ImageSet.get({'image_set_id': $routeParams.image_set_id});
+            $scope.image_set = ImageSet.get({'image_set_id': $routeParams.image_set_id});
 
-            imageset.$promise.then(function(data) {
+            $scope.image_set.$promise.then(function(data) {
+                $scope.images = Image.query({'image_set': data.id});
                 $scope.anatomies = [];
-                $scope.animageset = data;
+
                 data.probes.forEach(function(probe) {
                     $scope.anatomies.push(AnatomyByProbe.get(
                         {
