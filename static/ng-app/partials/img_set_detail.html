@@ -11,22 +11,26 @@
         </thead>
         <tbody>
           <tr>
+            <td>Image Count:</td>
+            <td>{{ image_set.image_count }}</td>
+          </tr>
+          <tr>
             <td>Magnification:</td>
-            <td>{{ animageset.magnification }}</td>
+            <td>{{ image_set.magnification }}</td>
           </tr>
           <tr>
             <td>Species:</td>
-            <td>{{ animageset.species }}</td>
+            <td>{{ image_set.species }}</td>
           </tr>
           <tr>
             <td>Development Stage:</td>
-            <td>{{ animageset.development_stage }}</td>
+            <td>{{ image_set.development_stage }}</td>
           </tr>
           <tr>
             <td style="vertical-align: top !important;">Probes:</td>
             <td>
               <ul class="list-unstyled">
-                <li ng-repeat="p in animageset.probes">
+                <li ng-repeat="p in image_set.probes">
                   <div class='color-square {{ p.color }}'></div>{{ p.probe_label }}
                 </li>
               </ul>
@@ -34,34 +38,23 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div class="row  well well-sm">
+
       <table class="table">
         <thead>
           <tr>
             <th class="center" colspan="50">
-              <h5>Imageset Model Details</h5>
+              <h5>Training Data Summary</h5>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Accuracy:</td>
-            <td>{{ animageset.magnification }}</td>
+            <td>Images with Sub-regions:</td>
+            <td>{{ image_set.images_with_subregion_count }}</td>
           </tr>
           <tr>
-            <td>Sample Size Used:</td>
-            <td>{{ animageset.species }}</td>
-          </tr>
-          <tr>
-            <td style="vertical-align: top !important;">Anatomy Used:</td>
-            <td>
-              <ul class="list-unstyled">
-                <li ng-repeat="p in animageset.probes">
-                  {{ p.probe_label }} ({{ p.color }})
-                </li>
-              </ul>
-            </td>
+            <td>Sub-region Count:</td>
+            <td>{{ image_set.subregion_count }}</td>
           </tr>
         </tbody>
       </table>
@@ -74,7 +67,7 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-img-button">
-        <li ng-repeat="img in animageset.images">
+        <li ng-repeat="img in images">
           <a ng-click="image_selected(img)">{{img.image_name}}</a>
         </li>
       </ul>

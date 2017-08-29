@@ -44,7 +44,6 @@ class ImageSetProbeMapSerializer(serializers.ModelSerializer):
 class ImageSetSerializer(serializers.ModelSerializer):
     model = TrainedModelSerializer(source='trainedmodel')
     probes = ImageSetProbeMapSerializer(source='imagesetprobemap_set', many=True)
-    images = ImageSerializer(source='image_set', many=True)
     image_count = serializers.IntegerField(
         source='image_set.count',
         read_only=True
@@ -67,7 +66,6 @@ class ImageSetSerializer(serializers.ModelSerializer):
             'species',
             'development_stage',
             'probes',
-            'images',
             'model',
             'image_count',
             'images_with_subregion_count',
