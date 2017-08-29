@@ -37,13 +37,41 @@ Once the results have been narrowed sufficiently, a user will want to choose a g
 the results. Once filtered, results are displayed to the right of the side panel:
 
 ![mail](ui-instructions/imagesets_results.png)
-        ui-instructions/imagesets_results.png
 
 To actually filter the results, click the `View` button and a new user interface will be given.
 
 ## Navigating within an Image Set <a id="navigating-an-imageset"></a>
+After selecting an imageset, you'll be presented with this screen:
+
+![mail](ui-instructions/imageset_b_functionality.png)
+
+Keep in mind an `ImageSet` is just a collection of images with similar attributes. The left-hand side panel, is a view
+into descriptions about imageset specific criteria and summaries. To drill down into images, select the drop down menu
+titled `Choose Images`. This will automatically populated a list of all available images in the imageset. You can choose 
+to load one into the work panel below by clicking on the desired image name. Once chosen, your screen should look like 
+this:
+
+![mail](ui-instructions/choose_image.png)
+
+**Notice** the three new buttons that appear above the image (i.e. View, Train, Classify). These buttons change the view 
+of the work panel. *View* simply allows users to look at the image. The other two buttons, have significantly more 
+capabilities and we'll walk though that in the next two sections. 
 
 ### Generating Training Data <a id="generating-training-data"></a>
+After selecting the train button, your screen should look similar to this:
+
+![mail](ui-instructions/train_1.png)
+
+**Notice** additional buttons are now available in the work panel. Specifically, these are a drop down menu `Label 
+Subregion`, and a button that is inactive named Save Subregions. `Save Subregions` will remain inactive until the user
+chooses a subregion to select. So here is the sequence to generate training data:
+
+(1) Choose the anatomy that you want to begin to segment from the drop down list `Label Subregions`.
+(2) Once chosen, the name of the subregion should appear in the center above the image.
+(3) If other users have generated training data for that image. The segments will automatically appear.
+(4) To begin capturing new segments, left-click anywhere around the segment of interest.
+(5) Continue to left-click around the segment until it is completly encapsulated.
+
 Training data can be defined as the segmentation of anatomy within a given Imageset/Image. An example of this can be
 see here:
 
