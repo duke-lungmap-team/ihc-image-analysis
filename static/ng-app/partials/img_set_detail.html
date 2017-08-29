@@ -49,6 +49,15 @@
         </thead>
         <tbody>
           <tr>
+            <td>Status:</td>
+            <td>
+              <div ng-if="image_set.trainedmodel == null">
+                <button type="button" class="btn btn-xs btn-success" ng-click="train_model()">Train Model</button>
+              </div>
+              <div ng-if="image_set.trainedmodel != null"><i>Trained</i></div>
+            </td>
+          </tr>
+          <tr>
             <td>Images with Sub-regions:</td>
             <td>{{ image_set.images_with_subregion_count }}</td>
           </tr>
@@ -108,7 +117,6 @@
         <div class="col-md-3">
           <div class="btn-group btn-group-xs pull-right">
             <button type="button" class="btn btn-success" ng-click="post_regions()" ng-disabled="!enabled">Save Regions</button>
-            <button type="button" class="btn btn-success" ng-click="train_model()">Train Model</button>
           </div>
         </div>
       </div>
