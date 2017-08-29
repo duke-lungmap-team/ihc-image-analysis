@@ -135,7 +135,7 @@ app.controller(
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_classification = null;
-            $scope.mode = 'view';  // can be 'view', 'train', or 'classify'
+            $scope.mode = 'train';  // can be 'train', or 'classify'
 
             // drw-poly vars
             $scope.enabled = false;

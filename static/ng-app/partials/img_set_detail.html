@@ -71,7 +71,10 @@
   </div>
   <div class="col-md-9">
     <div class="btn-group" uib-dropdown>
-      <button id="choose-img-button" type="button" class="btn btn-default">Choose Image</button>
+      <button id="choose-img-button" type="button" class="btn btn-default">
+        <span ng-if="selected_image === null">Choose Image</span>
+        <span ng-if="selected_image !== null">{{ selected_image.image_name }}</span>
+      </button>
       <button type="button" class="btn btn-default" uib-dropdown-toggle>
         <span class="caret"></span>
       </button>
@@ -83,22 +86,18 @@
     </div>
 
     <div class="btn-group pull-right" ng-if="selected_image" >
-      <button type="button" class="btn btn-default {{ mode == 'view' ? 'active' : null }}" ng-click="set_mode('view')">View</button>
       <button type="button" class="btn btn-default {{ mode == 'train' ? 'active' : null }}" ng-click="set_mode('train')">Train</button>
       <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="set_mode('classify')">Classify</button>
     </div>
 
-    <p>
-      <div class="text-center">
-        <strong>{{ selected_image.image_name }}</strong>
-      </div>
-    </p>
-
-    <div ng-if="selected_image && mode == 'train'">
+    <div ng-if="selected_image && mode == 'train'" class="margin-top-5">
       <div class="row margin-bottom-5">
-        <div class="col-md-3">
+        <div class="col-md-6">
           <div class="btn-group btn-group-xs pull-left" uib-dropdown>
-            <button id="choose-label-button" type="button" class="btn btn-default">Label Subregion</button>
+            <button id="choose-label-button" type="button" class="btn btn-default">
+              <span ng-if="selected_classification === null">Label Subregion</span>
+              <span ng-if="selected_classification !== null">{{ selected_classification.anatomy_name }}</span>
+            </button>
             <button type="button" class="btn btn-default" uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
@@ -110,11 +109,6 @@
           </div>
         </div>
         <div class="col-md-6">
-          <span class="pull-left">
-            <strong>{{ selected_classification.anatomy_name }}</strong>
-          </span>
-        </div>
-        <div class="col-md-3">
           <div class="btn-group btn-group-xs pull-right">
             <button type="button" class="btn btn-success" ng-click="post_regions()" ng-disabled="!enabled">Save Regions</button>
           </div>
@@ -123,7 +117,7 @@
 
     </div>
 
-    <div ng-if="selected_image && mode == 'classify'">
+    <div ng-if="selected_image && mode == 'classify'" class="margin-top-5">
        <div class="row margin-bottom-5">
         <div class="col-md-12">
           <div class="btn-group btn-group-xs pull-right">
