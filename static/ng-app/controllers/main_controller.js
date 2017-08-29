@@ -24,6 +24,7 @@ app.controller(
             $scope.development_stages = [];
             $scope.probes = [];
             $scope.image_sets = [];
+            $scope.retrieving_data = false;
 
             var species = Species.query();
             species.$promise.then(function (data) {
@@ -75,6 +76,9 @@ app.controller(
             });
 
             $scope.filter_image_sets = function () {
+                $scope.retrieving_data = true;
+                $scope.image_sets = [];
+
                 var species_filters = [];
                 $scope.species.forEach(function (s) {
                     if (s.query) {
@@ -111,6 +115,12 @@ app.controller(
                         'probe': probe_filters
                     }
                 );
+
+                $scope.image_sets.$promise.then(function (data) {
+                    $scope.retrieving_data = false;
+                }, function (error) {
+                    $scope.retrieving_data = false;
+                });
             };
         }
     ]
