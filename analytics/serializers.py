@@ -151,13 +151,6 @@ class AnatomyModelSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class SubregionModelSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Subregion
-        fields = "__all__"
-
-
 class ImageSubregionSerializers(serializers.ModelSerializer):
     image_id = serializers.CharField(source='id')
     subregion_count = serializers.SerializerMethodField()
