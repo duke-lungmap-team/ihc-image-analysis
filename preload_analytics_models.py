@@ -37,7 +37,7 @@ for key, value in image_sets.items():
 
     for p in value['probes']:
         probe_object, probe_object_create = models.Probe.objects.get_or_create(
-            label=p['probe_label']
+            label=p['probe_label'].strip()
         )
 
         image_set_probe_map = models.ImageSetProbeMap.objects.get_or_create(
