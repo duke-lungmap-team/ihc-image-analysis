@@ -327,7 +327,8 @@ class SubregionList(generics.ListCreateAPIView):
 
                     subregion = models.Subregion.objects.create(
                         image_id=image_id,
-                        anatomy_id=anatomy_id
+                        anatomy_id=anatomy_id,
+                        user_id=request.user.id
                     )
 
                     for p in r['points']:

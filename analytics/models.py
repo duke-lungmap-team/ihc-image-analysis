@@ -1,6 +1,7 @@
 from django.db import models
 from lungmap_client import lungmap_utils as sparql_utils
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 
 
 class Experiment(models.Model):
@@ -160,6 +161,11 @@ class AnatomyProbeMap(models.Model):
 class Subregion(models.Model):
     image = models.ForeignKey(Image)
     anatomy = models.ForeignKey(Anatomy)
+    user = models.ForeignKey(
+        User,
+        null=False,
+        blank=False
+    )
 
     def __str__(self):
         return '%s, %s' % (
