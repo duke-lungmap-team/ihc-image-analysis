@@ -23,3 +23,4 @@ dist
 .ipynb_checkpoints
 *.ipynb
 *.owl
+!ui-instructions/*.png

@@ -330,7 +330,7 @@ app.controller(
             $scope.train_model = function () {
                 TrainModel.save(
                     {
-                        'imageset': imageset.id
+                        'imageset': $scope.image_set.id
                     }
                 );
             };
