@@ -30,15 +30,15 @@ app.config(function($routeProvider) {
 });
 
 app.config(function($httpProvider) {
-  $httpProvider.defaults.withCredentials = true;
-  $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-  $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-  $httpProvider.interceptors.push(function($cookies) {
-    return {
-      'request': function(config) {
-        config.headers['X-CSRFToken'] = $cookies.get('csrftoken');
-        return config;
-      }
-    };
-  });
+    $httpProvider.defaults.withCredentials = true;
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    $httpProvider.interceptors.push(function($cookies) {
+        return {
+            'request': function(config) {
+                config.headers['X-CSRFToken'] = $cookies.get('csrftoken');
+                return config;
+            }
+        };
+    });
 });
