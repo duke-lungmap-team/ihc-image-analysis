@@ -135,13 +135,6 @@ class AnatomyProbeMapSerializer(serializers.ModelSerializer):
         fields = ['anatomy', 'anatomy_name', 'probe', 'probe_name']
 
 
-class AnatomyModelSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Anatomy
-        fields = "__all__"
-
-
 class ImageSubregionSerializers(serializers.ModelSerializer):
     image_id = serializers.CharField(source='id')
     subregion_count = serializers.SerializerMethodField()

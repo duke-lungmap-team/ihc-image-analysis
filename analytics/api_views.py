@@ -167,15 +167,6 @@ class ImageList(generics.ListAPIView):
     filter_class = ImageFilter
 
 
-class AnatomyList(generics.RetrieveAPIView):
-    """
-    List all anatomical structures
-    """
-
-    queryset = models.Anatomy.objects.all()
-    serializer_class = serializers.AnatomyModelSerializer
-
-
 class TrainedModelCreate(generics.CreateAPIView):
     queryset = models.TrainedModel.objects.all()
     serializer_class = serializers.TrainedModelCreateSerializer
