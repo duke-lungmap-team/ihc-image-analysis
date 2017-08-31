@@ -8,7 +8,7 @@ var URLS = {
     'exp_probes': '/api/experiment_probes/',
     'images': '/api/images/',
     'classify': '/api/classify/',
-    'subregion': '/api/subregion/',
+    'subregions': '/api/subregions/',
     'image_sets': '/api/image-sets/',
     'anatomy_probe_map': '/api/anatomy-probe-map/',
     'subregionanatomycount': '/api/subregion-anatomy-count',
@@ -119,7 +119,7 @@ service.factory(
     'Subregion',
     function($resource) {
         return $resource(
-            URLS.subregion,
+            URLS.subregions + ':id',
             {},
             {
                 save: {
