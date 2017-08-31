@@ -1,7 +1,7 @@
 var URLS = {
     'species': '/api/species/',
     'magnifications': '/api/magnifications/',
-    'development_stages': '/api/development_stages/',
+    'development_stages': '/api/development-stages/',
     'lm_exp': '/api/lungmapexperiments/',
     'exp': '/api/experiments/',
     'probes': '/api/probes/',
@@ -10,7 +10,7 @@ var URLS = {
     'classify': '/api/classify/',
     'subregion': '/api/subregion/',
     'image_sets': '/api/image-sets/',
-    'anatomybyprobe': '/api/anatomybyprobe/',
+    'anatomy_probe_map': '/api/anatomy-probe-map/',
     'subregionanatomycount': '/api/subregion-anatomy-count',
     'train_model': '/api/train-model/'
 };
@@ -36,7 +36,7 @@ service.factory(
         );
     }
 ).factory(
-    'DevelopmentStages',
+    'DevelopmentStage',
     function ($resource) {
         return $resource(
             URLS.development_stages,
@@ -99,10 +99,10 @@ service.factory(
         );
     }
 ).factory(
-    'AnatomyByProbe',
+    'AnatomyProbeMap',
     function ($resource) {
         return $resource(
-            URLS.anatomybyprobe + ':probe_id',
+            URLS.anatomy_probe_map,
             {},
             {}
         );

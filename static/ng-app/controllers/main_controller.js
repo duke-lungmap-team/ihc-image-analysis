@@ -16,9 +16,9 @@ app.controller(
         'ImageSet',
         'Species',
         'Magnification',
-        'DevelopmentStages',
+        'DevelopmentStage',
         'Probe',
-        function ($scope, $q, ImageSet, Species, Magnification, DevelopmentStages, Probe) {
+        function ($scope, $q, ImageSet, Species, Magnification, DevelopmentStage, Probe) {
             $scope.species = [];
             $scope.magnifications = [];
             $scope.development_stages = [];
@@ -50,7 +50,7 @@ app.controller(
                 });
             });
 
-            var development_stages = DevelopmentStages.query();
+            var development_stages = DevelopmentStage.query();
             development_stages.$promise.then(function (data) {
                 data.forEach(function (d) {
                     $scope.development_stages.push(
@@ -137,11 +137,11 @@ app.controller(
         'Image',
         'Subregion',
         'ExperimentProbe',
-        'AnatomyByProbe',
+        'AnatomyProbeMap',
         'Classify',
         'TrainModel',
         function ($scope, $q, $routeParams, $window, ImageSet, Image,
-                  Subregion, ExperimentProbe, AnatomyByProbe, Classify, TrainModel) {
+                  Subregion, ExperimentProbe, AnatomyProbeMap, Classify, TrainModel) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_classification = null;
@@ -159,25 +159,32 @@ app.controller(
 
             $scope.image_set.$promise.then(function(data) {
                 $scope.images = Image.query({'image_set': data.id});
-                $scope.anatomies = [];
+                var anatomy_promises = [];
 
                 data.probes.forEach(function(probe) {
-                    $scope.anatomies.push(AnatomyByProbe.get(
+                    anatomy_promises.push(AnatomyProbeMap.query(
                         {
-                            'probe_id': probe.probe
+                            'probe': probe.probe
                         }).$promise
                     );
                 });
 
-                $q.all($scope.anatomies).then(function (results) {
-                    $scope.anatomies_now = [];
-                    results.forEach(function(exp) {
-                        $scope.anatomies_now.push.apply($scope.anatomies_now, exp.anatomies);
-                    });
+                $q.all(anatomy_promises).then(function(results) {
+                    $scope.anatomies = [];
 
-                    }, function(reason) {
-                        // Error callback where reason is the value of the first rejected promise
-                        $window.alert(JSON.stringify(reason, null, 4));
+                    results.forEach(function(anatomy_probe_map) {
+                        anatomy_probe_map.forEach(function(anatomy_probe) {
+                            $scope.anatomies.push(
+                                {
+                                    'id': anatomy_probe.anatomy,
+                                    'name': anatomy_probe.anatomy_name
+                                }
+                            );
+                        });
+                    });
+                }, function(error) {
+                    // Error callback where reason is the value of the first rejected promise
+                    $window.alert(JSON.stringify(error, null, 4));
                 });
             });
 
@@ -213,7 +220,7 @@ app.controller(
                 var existing_sub_regions = Subregion.query(
                     {
                         'image': $scope.selected_image.id,
-                        'anatomy': classification.anatomy_id
+                        'anatomy': classification.id
                     }
                 );
 
@@ -287,7 +294,7 @@ app.controller(
                             );
                         }
 
-                        region.anatomy = $scope.selected_classification.anatomy_id;
+                        region.anatomy = $scope.selected_classification.id;
                         region.image = $scope.selected_image.id;
                         region.points = region_points;
 

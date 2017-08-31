@@ -94,16 +94,25 @@ class ImageSetList(generics.ListAPIView):
 
 class ImageSetDetail(generics.RetrieveAPIView):
     """
-    Get an image
+    Get an image set
     """
 
     queryset = models.ImageSet.objects.all()
     serializer_class = serializers.ImageSetSerializer
 
 
-class AnatomyByProbeList(generics.RetrieveAPIView):
-    queryset = models.Probe.objects.all()
-    serializer_class = serializers.AnatomySerializer
+# noinspection PyClassHasNoInit
+class AnatomyProbeMapFilter(django_filters.rest_framework.FilterSet):
+
+    class Meta:
+        model = models.AnatomyProbeMap
+        fields = ['probe', 'anatomy']
+
+
+class AnatomyProbeMapList(generics.ListAPIView):
+    queryset = models.AnatomyProbeMap.objects.all()
+    serializer_class = serializers.AnatomyProbeMapSerializer
+    filter_class = AnatomyProbeMapFilter
 
 
 class ImageDetail(generics.RetrieveAPIView):

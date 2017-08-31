@@ -128,20 +128,11 @@ class ClassifyPointsSerializer(serializers.ModelSerializer):
 
 class AnatomyProbeMapSerializer(serializers.ModelSerializer):
     anatomy_name = serializers.CharField(source='anatomy.name')
-    anatomy_id = serializers.CharField(source='anatomy.id')
-    probe_id = serializers.CharField(source='probe.id')
+    probe_name = serializers.CharField(source='probe.label')
 
     class Meta:
         model = models.AnatomyProbeMap
-        fields = ['anatomy_name', 'anatomy_id', 'probe_id']
-
-
-class AnatomySerializer(serializers.ModelSerializer):
-    anatomies = AnatomyProbeMapSerializer(source='anatomyprobemap_set', many=True)
-
-    class Meta:
-        model = models.Probe
-        fields = ['anatomies']
+        fields = ['anatomy', 'anatomy_name', 'probe', 'probe_name']
 
 
 class AnatomyModelSerializer(serializers.ModelSerializer):

@@ -96,14 +96,14 @@
           <div class="btn-group btn-group-xs pull-left" uib-dropdown>
             <button id="choose-label-button" type="button" class="btn btn-default">
               <span ng-if="selected_classification === null">Label Subregion</span>
-              <span ng-if="selected_classification !== null">{{ selected_classification.anatomy_name }}</span>
+              <span ng-if="selected_classification !== null">{{ selected_classification.name }}</span>
             </button>
             <button type="button" class="btn btn-default" uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-label-button">
-              <li ng-repeat="anatomy in anatomies_now">
-                <a ng-click="select_classification(anatomy)">{{ anatomy.anatomy_name }}</a>
+              <li ng-repeat="anatomy in anatomies">
+                <a ng-click="select_classification(anatomy)">{{ anatomy.name }}</a>
               </li>
             </ul>
           </div>
