@@ -1,7 +1,5 @@
 from analytics import serializers, models
-from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from lungmap_client import lungmap_utils
@@ -161,23 +159,27 @@ class TrainedModelCreate(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-            print(request.data['imageset'])
             image_set = models.ImageSet.objects.get(id=request.data['imageset'])
             images = image_set.image_set.prefetch_related('subregion_set')
             training_data = []
+
             for image in images:
                 sub_regions = image.subregion_set.all()
+
                 if len(sub_regions) > 0:
                     # TODO: don't use file path in case you're moving to S3 or something else
                     # noinspection PyUnresolvedReferences
                     sub_img = cv2.imread(image.image_orig.path)
                     # noinspection PyUnresolvedReferences
                     sub_img = cv2.cvtColor(sub_img, cv2.COLOR_BGR2HSV)
+
                     for subregion in sub_regions:
                         points = subregion.points.all()
                         this_mask = np.empty((0, 2), dtype='int')
+
                         for point in points:
                             this_mask = np.append(this_mask, [[point.x, point.y]], axis=0)
+
                         training_data.append(
                             utils.generate_custom_features(
                                 hsv_img_as_numpy=sub_img,
@@ -189,9 +191,11 @@ class TrainedModelCreate(generics.CreateAPIView):
             pipe = utils.pipe
             training_data = pd.DataFrame(training_data)
             pipe.fit(training_data.drop('label', axis=1), training_data['label'])
+
             content = pickle.dumps(pipe)
             pickled_model = ContentFile(content)
             pickled_model.name = image_set.image_set_name + '.pkl'
+
             final = models.TrainedModel(imageset=image_set, model_object=pickled_model)
             final.save()
 
@@ -270,8 +274,6 @@ class SubregionList(generics.ListCreateAPIView):
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
     filter_class = LungmapSubRegionFilter
-    # TODO: wrap this view in an atomic transaction, can cause serious bugs
-    # TODO: handling this with UI conditionals at the moment, but should be here as well
 
     def create(self, request, *args, **kwargs):
         """

@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from analytics import models
-from django.contrib.auth.models import User
 
 
 class ImageSerializer(serializers.ModelSerializer):
