@@ -2,7 +2,6 @@ var URLS = {
     'species': '/api/species/',
     'magnifications': '/api/magnifications/',
     'development_stages': '/api/development-stages/',
-    'lm_exp': '/api/lungmapexperiments/',
     'exp': '/api/experiments/',
     'probes': '/api/probes/',
     'exp_probes': '/api/experiment_probes/',
@@ -40,15 +39,6 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.development_stages,
-            {},
-            {}
-        );
-    }
-).factory(
-    'LungMapExperiment',
-    function ($resource) {
-        return $resource(
-            URLS.lm_exp + ':id',
             {},
             {}
         );
