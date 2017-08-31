@@ -4,7 +4,6 @@ var URLS = {
     'development_stages': '/api/development-stages/',
     'exp': '/api/experiments/',
     'probes': '/api/probes/',
-    'exp_probes': '/api/experiment_probes/',
     'images': '/api/images/',
     'classify': '/api/classify/',
     'subregions': '/api/subregions/',
@@ -75,15 +74,6 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.probes,
-            {},
-            {}
-        );
-    }
-).factory(
-    'ExperimentProbe',
-    function ($resource) {
-        return $resource(
-            URLS.exp_probes + ':experiment_probe_id',
             {},
             {}
         );

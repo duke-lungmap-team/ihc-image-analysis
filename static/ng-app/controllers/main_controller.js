@@ -136,12 +136,11 @@ app.controller(
         'ImageSet',
         'Image',
         'Subregion',
-        'ExperimentProbe',
         'AnatomyProbeMap',
         'Classify',
         'TrainModel',
         function ($scope, $q, $routeParams, $window, ImageSet, Image,
-                  Subregion, ExperimentProbe, AnatomyProbeMap, Classify, TrainModel) {
+                  Subregion, AnatomyProbeMap, Classify, TrainModel) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_classification = null;
