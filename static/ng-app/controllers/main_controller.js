@@ -12,13 +12,12 @@ app.controller(
     'ImageSetListController',
     [
         '$scope',
-        '$q',
         'ImageSet',
         'Species',
         'Magnification',
         'DevelopmentStage',
         'Probe',
-        function ($scope, $q, ImageSet, Species, Magnification, DevelopmentStage, Probe) {
+        function ($scope, ImageSet, Species, Magnification, DevelopmentStage, Probe) {
             $scope.species = [];
             $scope.magnifications = [];
             $scope.development_stages = [];
