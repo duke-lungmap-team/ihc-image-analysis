@@ -21,18 +21,6 @@ from sklearn.externals import joblib
 import rest_framework.serializers as drf_serializers
 
 
-class UserList(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
-
-
-class UserDetail(generics.RetrieveAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
-
-
 # noinspection PyUnusedLocal
 @api_view(['GET'])
 def get_species_list(request):
