@@ -9,7 +9,7 @@ app.controller(
 );
 
 app.controller(
-    'ExperimentListController',
+    'ImageSetListController',
     [
         '$scope',
         '$q',
@@ -127,7 +127,7 @@ app.controller(
 );
 
 app.controller(
-    'ExperimentDetailController',
+    'ImageSetDetailController',
     [
         '$scope',
         '$q',

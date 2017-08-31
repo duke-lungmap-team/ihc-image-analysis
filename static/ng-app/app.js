@@ -18,13 +18,13 @@ app.config(function($routeProvider) {
         '/',
         {
             templateUrl: 'static/ng-app/partials/img_set_list.html',
-            controller: 'ExperimentListController'
+            controller: 'ImageSetListController'
         }
     ).when(
         '/image-sets/:image_set_id',
         {
             templateUrl: 'static/ng-app/partials/img_set_detail.html',
-            controller: 'ExperimentDetailController'
+            controller: 'ImageSetDetailController'
         }
     ).otherwise({ redirectTo: '/' });
 });
