@@ -14,7 +14,6 @@ urlpatterns = [
     url(r'^api/users/(?P<pk>[0-9]+)/$', api_views.UserDetail.as_view()),
     url(r'^api/subregions/$', api_views.SubregionList.as_view()),
     url(r'^api/subregions/(?P<pk>[0-9]+)/$', api_views.SubregionDetail.as_view()),
-    url(r'^api/subregion-anatomy-count/$', api_views.SubregionAnatomyAggregation.as_view()),
     url(r'^api/image-sets/$', api_views.ImageSetList.as_view()),
     url(r'^api/image-sets/(?P<pk>[0-9]+)/$', api_views.ImageSetDetail.as_view()),
     url(r'^api/anatomy-probe-map/$', api_views.AnatomyProbeMapList.as_view()),

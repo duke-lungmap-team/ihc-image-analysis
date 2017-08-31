@@ -361,12 +361,3 @@ class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
-
-
-class SubregionAnatomyAggregation(generics.ListAPIView):
-    queryset = models.Subregion.objects.all()
-    serializer_class = serializers.SubregionAnatomyAggregationSerializer
-
-    def get_queryset(self):
-        return models.Subregion.objects.select_related().values(
-            'anatomy__name', 'anatomy_id').annotate(count=Count('anatomy_id'))

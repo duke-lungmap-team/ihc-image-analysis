@@ -146,10 +146,3 @@ class ImageSubregionSerializers(serializers.ModelSerializer):
     # noinspection PyMethodMayBeStatic
     def get_subregion_count(self, obj):
         return obj.subregion_set.count()
-
-
-# noinspection PyAbstractClass
-class SubregionAnatomyAggregationSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    anatomy_id = serializers.IntegerField()
-    anatomy__name = serializers.CharField()

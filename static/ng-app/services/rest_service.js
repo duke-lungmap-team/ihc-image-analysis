@@ -8,7 +8,6 @@ var URLS = {
     'subregions': '/api/subregions/',
     'image_sets': '/api/image-sets/',
     'anatomy_probe_map': '/api/anatomy-probe-map/',
-    'subregionanatomycount': '/api/subregion-anatomy-count',
     'train_model': '/api/train-model/'
 };
 
@@ -37,15 +36,6 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.development_stages,
-            {},
-            {}
-        );
-    }
-).factory(
-    'SubregionAnatomyCount',
-    function ($resource) {
-        return $resource(
-            URLS.subregionanatomycount,
             {},
             {}
         );
