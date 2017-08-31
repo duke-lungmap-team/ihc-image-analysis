@@ -2,7 +2,6 @@ var URLS = {
     'species': '/api/species/',
     'magnifications': '/api/magnifications/',
     'development_stages': '/api/development-stages/',
-    'exp': '/api/experiments/',
     'probes': '/api/probes/',
     'images': '/api/images/',
     'classify': '/api/classify/',
@@ -47,15 +46,6 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.subregionanatomycount,
-            {},
-            {}
-        );
-    }
-).factory(
-    'Experiment',
-    function ($resource) {
-        return $resource(
-            URLS.exp + ':experiment_id',
             {},
             {}
         );
