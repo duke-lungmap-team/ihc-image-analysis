@@ -3,7 +3,7 @@ from analytics import models
 
 
 class ImageSerializer(serializers.ModelSerializer):
-    image_jpeg = serializers.HyperlinkedIdentityField('image-jpeg', read_only=True)
+    image_jpeg = serializers.HyperlinkedIdentityField('images-jpeg', read_only=True)
 
     class Meta:
         model = models.Image

@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^api/probes/$', api_views.ProbeList.as_view()),
     url(r'^api/images/$', api_views.ImageList.as_view()),
     url(r'^api/images/(?P<pk>[0-9]+)/$', api_views.ImageDetail.as_view()),
-    url(r'^api/images-jpeg/(?P<pk>[0-9]+)/$', api_views.get_image_jpeg),
+    url(r'^api/images-jpeg/(?P<pk>[0-9]+)/$', api_views.get_image_jpeg, name='images-jpeg'),
     url(r'^api/subregions/$', api_views.SubregionList.as_view()),
     url(r'^api/subregions/(?P<pk>[0-9]+)/$', api_views.SubregionDetail.as_view()),
     url(r'^api/image-sets/$', api_views.ImageSetList.as_view()),
