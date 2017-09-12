@@ -270,7 +270,7 @@ class LungmapSubRegionFilter(django_filters.rest_framework.FilterSet):
 
 
 class SubregionList(generics.ListCreateAPIView):
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
     filter_class = LungmapSubRegionFilter
@@ -286,9 +286,23 @@ class SubregionList(generics.ListCreateAPIView):
         all sub-regions in the list must have the same image ID and anatomy ID.
         """
 
-        # first check the first region image / anatomy combo and check if there are any
-        # existing sub-regions with this combo
+        # A couple checks to make sure we can continue...
+        # First, if the image set for the image is already trained, we do not allow
+        # new sub-regions.
+        # Second, as of now, we don't allow new sub-regions for an image / anatomy combo if
+        # existing sub-regions exist for it. This may change in the future.
+        # Third, we don't allow a bulk POST with a different image / anatomy combos. Since
+        # we will have the first region image / anatomy combo from the previous check,
+        # we can verify that all the rest are the same as we iterate through them.
         image_id = request.data[0]['image']
+
+        # get image set to check if it is trained already
+        image = models.Image.objects.get(id=image_id)
+        image_set = models.ImageSet.objects.get(id=image.image_set_id)
+
+        if hasattr(image_set, 'trainedmodel'):
+            return Response(data={'detail': "Image set is already trained"}, status=400)
+
         anatomy_id = request.data[0]['anatomy']
         existing_sub_regions = models.Subregion.objects.filter(
             image=image_id,
