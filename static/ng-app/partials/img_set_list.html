@@ -85,6 +85,7 @@
           <th>Images</th>
           <th>Trained Images</th>
           <th>Sub-regions</th>
+          <th>Status</th>
         </tr>
       </thead>
 
@@ -116,6 +117,9 @@
           </td>
           <td>
             {{ img_set.subregion_count }}
+          </td>
+          <td>
+            <div ng-if="img_set.trainedmodel != null" class="text-success"><i><b>Trained</b></i></div>
           </td>
         </tr>
 
