@@ -325,6 +325,11 @@ app.controller(
                         if (new_regions.length > 0) {
                             $scope.regions.svg = new_regions;
                             $scope.enabled = false;
+                            $scope.image_set = ImageSet.get(
+                                {
+                                    'image_set_id': $routeParams.image_set_id
+                                }
+                            );
                         }
                     }, function (error) {
                         $window.alert(JSON.stringify(error.data, null, 4))
