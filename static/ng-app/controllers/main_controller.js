@@ -242,7 +242,7 @@ app.controller(
                         new_regions.push(new_region_points);
                     });
 
-                    if (new_regions.length > 0) {
+                    if (new_regions.length > 0 || $scope.image_set.trainedmodel !== null) {
                         $scope.regions.svg = new_regions;
                         $scope.enabled = false;
                     } else {
