@@ -9,6 +9,22 @@ app.controller(
 );
 
 app.controller(
+    'ModalInstanceCtrl',
+    function ($scope, $uibModalInstance, title, message_items) {
+        $scope.title = title;
+        $scope.items = message_items;
+
+        $scope.ok = function () {
+            $uibModalInstance.close(null);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }
+);
+
+app.controller(
     'ImageSetListController',
     [
         '$scope',
@@ -131,14 +147,14 @@ app.controller(
         '$scope',
         '$q',
         '$routeParams',
-        '$window',
+        '$uibModal',
         'ImageSet',
         'Image',
         'Subregion',
         'AnatomyProbeMap',
         'Classify',
         'TrainModel',
-        function ($scope, $q, $routeParams, $window, ImageSet, Image,
+        function ($scope, $q, $routeParams, $uibModal, ImageSet, Image,
                   Subregion, AnatomyProbeMap, Classify, TrainModel) {
             $scope.images = [];
             $scope.selected_image = null;
@@ -152,6 +168,29 @@ app.controller(
             };
             $scope.poly_height = 997;
             $scope.poly_width = 997;
+
+            // modal setup
+            $scope.modal_title = null;
+            $scope.modal_items = null;
+            $scope.animationsEnabled = true;
+            $scope.open = function (size) {
+                var modalInstance = $uibModal.open(
+                    {
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'static/ng-app/partials/generic-modal.html',
+                        controller: 'ModalInstanceCtrl',
+                        size: size,
+                        resolve: {
+                            title: function() {
+                                return $scope.modal_title;
+                            },
+                            message_items: function () {
+                                return $scope.modal_items;
+                            }
+                        }
+                    }
+                );
+            };
 
             $scope.image_set = ImageSet.get({'image_set_id': $routeParams.image_set_id});
 
@@ -180,9 +219,6 @@ app.controller(
                             );
                         });
                     });
-                }, function(error) {
-                    // Error callback where reason is the value of the first rejected promise
-                    $window.alert(JSON.stringify(error, null, 4));
                 });
             });
 
@@ -199,9 +235,6 @@ app.controller(
                     save_response.$promise.then(function(data) {
                         $scope.selected_image = data;
                         $scope.select_classification($scope.selected_classification);
-                    }, function (error) {
-                        // TODO: figure out how to turn retrieving off for experiment
-                        $window.alert(JSON.stringify(error, null, 4))
                     });
                 } else {
                     $scope.select_classification($scope.selected_classification);
@@ -272,10 +305,12 @@ app.controller(
                 // since there cannot be any existing regions for the image / class combo.
                 var regions = [];
 
-                if ($scope.regions.svg.length === 0) {
-                    $window.alert('There are no regions drawn, please segment something first.');
-                } else if ($scope.selected_classification === null) {
-                    $window.alert('There is no label associated with the active polygon, please choose a label first.');
+                if ($scope.regions.svg.length < 4) {
+                    $scope.modal_title = 'Error';
+                    $scope.modal_items = [
+                        'A minimum of 4 items per class must be drawn'
+                    ];
+                    $scope.open();
                 } else {
                     $scope.regions.svg.forEach(function(p) {
                         var region = {};
@@ -332,7 +367,9 @@ app.controller(
                             );
                         }
                     }, function (error) {
-                        $window.alert(JSON.stringify(error.data, null, 4))
+                        $scope.modal_title = 'Error';
+                        $scope.modal_items ['An error occured when attempting to save regions']
+                        $scope.open();
                     });
                 }
             };
@@ -370,8 +407,12 @@ app.controller(
                 });
 
                 $q.all(classify_promises).then(function (results) {
-                    console.log(results);
-                    $window.alert(JSON.stringify(results, null, 4));
+                    $scope.modal_title = 'Classification Results';
+                    $scope.modal_items = [];
+                    results[0].results.forEach(function(r) {
+                        $scope.modal_items.push(Object.keys(r)[0] + ': ' + (r[Object.keys(r)[0]] * 100).toFixed(2) + '%');
+                    });
+                    $scope.open();
                 });
             }
         }
