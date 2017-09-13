@@ -13,6 +13,7 @@ import pandas as pd
 import pickle
 # noinspection PyPackageRequirements
 import cv2
+import PIL
 import django_filters
 # noinspection PyPackageRequirements
 from sklearn.externals import joblib
@@ -167,11 +168,11 @@ class TrainedModelCreate(generics.CreateAPIView):
                 sub_regions = image.subregion_set.all()
 
                 if len(sub_regions) > 0:
-                    # TODO: don't use file path in case you're moving to S3 or something else
+                    pil_image = PIL.Image.open(image.image_orig)
+                    image_as_numpy = np.asarray(pil_image)
+
                     # noinspection PyUnresolvedReferences
-                    sub_img = cv2.imread(image.image_orig.path)
-                    # noinspection PyUnresolvedReferences
-                    sub_img = cv2.cvtColor(sub_img, cv2.COLOR_BGR2HSV)
+                    sub_img = cv2.cvtColor(image_as_numpy, cv2.COLOR_RGB2HSV)
 
                     for subregion in sub_regions:
                         points = subregion.points.all()
@@ -240,12 +241,11 @@ class ClassifySubRegion(generics.CreateAPIView):
         for point in points:
             this_mask = np.append(this_mask, [[point['x'], point['y']]], axis=0)
 
-        # TODO: FIND A WAY TO NOT USE THE ACTUAL PATH
-        # noinspection PyUnresolvedReferences
-        image_as_numpy = cv2.imread(image_object.image_orig.path)
+        pil_image = PIL.Image.open(image_object.image_orig)
+        image_as_numpy = np.asarray(pil_image)
 
         # noinspection PyUnresolvedReferences
-        image_as_numpy = cv2.cvtColor(image_as_numpy, cv2.COLOR_BGR2HSV)
+        image_as_numpy = cv2.cvtColor(image_as_numpy, cv2.COLOR_RGB2HSV)
         features = utils.generate_custom_features(hsv_img_as_numpy=image_as_numpy,
                                                   polygon_points=this_mask)
         features_data_frame = pd.DataFrame([features])
