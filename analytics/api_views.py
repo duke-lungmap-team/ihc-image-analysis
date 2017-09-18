@@ -155,6 +155,7 @@ class ImageList(generics.ListAPIView):
 
 
 class TrainedModelCreate(generics.CreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = models.TrainedModel.objects.all()
     serializer_class = serializers.TrainedModelCreateSerializer
 
@@ -209,6 +210,15 @@ class TrainedModelCreate(generics.CreateAPIView):
                 return Response(data={'detail': e.messages}, status=400)
 
             return Response(data={'detail': e}, status=400)
+
+
+class TrainedModelDetail(generics.RetrieveDestroyAPIView):
+    """
+    Retrieve or delete a trained model
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = models.TrainedModel.objects.all()
+    serializer_class = serializers.TrainedModelSerializer
 
 
 # noinspection PyUnusedLocal
