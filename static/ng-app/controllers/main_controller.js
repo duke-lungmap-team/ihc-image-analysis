@@ -192,6 +192,12 @@ app.controller(
                 );
             };
 
+            $scope.launch_info_modal = function() {
+                $scope.modal_title = 'How to Create Training Data';
+                $scope.modal_items = ['test<i>embedded markup</i>'];
+                $scope.open();
+            };
+
             $scope.image_set = ImageSet.get({'image_set_id': $routeParams.image_set_id});
 
             $scope.image_set.$promise.then(function(data) {

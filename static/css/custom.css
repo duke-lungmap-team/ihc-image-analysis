@@ -217,6 +217,19 @@ th.center {
   background: red;
 }
 
+/* ----------- Info icon ----------- */
+.info-icon {
+  font-size: 2em;
+  color: dimgrey;
+  vertical-align: middle;
+  padding: 0 6px 0 6px;
+}
+.info-icon:hover {
+  text-decoration: none;
+  cursor: hand;
+  cursor: pointer;
+}
+
 /* ----------- Vertical margins ----------- */
 .margin-top-5 {
   margin-top: 5px;
