@@ -102,7 +102,7 @@ service.factory(
     'TrainModel',
     function ($resource) {
         return  $resource(
-            URLS.train_model,
+            URLS.train_model + ':id',
             {},
             {}
         );
