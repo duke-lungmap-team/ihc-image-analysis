@@ -395,11 +395,19 @@ app.controller(
             };
 
             $scope.train_model = function () {
-                TrainModel.save(
+                var response = TrainModel.save(
                     {
                         'imageset': $scope.image_set.id
                     }
                 );
+
+                response.$promise.then(function (data) {
+                    $scope.image_set = ImageSet.get(
+                        {
+                            'image_set_id': $routeParams.image_set_id
+                        }
+                    );
+                });
             };
 
             $scope.launch_delete_trained_model_modal = function() {
