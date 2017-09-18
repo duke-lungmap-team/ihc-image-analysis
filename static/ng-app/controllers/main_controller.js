@@ -15,7 +15,7 @@ app.controller(
         $scope.items = message_items;
 
         $scope.ok = function () {
-            $uibModalInstance.close(null);
+            $uibModalInstance.close(true);
         };
 
         $scope.cancel = function () {
@@ -173,11 +173,19 @@ app.controller(
             $scope.modal_title = null;
             $scope.modal_items = null;
             $scope.animationsEnabled = true;
-            $scope.open = function (size) {
+            $scope.open_modal = function (size, template_type, confirm_callback) {
+                var template_url;
+
+                if (template_type === 'confirm') {
+                    template_url = 'static/ng-app/partials/confirm-modal.html';
+                } else {
+                    template_url = 'static/ng-app/partials/generic-modal.html';
+                }
+
                 var modalInstance = $uibModal.open(
                     {
                         animation: $scope.animationsEnabled,
-                        templateUrl: 'static/ng-app/partials/generic-modal.html',
+                        templateUrl: template_url,
                         controller: 'ModalInstanceCtrl',
                         size: size,
                         resolve: {
@@ -190,12 +198,18 @@ app.controller(
                         }
                     }
                 );
+
+                modalInstance.result.then(function (selectedItem) {
+                    if (selectedItem) {
+                        confirm_callback();
+                    }
+                });
             };
 
             $scope.launch_info_modal = function() {
                 $scope.modal_title = 'How to Create Training Data';
                 $scope.modal_items = ['test<i>embedded markup</i>'];
-                $scope.open();
+                $scope.open_modal();
             };
 
             $scope.image_set = ImageSet.get({'image_set_id': $routeParams.image_set_id});
@@ -316,7 +330,7 @@ app.controller(
                     $scope.modal_items = [
                         'A minimum of 4 items per class must be drawn'
                     ];
-                    $scope.open();
+                    $scope.open_modal();
                 } else {
                     $scope.regions.svg.forEach(function(p) {
                         var region = {};
@@ -375,7 +389,7 @@ app.controller(
                     }, function (error) {
                         $scope.modal_title = 'Error';
                         $scope.modal_items ['An error occured when attempting to save regions']
-                        $scope.open();
+                        $scope.open_modal();
                     });
                 }
             };
@@ -387,6 +401,28 @@ app.controller(
                     }
                 );
             };
+
+            $scope.launch_delete_trained_model_modal = function() {
+                $scope.modal_title = 'Delete Trained Model?';
+                $scope.modal_items = ['Are you sure you want to delete this trained model?'];
+                $scope.open_modal('md', 'confirm', delete_trained_model);
+            };
+
+            function delete_trained_model() {
+                var response = TrainModel.delete(
+                    {
+                        'id': $scope.image_set.trainedmodel
+                    }
+                );
+
+                response.$promise.then(function (data) {
+                    $scope.image_set = ImageSet.get(
+                        {
+                            'image_set_id': $routeParams.image_set_id
+                        }
+                    );
+                });
+            }
 
             $scope.classify_region = function () {
                 var classify_promises = [];
@@ -418,7 +454,7 @@ app.controller(
                     results[0].results.forEach(function(r) {
                         $scope.modal_items.push(Object.keys(r)[0] + ': ' + (r[Object.keys(r)[0]] * 100).toFixed(2) + '%');
                     });
-                    $scope.open();
+                    $scope.open_modal();
                 });
             }
         }

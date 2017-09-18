@@ -54,7 +54,10 @@
               <div ng-if="image_set.trainedmodel == null">
                 <button type="button" class="btn btn-xs btn-success" ng-click="train_model()">Train Model</button>
               </div>
-              <div ng-if="image_set.trainedmodel != null"><i>Trained</i></div>
+              <div ng-if="image_set.trainedmodel != null">
+                <i>Trained</i><br/>
+                <button type="button" class="btn btn-xs btn-danger" ng-click="launch_delete_trained_model_modal()">Delete Model</button>
+              </div>
             </td>
           </tr>
           <tr>
