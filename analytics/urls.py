@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^api/image-sets/(?P<pk>[0-9]+)/$', api_views.ImageSetDetail.as_view()),
     url(r'^api/anatomy-probe-map/$', api_views.AnatomyProbeMapList.as_view()),
     url(r'^api/train-model/$', api_views.TrainedModelCreate.as_view()),
+    url(r'^api/train-model/(?P<pk>[0-9]+)/$', api_views.TrainedModelDetail.as_view()),
     url(r'^api/classify/$', api_views.ClassifySubRegion.as_view())
 ]
