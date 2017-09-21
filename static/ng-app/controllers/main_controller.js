@@ -200,7 +200,7 @@ app.controller(
                 );
 
                 modalInstance.result.then(function (selectedItem) {
-                    if (selectedItem) {
+                    if (selectedItem && confirm_callback != undefined) {
                         confirm_callback();
                     }
                 });
@@ -298,9 +298,11 @@ app.controller(
                     if (new_regions.length > 0 || $scope.image_set.trainedmodel !== null) {
                         $scope.regions.svg = new_regions;
                         $scope.enabled = false;
+                        $scope.displaying_saved_regions = true;
                     } else {
                         $scope.regions.svg = [];
                         $scope.enabled = true;
+                        $scope.displaying_saved_regions = false;
                     }
                 });
             };
@@ -380,6 +382,7 @@ app.controller(
                         if (new_regions.length > 0) {
                             $scope.regions.svg = new_regions;
                             $scope.enabled = false;
+                            $scope.displaying_saved_regions = true;
                             $scope.image_set = ImageSet.get(
                                 {
                                     'image_set_id': $routeParams.image_set_id
@@ -388,10 +391,33 @@ app.controller(
                         }
                     }, function (error) {
                         $scope.modal_title = 'Error';
-                        $scope.modal_items ['An error occured when attempting to save regions']
+                        $scope.modal_items = ['An error occured when attempting to save regions'];
                         $scope.open_modal();
                     });
                 }
+            };
+
+            $scope.delete_saved_regions = function () {
+                var delete_response = Subregion.delete({
+                    'image': $scope.selected_image.id,
+                    'anatomy': $scope.selected_classification.id
+                });
+
+                delete_response.$promise.then(function (data) {
+                    // update the image set to refresh the region counts
+                    $scope.image_set = ImageSet.get(
+                        {
+                            'image_set_id': $routeParams.image_set_id
+                        }
+                    );
+
+                    // reset mode to clear regions
+                    $scope.set_mode($scope.mode);
+                }, function (error) {
+                    $scope.modal_title = 'Error';
+                    $scope.modal_items = [error.data['detail']];
+                    $scope.open_modal();
+                });
             };
 
             $scope.train_model = function () {
