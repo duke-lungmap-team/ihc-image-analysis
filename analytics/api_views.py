@@ -3,7 +3,7 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from lungmap_client import lungmap_utils
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.files.base import ContentFile
@@ -279,7 +279,10 @@ class LungmapSubRegionFilter(django_filters.rest_framework.FilterSet):
         fields = ['image', 'anatomy']
 
 
-class SubregionList(generics.ListCreateAPIView):
+class SubregionList(
+        mixins.DestroyModelMixin,
+        generics.ListCreateAPIView
+):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
@@ -370,8 +373,45 @@ class SubregionList(generics.ListCreateAPIView):
             headers=headers
         )
 
+    def delete(self, request, *args, **kwargs):
+        # Allow deleting sub-regions in bulk given query parameters for
+        # both the Image and Anatomy IDs. However, deleting sub-regions
+        # for image sets with a trained model is not allowed.
+        try:
+            anatomy_id = request.query_params['anatomy']
+            image_id = request.query_params['image']
+        except KeyError:
+            return Response(
+                data={'detail': "Anatomy and Image must be specified"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-class SubregionDetail(generics.RetrieveUpdateDestroyAPIView):
+        try:
+            image = models.Image.objects.get(id=image_id)
+        except models.Image.DoesNotExist:
+            return Response(
+                data={'detail': "Image ID does not exist"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # check if related image set is already trained
+        trained_models = models.TrainedModel.objects.filter(imageset=image.image_set_id)
+
+        if trained_models.count() > 0:
+            return Response(
+                data={'detail': "Sub-regions for trained image sets cannot be deleted"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        regions = models.Subregion.objects.filter(anatomy=anatomy_id, image=image_id)
+        regions.delete()
+
+        response_data = {'success': True}
+
+        return Response (response_data, status=status.HTTP_200_OK)
+
+
+class SubregionDetail(generics.RetrieveUpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
