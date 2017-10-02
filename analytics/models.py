@@ -72,7 +72,7 @@ class ImageSetProbeMap(models.Model):
 
 class Image(models.Model):
     source_url = models.CharField(
-        max_length=200
+        max_length=400
     )
     image_name = models.CharField(max_length=200)
     image_set = models.ForeignKey(ImageSet)
