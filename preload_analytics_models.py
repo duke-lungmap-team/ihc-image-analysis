@@ -22,7 +22,8 @@ for key, value in image_sets.items():
 
     for image in value['images']:
         experiment, experiment_create = models.Experiment.objects.get_or_create(
-            experiment_id=image['image_id'].split('_')[0]
+            experiment_id=image['experiment_id'],
+            experiment_type_id=image['experiment_type_id']
         )
 
         image_object = models.Image.objects.get_or_create(
@@ -48,7 +49,7 @@ for key, value in image_sets.items():
 
         for exp in value['experiments']:
             experiment_object = models.Experiment.objects.get(
-                experiment_id=exp
+                experiment_id=exp['experiment_id']
             )
 
             experiment_probe_map = models.ExperimentProbeMap.objects.create(
@@ -61,13 +62,16 @@ for key, value in image_sets.items():
 # need to fill in with actual data from ontology
 def add_probe_anatomy(probe, class_name):
     """
-    Add a probe/classification combo, this can be either cell or stucture as identified
+    Add a probe/classification combo, this can be either cell or structure as identified
     by the class_type
     :param probe: str: a probe name
-    :param class_name: str: a classficiation name
+    :param class_name: str: a classification name
     :return:
     """
-    probe_instance = models.Probe.objects.get(label=probe)
+    try:
+        probe_instance = models.Probe.objects.get(label=probe)
+    except models.Probe.DoesNotExist:
+        pass
     anatomy = models.Anatomy.objects.create(name=class_name)
 
     models.AnatomyProbeMap.objects.create(
@@ -75,10 +79,10 @@ def add_probe_anatomy(probe, class_name):
         anatomy=anatomy
     )
 
-add_probe_anatomy('Sox2', 'bronchiolar_epithelial_cell')
-add_probe_anatomy('TTF-1', 'epithelial_cell_of_the_lung')
-add_probe_anatomy('α-Smooth Muscle Actin', 'bronchiolar-associated_smooth_muscle_cell')
-add_probe_anatomy('α-Smooth Muscle Actin', 'bronchiole')
-add_probe_anatomy('Sox9', 'distal_acinar_tubule')
-add_probe_anatomy('α-Smooth Muscle Actin', 'proximal_acinar_tubule')
-add_probe_anatomy('α-Smooth Muscle Actin', 'blood_vessel')
+add_probe_anatomy('Anti-Sox2', 'bronchiolar_epithelial_cell')
+add_probe_anatomy('Anti-Nkx2-1', 'epithelial_cell_of_the_lung')
+add_probe_anatomy('Anti-Acta2', 'bronchiolar-associated_smooth_muscle_cell')
+add_probe_anatomy('Anti-Acta2', 'bronchiole')
+add_probe_anatomy('Anti-Sox9', 'distal_acinar_tubule')
+add_probe_anatomy('Anti-Acta2', 'proximal_acinar_tubule')
+add_probe_anatomy('Anti-Acta2', 'blood_vessel')
