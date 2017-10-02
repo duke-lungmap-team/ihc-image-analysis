@@ -30,7 +30,7 @@ WHERE {
 GET_IMAGES_BY_EXPERIMENT = """
 PREFIX lm: <http://www.lungmap.net/ontologies/data#>
 PREFIX lmdb: <http://www.lungmap.net/ontologies/database#>
-SELECT DISTINCT ?experiment ?image ?path ?dir ?magnification ?x_scaling ?y_scaling
+SELECT DISTINCT strafter(str(?experiment),'#') as ?experiment strafter(str(?experiment_type),'#') as ?experiment_type ?image ?path ?dir ?magnification ?x_scaling ?y_scaling
 WHERE {
     VALUES ?experiment { lm:EXPERIMENT_PLACEHOLDER } .
     ?image lmdb:part_of_experiment ?experiment .
@@ -39,6 +39,7 @@ WHERE {
     ?image lmdb:x_scaling ?x_scaling .
     ?image lmdb:y_scaling ?y_scaling .
     ?experiment lmdb:s3_path ?path .
+    ?experiment lmdb:is_experiment_type ?experiment_type
 } ORDER BY ASC(xsd:integer(REPLACE(str(?magnification), 'X', '')))
 """
 

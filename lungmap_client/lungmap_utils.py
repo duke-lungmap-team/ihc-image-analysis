@@ -1,28 +1,19 @@
 # noinspection PyPackageRequirements
 import cv2
-from lap import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from io import BytesIO
 from lungmap_client import lungmap_sparql_queries as sparql_queries
 from SPARQLWrapper import SPARQLWrapper, JSON
-import boto3
 import hashlib
 import os
 # noinspection PyPackageRequirements
 from PIL import Image
+import requests
 import tempfile
 import warnings
 
 
 lungmap_sparql_server = "http://data.lungmap.net/sparql"
-
-session = boto3.Session(
-    aws_secret_access_key=settings.LUNGMAP_AWS_SECRET,
-    aws_access_key_id=settings.LUNGMAP_AWS_ACCESS,
-    region_name=settings.LUNGMAP_AWS_REGION
-)
-s3 = session.resource('s3')
-bucket = s3.Bucket('lungmap-breath-data')
 
 
 def get_image_set_candidates():
@@ -56,6 +47,9 @@ def get_image_set_candidates():
 
     for e_id, e in experiments.items():
         e_probes = get_probes_by_experiment(experiment_id=e_id)
+
+        # very important to sort probes by probe label to make sure the string is consistent
+        # in order to combine images from experiments with the same probe / color combos
         e['probes'] = sorted(e_probes, key=lambda k: k['probe_label'])
 
         e_images = get_images_by_experiment(e_id)
@@ -81,7 +75,9 @@ def get_image_set_candidates():
                 "image_name": i['image_name'],
                 "x_scaling": i['x_scaling'],
                 "y_scaling": i['y_scaling'],
-                "s3key": i["s3key"]
+                "s3key": i["s3key"],
+                "experiment_id": i["experiment_id"],
+                "experiment_type_id": i["experiment_type_id"]
             })
         else:
             image_sets[i_set_str] = {
@@ -95,13 +91,20 @@ def get_image_set_candidates():
                     "image_name": i['image_name'],
                     "x_scaling": i['x_scaling'],
                     "y_scaling": i['y_scaling'],
-                    "s3key": i["s3key"]
+                    "s3key": i["s3key"],
+                    "experiment_id": i["experiment_id"],
+                    "experiment_type_id": i["experiment_type_id"]
                 }]
             }
     for key, value in image_sets.items():
         for x in value['images']:
             if x['image_id'].split('_')[0] not in image_sets[key]['experiments']:
-                image_sets[key]['experiments'].append(x['image_id'].split('_')[0])
+                image_sets[key]['experiments'].append(
+                    {
+                        'experiment_id': x['experiment_id'],
+                        'experiment_type_id': x['experiment_type_id']
+                    }
+                )
 
     return image_sets
 
@@ -170,7 +173,6 @@ def get_sample_by_experiment(experiment_id):
         for x in results[:1]:
             row = {
                 'age_label': x['age_label']['value'],
-                'sex': x['sex']['value'].lower(),
                 'organism_label': x['organism_label']['value'],
                 'local_id': x['local_id']['value']
             }
@@ -188,15 +190,16 @@ def get_images_by_experiment(experiment_id):
     try:
         for x in results:
             row = {}
-            filename = x['img_file']['value']
+            filename = '.'.join([x['dir']['value'], 'tif'])
             name, ext = os.path.splitext(filename)
-            root = x['experiment']['value'].split('owl#')[1]
+            root = x['path']['value']
             s3_obj_key = os.path.join(root, name, filename)
             row['file_ext'] = ext
             row['image_name'] = filename
-            row['image_id'] = x['image']['value'].split('owl#')[1]
+            row['image_id'] = x['image']['value'].split('data#')[1]
             row['s3key'] = s3_obj_key
-            row['experiment_id'] = root
+            row['experiment_id'] = experiment_id
+            row['experiment_type_id'] = x['experiment_type']['value']
             row['magnification'] = x['magnification']['value']
             row['x_scaling'] = x['x_scaling']['value']
             row['y_scaling'] = x['y_scaling']['value']
@@ -241,7 +244,6 @@ def get_experiment_type_by_experiment(experiment_id):
     try:
         for x in results:
             row = {
-                'platform': x['platform']['value'],
                 'experiment_type_label': x['experiment_type_label']['value']
             }
         return row
@@ -249,42 +251,33 @@ def get_experiment_type_by_experiment(experiment_id):
         raise e
 
 
-def get_researcher_by_experiment(experiment_id):
-    results = _get_by_experiment(
-        sparql_queries.GET_RESEARCHER_BY_EXPERIMENT,
-        experiment_id
-    )
-    if len(results) > 1:
-        raise ValueError(
-            'too many results'
-        )
-    try:
-        for x in results:
-            row = {
-                'researcher_label': x['researcher_label']['value'],
-                'site_label': x['site_label']['value']
-            }
-        return row
-    except ValueError as e:
-        raise e
-
-
-def get_image_from_s3(s3key):
+def get_image_from_lungmap(url):
     """
-    Takes an s3key and then downloads the image, calculates a SHA1, 
+    Takes a URL and downloads the image, calculates a SHA1,
     creates a SimpleUploadedFile, converts to jpeg
     and then creates another SimpleUploadedFile for the jpeg, 
     returns 3 objects
-    :param s3key: 
+    :param url:
     :return: SimpleUploadedFile (orig), SHA1 Hash (orig), 
     SimpleUploadedFile (jpeg converted)
     """
     try:
-        s3key_jpg, ext = os.path.splitext(s3key)
-        temp = tempfile.NamedTemporaryFile(suffix=ext)
-        bucket.download_file(s3key, temp.name)
-        # noinspection PyUnresolvedReferences
-        cv_img = cv2.imread(temp.name)
+        filename = url.split('/')[-1]
+        base, ext = os.path.splitext(filename)
+
+        response = requests.get(url, stream=True)
+
+        with tempfile.NamedTemporaryFile(suffix=ext) as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                f.write(chunk)
+
+            f.seek(0)
+
+            # noinspection PyUnresolvedReferences
+            cv_img = cv2.imread(f.name)
+
+        response.close()
+
         # noinspection PyUnresolvedReferences
         img = Image.fromarray(
             cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB),
@@ -302,12 +295,12 @@ def get_image_from_s3(s3key):
 
         # filename
         suf = SimpleUploadedFile(
-            os.path.basename(s3key),
+            filename,
             temp_handle.read(),
             content_type='image/tif'
         )
         suf_jpg = SimpleUploadedFile(
-            os.path.basename(s3key_jpg) + '.jpg',
+            base + '.jpg',
             temp_handle_jpeg.read(),
             content_type='image/jpeg'
         )

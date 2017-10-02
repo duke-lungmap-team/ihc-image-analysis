@@ -9,35 +9,14 @@ class Experiment(models.Model):
         max_length=25,
         primary_key=True
     )
-    platform = models.CharField(
+    experiment_type_id = models.CharField(
         max_length=35,
-        blank=True,
-        null=True
-    )
-    experiment_type = models.CharField(
-        max_length=35,
-        blank=True,
-        null=True
-    )
-    sex = models.CharField(
-        max_length=20,
-        null=True,
-        blank=True
+        blank=False,
+        null=False
     )
 
     def __str__(self):
         return '%s' % self.experiment_id
-
-    def save(self, *args, **kwargs):
-        try:
-            metadata = sparql_utils.get_experiment_model_data(self.experiment_id)
-            self.platform = metadata['platform']
-            self.experiment_type = metadata['experiment_type_label']
-            self.sex = metadata['sex']
-
-            super(Experiment, self).save(*args, **kwargs)
-        except ValueError as e:
-            raise e
 
 
 class ImageSet(models.Model):
