@@ -118,7 +118,7 @@ class ImageDetail(generics.RetrieveAPIView):
         try:
             with transaction.atomic():
                 if img.image_orig_sha1 is None or img.image_orig_sha1 == '':
-                    suf, sha1, suf_jpeg = lungmap_utils.get_image_from_lungmap(img.s3key)
+                    suf, sha1, suf_jpeg = lungmap_utils.get_image_from_lungmap(img.source_url)
                     img.image_orig = suf
                     img.image_orig_sha1 = sha1
                     img.image_jpeg = suf_jpeg

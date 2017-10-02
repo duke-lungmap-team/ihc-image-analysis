@@ -75,7 +75,7 @@ def get_image_set_candidates():
                 "image_name": i['image_name'],
                 "x_scaling": i['x_scaling'],
                 "y_scaling": i['y_scaling'],
-                "s3key": i["s3key"],
+                "source_url": i["source_url"],
                 "experiment_id": i["experiment_id"],
                 "experiment_type_id": i["experiment_type_id"]
             })
@@ -91,7 +91,7 @@ def get_image_set_candidates():
                     "image_name": i['image_name'],
                     "x_scaling": i['x_scaling'],
                     "y_scaling": i['y_scaling'],
-                    "s3key": i["s3key"],
+                    "source_url": i["source_url"],
                     "experiment_id": i["experiment_id"],
                     "experiment_type_id": i["experiment_type_id"]
                 }]
@@ -193,11 +193,11 @@ def get_images_by_experiment(experiment_id):
             filename = '.'.join([x['dir']['value'], 'tif'])
             name, ext = os.path.splitext(filename)
             root = x['path']['value']
-            s3_obj_key = os.path.join(root, name, filename)
+            source_url = os.path.join(root, name, filename)
             row['file_ext'] = ext
             row['image_name'] = filename
             row['image_id'] = x['image']['value'].split('data#')[1]
-            row['s3key'] = s3_obj_key
+            row['source_url'] = source_url
             row['experiment_id'] = experiment_id
             row['experiment_type_id'] = x['experiment_type']['value']
             row['magnification'] = x['magnification']['value']

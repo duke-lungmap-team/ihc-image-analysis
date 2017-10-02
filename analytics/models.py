@@ -71,7 +71,7 @@ class ImageSetProbeMap(models.Model):
 
 
 class Image(models.Model):
-    s3key = models.CharField(
+    source_url = models.CharField(
         max_length=200
     )
     image_name = models.CharField(max_length=200)

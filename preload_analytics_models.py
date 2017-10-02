@@ -27,7 +27,7 @@ for key, value in image_sets.items():
         )
 
         image_object = models.Image.objects.get_or_create(
-            s3key=image['s3key'],
+            source_url=image['source_url'],
             image_name=image['image_name'],
             image_id=image['image_id'],
             x_scaling=image['x_scaling'],
