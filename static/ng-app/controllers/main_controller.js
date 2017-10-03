@@ -207,8 +207,18 @@ app.controller(
             };
 
             $scope.launch_info_modal = function() {
-                $scope.modal_title = 'How to Create Training Data';
-                $scope.modal_items = ['test<i>embedded markup</i>'];
+                $scope.modal_title = 'How to Use the Segmentation Tool';
+                $scope.modal_items = [
+                    "- If training, ensure that an anatomical structure is selected from the drop down menu",
+                    "- Using the mouse, left-click around the anatomical structure you are segmenting",
+                    "- Lines connecting the points will automatically be drawn",
+                    "- If you make a mistake, use the right-click button to remove a point",
+                    "- You can also left-click, hold, and drag points to manipulate their placement",
+                    "- Once finished, simply hit return and focus will be taken away from the created polygon",
+                    "- Now, you can begin segmenting another structure (following the same procedure as above)",
+                    "- Or, if you have segmented all subregions, you can click the 'Save Regions' button when training",
+                    "- If classifing regions click 'Classify Region' when segmentation is complete"
+                ];
                 $scope.open_modal();
             };
 
