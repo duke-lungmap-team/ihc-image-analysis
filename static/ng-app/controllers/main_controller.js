@@ -326,6 +326,8 @@ app.controller(
                 } else if (mode === 'train') {
                     if ($scope.selected_classification !== null) {
                         $scope.select_classification($scope.selected_classification);
+                    } else {
+                        $scope.enabled = false;
                     }
                 } else {
                     $scope.enabled = false;
