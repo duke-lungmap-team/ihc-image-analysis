@@ -11,6 +11,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 font-weight: bold;
 }
 
+ul {
+  line-height: 1.5em;
+}
+
 button > i {
     vertical-align: top;
     font-size: 18px;
