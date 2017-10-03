@@ -63,7 +63,7 @@
 
         <b>Probe</b>
         <ul class="list-unstyled">
-          <li ng-repeat="p in probes">
+          <li ng-repeat="p in probes | orderBy:'name'">
             <label>
               <input type="checkbox" ng-model="p.query" />
               {{ p.name }}
