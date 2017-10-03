@@ -415,14 +415,16 @@ app.controller(
 
                 delete_response.$promise.then(function (data) {
                     // update the image set to refresh the region counts
-                    $scope.image_set = ImageSet.get(
+                    var image_set_response = $scope.image_set = ImageSet.get(
                         {
                             'image_set_id': $routeParams.image_set_id
                         }
                     );
 
-                    // reset mode to clear regions
-                    $scope.set_mode($scope.mode);
+                    image_set_response.$promise.then(function (image_set_data) {
+                        // reset mode to clear regions
+                        $scope.set_mode($scope.mode);
+                    });
                 }, function (error) {
                     $scope.modal_title = 'Error';
                     $scope.modal_items = [error.data['detail']];
