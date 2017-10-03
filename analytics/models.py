@@ -1,5 +1,4 @@
 from django.db import models
-from lungmap_client import lungmap_utils as sparql_utils
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 
@@ -40,6 +39,9 @@ class ImageSet(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return '%s' % self.id
+
     def get_subregion_count(self):
         return Subregion.objects.filter(image__image_set=self).count()
 
@@ -48,6 +50,12 @@ class ImageSet(models.Model):
             image_set=self,
             subregion_count__gt=0
         ).count()
+
+    def get_images_with_subregion_count_by_anatomy_name(self):
+        return Subregion.objects.filter(image__image_set=self)\
+            .values('anatomy__name') \
+            .annotate(total=models.Count('anatomy__name')) \
+            .order_by('anatomy__name')
 
 
 class Probe(models.Model):

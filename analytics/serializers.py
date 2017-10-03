@@ -48,6 +48,11 @@ class ImageSetSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    subregion_count_by_anatomy_name = serializers.ListField(
+        source='get_images_with_subregion_count_by_anatomy_name',
+        read_only=True
+    )
+
     class Meta:
         model = models.ImageSet
         fields = (
@@ -60,6 +65,7 @@ class ImageSetSerializer(serializers.ModelSerializer):
             'image_count',
             'images_with_subregion_count',
             'subregion_count',
+            'subregion_count_by_anatomy_name',
             'trainedmodel'
         )
 
