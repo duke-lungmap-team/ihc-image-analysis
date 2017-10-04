@@ -209,7 +209,7 @@ class TrainedModelCreate(generics.CreateAPIView):
             if hasattr(e, 'messages'):
                 return Response(data={'detail': e.messages}, status=400)
 
-            return Response(data={'detail': e}, status=400)
+            return Response(data={'detail': str(e)}, status=400)
 
 
 class TrainedModelDetail(generics.RetrieveDestroyAPIView):
