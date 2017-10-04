@@ -456,6 +456,11 @@ app.controller(
 
                         }
                     );
+                }, function (error) {
+                    $scope.currently_training = false;
+                    $scope.modal_title = 'Error';
+                    $scope.modal_items = [error.data['detail']];
+                    $scope.open_modal();
                 });
             };
 
