@@ -160,6 +160,7 @@ app.controller(
             $scope.selected_image = null;
             $scope.selected_classification = null;
             $scope.mode = 'train';  // can be 'train', or 'classify'
+            $scope.currently_training = false; //boolean for UI to know if backend is training a model
 
             // drw-poly vars
             $scope.enabled = false;
@@ -440,6 +441,7 @@ app.controller(
             };
 
             $scope.train_model = function () {
+                $scope.currently_training = true;
                 var response = TrainModel.save(
                     {
                         'imageset': $scope.image_set.id
@@ -447,11 +449,23 @@ app.controller(
                 );
 
                 response.$promise.then(function (data) {
-                    $scope.image_set = ImageSet.get(
+                    var response2 = ImageSet.get(
                         {
                             'image_set_id': $routeParams.image_set_id
                         }
                     );
+                    //TODO: attempting to make the transition from delete to train not 'jump'
+                    response2.$promise.then(function(data) {
+                        $scope.image_set = data;
+                        $scope.currently_training = false;
+
+                        }
+                    );
+                }, function (error) {
+                    $scope.currently_training = false;
+                    $scope.modal_title = 'Error';
+                    $scope.modal_items = [error.data['detail']];
+                    $scope.open_modal();
                 });
             };
 
