@@ -191,7 +191,13 @@ class TrainedModelCreate(generics.CreateAPIView):
                             )
                         )
             if len(unique_label_names)<=1:
-                raise ValueError('More than 1 anatomical structure is needed to train a model.')
+                raise ValueError(
+                    """
+                    More than 1 anatomical structure is needed to train a model. Please continue to 
+                    create training data by segmenting new anatomical structures. Once complete, a 
+                    trained model can be created.
+                    """
+                )
             pipe = utils.pipe
             training_data = pd.DataFrame(training_data)
             pipe.fit(training_data.drop('label', axis=1), training_data['label'])
