@@ -238,15 +238,20 @@ app.controller(
 
                 $q.all(anatomy_promises).then(function(results) {
                     $scope.anatomies = [];
+                    var anatomy_keys = [];
 
                     results.forEach(function(anatomy_probe_map) {
                         anatomy_probe_map.forEach(function(anatomy_probe) {
-                            $scope.anatomies.push(
-                                {
-                                    'id': anatomy_probe.anatomy,
-                                    'name': anatomy_probe.anatomy_name
-                                }
-                            );
+                            if (anatomy_keys.indexOf(anatomy_probe.anatomy) === -1) {
+                                anatomy_keys.push(anatomy_probe.anatomy);
+
+                                $scope.anatomies.push(
+                                    {
+                                        'id': anatomy_probe.anatomy,
+                                        'name': anatomy_probe.anatomy_name
+                                    }
+                                );
+                            }
                         });
                     });
                 });
