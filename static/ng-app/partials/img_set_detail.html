@@ -105,7 +105,7 @@
 
       <div class="btn-group">
         <button type="button" class="btn btn-default {{ mode == 'train' ? 'active' : null }}" ng-click="set_mode('train')">Train</button>
-        <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="set_mode('classify')">Classify</button>
+        <button type="button" class="btn btn-default {{ mode == 'classify' ? 'active' : null }}" ng-click="set_mode('classify')" ng-disabled="image_set.trainedmodel === null">Classify</button>
       </div>
     </div>
 
