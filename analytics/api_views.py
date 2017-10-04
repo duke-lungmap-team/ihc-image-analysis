@@ -164,7 +164,7 @@ class TrainedModelCreate(generics.CreateAPIView):
             image_set = models.ImageSet.objects.get(id=request.data['imageset'])
             images = image_set.image_set.prefetch_related('subregion_set')
             training_data = []
-
+            unique_label_names = set()
             for image in images:
                 sub_regions = image.subregion_set.all()
 
@@ -176,6 +176,7 @@ class TrainedModelCreate(generics.CreateAPIView):
                     sub_img = cv2.cvtColor(image_as_numpy, cv2.COLOR_RGB2HSV)
 
                     for subregion in sub_regions:
+                        unique_label_names.add(subregion.anatomy.name)
                         points = subregion.points.all()
                         this_mask = np.empty((0, 2), dtype='int')
 
@@ -189,7 +190,8 @@ class TrainedModelCreate(generics.CreateAPIView):
                                 label=subregion.anatomy.name
                             )
                         )
-
+            if len(unique_label_names)<=1:
+                raise ValueError('More than 1 anatomical structure is needed to train a model.')
             pipe = utils.pipe
             training_data = pd.DataFrame(training_data)
             pipe.fit(training_data.drop('label', axis=1), training_data['label'])
