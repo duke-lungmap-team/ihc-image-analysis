@@ -444,7 +444,7 @@ app.controller(
                 );
 
                 response.$promise.then(function (data) {
-                    response2 = ImageSet.get(
+                    var response2 = ImageSet.get(
                         {
                             'image_set_id': $routeParams.image_set_id
                         }
