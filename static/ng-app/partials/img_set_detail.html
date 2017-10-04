@@ -120,7 +120,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="choose-label-button">
-              <li ng-repeat="anatomy in anatomies">
+              <li ng-repeat="anatomy in anatomies | orderBy:'name'">
                 <a ng-click="select_classification(anatomy)">{{ anatomy.name }}</a>
               </li>
             </ul>
