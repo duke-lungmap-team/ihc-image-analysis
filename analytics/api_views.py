@@ -169,6 +169,7 @@ class TrainedModelCreate(generics.CreateAPIView):
                 sub_regions = image.subregion_set.all()
 
                 if len(sub_regions) > 0:
+                    # noinspection PyUnresolvedReferences
                     pil_image = PIL.Image.open(image.image_orig)
                     image_as_numpy = np.asarray(pil_image)
 
@@ -190,7 +191,7 @@ class TrainedModelCreate(generics.CreateAPIView):
                                 label=subregion.anatomy.name
                             )
                         )
-            if len(unique_label_names)<=1:
+            if len(unique_label_names) <= 1:
                 raise ValueError(
                     """
                     More than 1 anatomical structure is needed to train a model. Please continue to 
@@ -258,7 +259,7 @@ class ClassifySubRegion(generics.CreateAPIView):
 
         for point in points:
             this_mask = np.append(this_mask, [[point['x'], point['y']]], axis=0)
-
+        # noinspection PyUnresolvedReferences
         pil_image = PIL.Image.open(image_object.image_orig)
         image_as_numpy = np.asarray(pil_image)
 
@@ -366,6 +367,7 @@ class SubregionList(
 
                     sub_regions.append(subregion)
         except Exception as e:  # catch any exception to rollback changes
+            # noinspection PyUnresolvedReferences
             return Response(data={'detail': e.message}, status=400)
 
         serializer = serializers.SubregionSerializer(
@@ -381,7 +383,8 @@ class SubregionList(
             headers=headers
         )
 
-    def delete(self, request, *args, **kwargs):
+    # noinspection PyMethodMayBeStatic
+    def delete(self, request):
         # Allow deleting sub-regions in bulk given query parameters for
         # both the Image and Anatomy IDs. However, deleting sub-regions
         # for image sets with a trained model is not allowed.
@@ -416,7 +419,7 @@ class SubregionList(
 
         response_data = {'success': True}
 
-        return Response (response_data, status=status.HTTP_200_OK)
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class SubregionDetail(generics.RetrieveUpdateAPIView):
