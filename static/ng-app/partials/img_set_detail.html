@@ -51,7 +51,8 @@
           <tr>
             <td>Status:</td>
             <td>
-              <div ng-if="image_set.trainedmodel == null">
+              <img ng-if="currently_training" src="/static/whirligig.gif">
+              <div ng-if="image_set.trainedmodel == null && !currently_training">
                 <button type="button" class="btn btn-xs btn-success" ng-click="train_model()">Train Model</button>
               </div>
               <div ng-if="image_set.trainedmodel != null">
