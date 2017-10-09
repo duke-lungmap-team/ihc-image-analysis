@@ -246,3 +246,7 @@ th.center {
 .margin-none {
   margin: 0 !important;
 }
+
+.padding-left-24 {
+  padding-left: 24px !important;
+}
