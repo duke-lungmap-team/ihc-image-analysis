@@ -21,6 +21,11 @@ from sklearn.externals import joblib
 import rest_framework.serializers as drf_serializers
 
 
+@api_view(['GET'])
+def heartbeat(request):
+    return Response()
+
+
 # noinspection PyUnusedLocal
 @api_view(['GET'])
 def get_species_list(request):
