@@ -2,6 +2,7 @@ from analytics import serializers, models
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from lungmap_client import lungmap_utils
 from rest_framework import generics, permissions, status, mixins
 from rest_framework.decorators import api_view
@@ -164,7 +165,32 @@ class TrainedModelCreate(generics.CreateAPIView):
             image_set = models.ImageSet.objects.get(id=request.data['imageset'])
             images = image_set.image_set.prefetch_related('subregion_set')
             training_data = []
-            unique_label_names = set()
+            subregions = models.Subregion.objects.filter(image__image_set=image_set)\
+                .values('anatomy__name') \
+                .annotate(total=Count('anatomy__name')) \
+                .order_by('anatomy__name')
+
+            if len(subregions) <= 1:
+                raise ValueError(
+                    """
+                    More than 1 anatomical structure is needed to train a model. Please continue to 
+                    create training data by segmenting new anatomical structures. Once complete, a 
+                    trained model can be created.
+                    """
+                )
+
+            for sub in subregions:
+                if sub['total'] < 4:
+                    raise ValueError(
+                        """
+                        In order to train a model, we require that each imageset have at least 4 subregions for
+                        each anatomical structure. It seems that within this imageset, the anatomical structure %s
+                        has only %s subregion(s). Please either delete this subregion or continue to build training data
+                        for this structure.
+                        """ % (sub['anatomy__name'], str(sub['total']))
+                    )
+
+
             for image in images:
                 sub_regions = image.subregion_set.all()
 
@@ -177,7 +203,6 @@ class TrainedModelCreate(generics.CreateAPIView):
                     sub_img = cv2.cvtColor(image_as_numpy, cv2.COLOR_RGB2HSV)
 
                     for subregion in sub_regions:
-                        unique_label_names.add(subregion.anatomy.name)
                         points = subregion.points.all()
                         this_mask = np.empty((0, 2), dtype='int')
 
@@ -191,14 +216,7 @@ class TrainedModelCreate(generics.CreateAPIView):
                                 label=subregion.anatomy.name
                             )
                         )
-            if len(unique_label_names) <= 1:
-                raise ValueError(
-                    """
-                    More than 1 anatomical structure is needed to train a model. Please continue to 
-                    create training data by segmenting new anatomical structures. Once complete, a 
-                    trained model can be created.
-                    """
-                )
+
             pipe = utils.pipe
             training_data = pd.DataFrame(training_data)
             pipe.fit(training_data.drop('label', axis=1), training_data['label'])
