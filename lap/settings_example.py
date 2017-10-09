@@ -78,7 +78,10 @@ ROOT_URLCONF = 'lap.urls'
 LOGIN_URL = '/login/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_COOKIE_AGE = 900  # seconds
+# Session timeout age in seconds, important to set above 15 minutes as the client-side
+# Angular code is set to automatically timeout after 15 minutes, but will use the heartbeat
+# API endpoint to update on any mouse or keyboard activity once a minute
+SESSION_COOKIE_AGE = 1200
 
 TEMPLATES = [
     {
