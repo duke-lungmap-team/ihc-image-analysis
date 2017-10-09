@@ -345,74 +345,66 @@ app.controller(
                 // since there cannot be any existing regions for the image / class combo.
                 var regions = [];
 
-                if ($scope.regions.svg.length < 4) {
-                    $scope.modal_title = 'Error';
-                    $scope.modal_items = [
-                        'A minimum of 4 items per class must be drawn'
-                    ];
-                    $scope.open_modal();
-                } else {
-                    $scope.regions.svg.forEach(function(p) {
-                        var region = {};
-                        var region_points = [];
+                $scope.regions.svg.forEach(function(p) {
+                    var region = {};
+                    var region_points = [];
 
-                        //Get points
-                        for (var i = 0; i < p.length; i++) {
-                            region_points.push(
-                                {
-                                    "x": p[i][0],
-                                    "y": p[i][1],
-                                    "order": i
-                                }
+                    //Get points
+                    for (var i = 0; i < p.length; i++) {
+                        region_points.push(
+                            {
+                                "x": p[i][0],
+                                "y": p[i][1],
+                                "order": i
+                            }
+                        );
+                    }
+
+                    region.anatomy = $scope.selected_classification.id;
+                    region.image = $scope.selected_image.id;
+                    region.points = region_points;
+
+                    regions.push(region)
+                });
+
+                // How to get results of post to conditionally get ready for next
+                var post_region_response = Subregion.save(regions);
+
+                var new_regions = [];
+                var new_region_points =[];
+
+                post_region_response.$promise.then(function(data) {
+                    data.forEach(function(region) {
+                        // empty array for our new region
+                        new_region_points = [];
+
+                        region.points.forEach(function(p) {
+                            new_region_points.push(
+                                [
+                                    p.x,
+                                    p.y
+                                ]
                             );
-                        }
-
-                        region.anatomy = $scope.selected_classification.id;
-                        region.image = $scope.selected_image.id;
-                        region.points = region_points;
-
-                        regions.push(region)
-                    });
-
-                    // How to get results of post to conditionally get ready for next
-                    var post_region_response = Subregion.save(regions);
-
-                    var new_regions = [];
-                    var new_region_points =[];
-
-                    post_region_response.$promise.then(function(data) {
-                        data.forEach(function(region) {
-                            // empty array for our new region
-                            new_region_points = [];
-
-                            region.points.forEach(function(p) {
-                                new_region_points.push(
-                                    [
-                                        p.x,
-                                        p.y
-                                    ]
-                                );
-                            });
-
-                            new_regions.push(new_region_points);
                         });
 
-                        if (new_regions.length > 0) {
-                            $scope.regions.svg = new_regions;
-                            $scope.enabled = false;
-                            $scope.displaying_saved_regions = true;
-                            $scope.image_set = ImageSet.get(
-                                {
-                                    'image_set_id': $routeParams.image_set_id
-                                }
-                            );
-                        }
-                    }, function (error) {
-                        $scope.modal_title = 'Error';
-                        $scope.modal_items = ['An error occured when attempting to save regions'];
-                        $scope.open_modal();
+                        new_regions.push(new_region_points);
                     });
-                }
+
+                    if (new_regions.length > 0) {
+                        $scope.regions.svg = new_regions;
+                        $scope.enabled = false;
+                        $scope.displaying_saved_regions = true;
+                        $scope.image_set = ImageSet.get(
+                            {
+                                'image_set_id': $routeParams.image_set_id
+                            }
+                        );
+                    }
+                }, function (error) {
+                    $scope.modal_title = 'Error';
+                    $scope.modal_items = ['An error occured when attempting to save regions'];
+                    $scope.open_modal();
+                });
             };
 
             $scope.delete_saved_regions = function () {
