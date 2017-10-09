@@ -1,4 +1,5 @@
 var URLS = {
+    'heartbeat': '/api/heartbeat/',
     'species': '/api/species/',
     'magnifications': '/api/magnifications/',
     'development_stages': '/api/development-stages/',
@@ -14,6 +15,15 @@ var URLS = {
 var service = angular.module('IHCApp');
 
 service.factory(
+    'Heartbeat',
+    function ($resource) {
+        return $resource(
+            URLS.heartbeat,
+            {},
+            {}
+        );
+    }
+).factory(
     'Species',
     function ($resource) {
         return $resource(
