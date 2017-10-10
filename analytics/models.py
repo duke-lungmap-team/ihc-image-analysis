@@ -165,7 +165,11 @@ class Subregion(models.Model):
 
 
 class Points(models.Model):
-    subregion = models.ForeignKey(Subregion, related_name='points')
+    subregion = models.ForeignKey(
+        Subregion,
+        related_name='points',
+        on_delete=models.CASCADE
+    )
     x = models.IntegerField()
     y = models.IntegerField()
     order = models.IntegerField()
