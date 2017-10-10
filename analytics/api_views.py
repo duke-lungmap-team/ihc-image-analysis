@@ -195,7 +195,6 @@ class TrainedModelCreate(generics.CreateAPIView):
                         """ % (sub['anatomy__name'], str(sub['total']))
                     )
 
-
             for image in images:
                 sub_regions = image.subregion_set.all()
 
