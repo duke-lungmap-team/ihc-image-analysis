@@ -139,6 +139,9 @@ class AnatomyProbeMap(models.Model):
     probe = models.ForeignKey(Probe)
     anatomy = models.ForeignKey(Anatomy)
 
+    class Meta:
+        unique_together = (('probe', 'anatomy'),)
+
     def __str__(self):
         return '%s: <Probe: %s>, <Anatomy: %s>' % (self.id,
                                                    self.probe.label,

@@ -63,21 +63,15 @@
           </tr>
           <tr>
             <td>Images with Sub-regions:</td>
-            <td>{{ image_set.images_with_subregion_count }}</td>
+            <td><strong>{{ image_set.images_with_subregion_count }}</strong></td>
           </tr>
           <tr>
             <td>Sub-region Count:</td>
-            <td>{{ image_set.subregion_count }}</td>
+            <td><strong>{{ image_set.subregion_count }}</strong></td>
           </tr>
-          <tr>
-            <td style="vertical-align: top !important;">By Anatomy Name</td>
-            <td>
-              <ul class="list-unstyled">
-                <li ng-repeat="p in image_set.subregion_count_by_anatomy_name">
-                  <div> <strong>{{ p.anatomy__name }}</strong> {{ p.total }}</div>
-                </li>
-              </ul>
-            </td>
+          <tr ng-repeat="p in image_set.subregion_count_by_anatomy_name">
+            <td class="padding-left-24"><i>{{ p.anatomy__name }}</i></td>
+            <td class="padding-left-24">{{ p.total }}</td>
           </tr>
         </tbody>
       </table>

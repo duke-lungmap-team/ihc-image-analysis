@@ -2,8 +2,39 @@ app.controller(
     'MainController',
     [
         '$scope',
-        function ($scope) {
-            // placeholder
+        '$window',
+        '$uibModal',
+        'Idle',
+        'Keepalive',
+        'Heartbeat',
+        function ($scope, $window, $uibModal, Idle, Keepalive, Heartbeat) {
+            // Setup ng-idle for monitoring user's session timeout
+            $scope.$on('IdleStart', function() {
+                open_session_timeout_modal();
+            });
+
+            $scope.$on('IdleTimeout', function() {
+                $window.location.href = '/logout';
+            });
+
+            $scope.$on('Keepalive', function() {
+                Heartbeat.get();
+                if ($scope.hasOwnProperty('session_modal')) {
+                    $scope.session_modal.close();
+                }
+            });
+
+            function open_session_timeout_modal() {
+                $scope.session_modal = $uibModal.open(
+                    {
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'static/ng-app/partials/session-timeout-modal.html',
+                        controller: 'MainController',
+                        size: 'medium',
+                        resolve: {}
+                    }
+                );
+            }
         }
     ]
 );

@@ -3,6 +3,7 @@ from analytics import api_views
 
 
 urlpatterns = [
+    url(r'^api/heartbeat/', api_views.heartbeat),
     url(r'^api/species/$', api_views.get_species_list),
     url(r'^api/magnifications/$', api_views.get_magnification_list),
     url(r'^api/development-stages/$', api_views.get_development_stage_list),

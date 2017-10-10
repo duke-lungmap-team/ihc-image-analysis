@@ -242,3 +242,11 @@ th.center {
 .margin-bottom-5 {
   margin-bottom: 5px;
 }
+
+.margin-none {
+  margin: 0 !important;
+}
+
+.padding-left-24 {
+  padding-left: 24px !important;
+}
