@@ -534,9 +534,12 @@ app.controller(
                     $scope.modal_title = 'Classification Results';
                     $scope.modal_items = [];
                     results[0].results.forEach(function(r) {
-                        $scope.modal_items.push(Object.keys(r)[0] + ': ' + (r[Object.keys(r)[0]] * 100).toFixed(2) + '%');
+                        $scope.modal_items.push({
+                            anatomy: Object.keys(r)[0],
+                            probability: (r[Object.keys(r)[0]] * 100).toFixed(2)*1
+                        })
                     });
-                    $scope.open_modal();
+                    $scope.open_modal(undefined, 'custom', undefined, 'static/ng-app/partials/classify_region_modal.html');
                 });
             }
         }
