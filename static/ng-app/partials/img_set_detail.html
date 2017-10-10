@@ -123,7 +123,7 @@
         </div>
         <div class="col-md-6">
           <div class="btn-group btn-group-xs pull-right">
-            <button type="button" class="btn btn-warning" ng-click="delete_saved_regions()" ng-show="displaying_saved_regions">Delete Saved Regions</button>
+            <button type="button" class="btn btn-warning" ng-click="delete_saved_regions()" ng-disabled="regions.length <= 0 || !enabled">Delete Regions</button>
             <button type="button" class="btn btn-success" ng-click="post_regions()" ng-disabled="!enabled">Save Regions</button>
           </div>
         </div>

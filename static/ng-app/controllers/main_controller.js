@@ -191,7 +191,7 @@ app.controller(
             $scope.selected_image = null;
             $scope.selected_classification = null;
             $scope.mode = 'train';  // can be 'train', or 'classify'
-            $scope.currently_training = false; //boolean for UI to know if backend is training a model
+            $scope.currently_training = false; //boolean if backend is busy training a model
 
             // drw-poly vars
             $scope.enabled = false;
@@ -205,6 +205,19 @@ app.controller(
             $scope.modal_title = null;
             $scope.modal_items = null;
             $scope.animationsEnabled = true;
+
+            // disable drawing if a trained model exists
+            $scope.$watch('image_set.trainedmodel', function () {
+                if ($scope.image_set.trainedmodel === null || $scope.image_set.trainedmodel === undefined) {
+                    $scope.enabled = true;
+                } else {
+                    if ($scope.mode === 'classify') {
+                        $scope.enabled = true;
+                    }
+                    $scope.enabled = false;
+                }
+            });
+
             $scope.open_modal = function (size, template_type, confirm_callback, custom_path) {
                 var template_url;
 
@@ -334,14 +347,10 @@ app.controller(
                         new_regions.push(new_region_points);
                     });
 
-                    if (new_regions.length > 0 || $scope.image_set.trainedmodel !== null) {
+                    if (new_regions.length > 0) {
                         $scope.regions.svg = new_regions;
-                        $scope.enabled = false;
-                        $scope.displaying_saved_regions = true;
                     } else {
                         $scope.regions.svg = [];
-                        $scope.enabled = true;
-                        $scope.displaying_saved_regions = false;
                     }
                 });
             };
@@ -355,6 +364,12 @@ app.controller(
                 } else if (mode === 'train') {
                     if ($scope.selected_classification !== null) {
                         $scope.select_classification($scope.selected_classification);
+                    } else {
+                        $scope.enabled = false;
+                    }
+
+                    if ($scope.image_set.trainedmodel === null || $scope.image_set.trainedmodel === undefined) {
+                        $scope.enabled = true;
                     } else {
                         $scope.enabled = false;
                     }
@@ -390,43 +405,63 @@ app.controller(
                     regions.push(region)
                 });
 
-                // How to get results of post to conditionally get ready for next
-                var post_region_response = Subregion.save(regions);
+                // Sub-region POST is handled a little differently as we cannot keep
+                // track of modified regions so any new save will first delete the old regions
+                // first
+                var delete_response = Subregion.delete({
+                    'image': $scope.selected_image.id,
+                    'anatomy': $scope.selected_classification.id
+                });
 
-                var new_regions = [];
-                var new_region_points =[];
-
-                post_region_response.$promise.then(function(data) {
-                    data.forEach(function(region) {
-                        // empty array for our new region
-                        new_region_points = [];
-
-                        region.points.forEach(function(p) {
-                            new_region_points.push(
-                                [
-                                    p.x,
-                                    p.y
-                                ]
-                            );
-                        });
-
-                        new_regions.push(new_region_points);
-                    });
-
-                    if (new_regions.length > 0) {
-                        $scope.regions.svg = new_regions;
-                        $scope.enabled = false;
-                        $scope.displaying_saved_regions = true;
+                delete_response.$promise.then(function (delete_data) {
+                    if (regions.length === 0) {
+                        $scope.set_mode($scope.mode);
                         $scope.image_set = ImageSet.get(
                             {
                                 'image_set_id': $routeParams.image_set_id
                             }
                         );
+                        return;
                     }
-                }, function (error) {
-                    $scope.modal_title = 'Error';
-                    $scope.modal_items = ['An error occured when attempting to save regions'];
-                    $scope.open_modal();
+
+                    var post_region_response = Subregion.save(regions);
+
+                    var new_regions = [];
+                    var new_region_points = [];
+
+                    post_region_response.$promise.then(function (data) {
+                        // clear regions
+                        $scope.regions.svg = [];
+
+                        data.forEach(function (region) {
+                            // empty array for our new region
+                            new_region_points = [];
+
+                            region.points.forEach(function (p) {
+                                new_region_points.push(
+                                    [
+                                        p.x,
+                                        p.y
+                                    ]
+                                );
+                            });
+
+                            new_regions.push(new_region_points);
+                        });
+
+                        if (new_regions.length > 0) {
+                            $scope.regions.svg = new_regions;
+                            $scope.image_set = ImageSet.get(
+                                {
+                                    'image_set_id': $routeParams.image_set_id
+                                }
+                            );
+                        }
+                    }, function (error) {
+                        $scope.modal_title = 'Error';
+                        $scope.modal_items = ['An error occured when attempting to save regions'];
+                        $scope.open_modal();
+                    });
                 });
             };
 
