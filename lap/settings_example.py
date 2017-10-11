@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     'analytics.apps.AnalyticsConfig',
     'authenticate',
     'django_filters',
-    'rest_framework_swagger'
+    'rest_framework_swagger',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
