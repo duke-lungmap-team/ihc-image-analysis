@@ -1,0 +1,212 @@
+[
+{
+    "model": "analytics.probe",
+    "pk": 1,
+    "fields": {
+        "label": "Anti-Calca"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 2,
+    "fields": {
+        "label": "Anti-Scgb1a1"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 3,
+    "fields": {
+        "label": "Anti-Tuba1a"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 4,
+    "fields": {
+        "label": "Anti-Acta2"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 5,
+    "fields": {
+        "label": "Anti-Sftpc"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 6,
+    "fields": {
+        "label": "Anti-p-Histone H3"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 7,
+    "fields": {
+        "label": "Anti-Cspg4"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 8,
+    "fields": {
+        "label": "Anti-Emcn"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 9,
+    "fields": {
+        "label": "Anti-Cytokeratin"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 10,
+    "fields": {
+        "label": "Anti-Fn1"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 11,
+    "fields": {
+        "label": "DAPI"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 12,
+    "fields": {
+        "label": "Anti-Nkx2-1"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 13,
+    "fields": {
+        "label": "Anti-Lyve1"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 14,
+    "fields": {
+        "label": "Anti-Abca3"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 15,
+    "fields": {
+        "label": "Anti-Krt14"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 16,
+    "fields": {
+        "label": "Anti-Muc5ac"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 17,
+    "fields": {
+        "label": "Anti-Muc5b"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 18,
+    "fields": {
+        "label": "Anti-Hopx"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 19,
+    "fields": {
+        "label": "Anti-Sox9"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 20,
+    "fields": {
+        "label": "Anti-Arl13B"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 21,
+    "fields": {
+        "label": "Anti-Vimentin"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 22,
+    "fields": {
+        "label": "Anti-SCGB1A1"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 23,
+    "fields": {
+        "label": "Anti-Tubb3"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 24,
+    "fields": {
+        "label": "Anti-Krt5"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 25,
+    "fields": {
+        "label": "Anti-Trp63"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 26,
+    "fields": {
+        "label": "Anti-Pecam1"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 27,
+    "fields": {
+        "label": "Anti-Sox2"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 28,
+    "fields": {
+        "label": "Anti-GRP"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 29,
+    "fields": {
+        "label": "Anti-Lamb1"
+    }
+},
+{
+    "model": "analytics.probe",
+    "pk": 30,
+    "fields": {
+        "label": "Anti-Ager"
+    }
+}
+]
