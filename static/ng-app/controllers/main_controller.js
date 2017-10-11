@@ -30,7 +30,7 @@ app.controller(
                         animation: $scope.animationsEnabled,
                         templateUrl: 'static/ng-app/partials/session-timeout-modal.html',
                         controller: 'MainController',
-                        size: 'medium',
+                        size: 'lg',
                         resolve: {}
                     }
                 );
@@ -256,7 +256,7 @@ app.controller(
             };
 
             $scope.launch_info_modal = function() {
-                $scope.open_modal(undefined, 'custom', undefined, 'static/ng-app/partials/info_modal.html');
+                $scope.open_modal('lg', 'custom', undefined, 'static/ng-app/partials/info_modal.html');
             };
 
             $scope.image_set = ImageSet.get({'image_set_id': $routeParams.image_set_id});
