@@ -57,32 +57,3 @@ for key, value in image_sets.items():
                 experiment_id=experiment_object,
                 probe=probe_object,
             )
-
-
-# need to fill in with actual data from ontology
-def add_probe_anatomy(probe, class_name):
-    """
-    Add a probe/classification combo, this can be either cell or structure as identified
-    by the class_type
-    :param probe: str: a probe name
-    :param class_name: str: a classification name
-    :return:
-    """
-    try:
-        probe_instance = models.Probe.objects.get(label=probe)
-    except models.Probe.DoesNotExist:
-        pass
-    anatomy = models.Anatomy.objects.create(name=class_name)
-
-    models.AnatomyProbeMap.objects.create(
-        probe=probe_instance,
-        anatomy=anatomy
-    )
-
-add_probe_anatomy('Anti-Sox2', 'bronchiolar_epithelial_cell')
-add_probe_anatomy('Anti-Nkx2-1', 'epithelial_cell_of_the_lung')
-add_probe_anatomy('Anti-Acta2', 'bronchiolar-associated_smooth_muscle_cell')
-add_probe_anatomy('Anti-Acta2', 'bronchiole')
-add_probe_anatomy('Anti-Sox9', 'distal_acinar_tubule')
-add_probe_anatomy('Anti-Acta2', 'proximal_acinar_tubule')
-add_probe_anatomy('Anti-Acta2', 'blood_vessel')
