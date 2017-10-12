@@ -5,6 +5,5 @@ RUN pip install -r requirements.txt
 RUN apt-get update
 RUN apt-get install -y nginx
 ADD nginx_conf /etc/nginx
-ADD .aws/ /root/.aws
 WORKDIR /ihc-image-analysis
 CMD ["./start_docker.sh"]
