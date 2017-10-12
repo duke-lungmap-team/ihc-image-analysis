@@ -9,7 +9,7 @@ playground/
 lap/settings.py
 ihc-static/
 lungmap_ontology_query/
-db.sqlite3
+*.sqlite3
 README_ignore.md
 build
 dist
