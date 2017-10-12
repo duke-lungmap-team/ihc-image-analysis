@@ -27,4 +27,4 @@ numpy==1.13.1
 six==1.10.0
 SPARQLWrapper==1.8.0
 uritemplate==3.0.0
-git+git://github.com/benneely/lung-map-utils.git
+git+git://github.com/duke-lungmap-team/lung-map-utils.git
