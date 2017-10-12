@@ -14,6 +14,7 @@ import pandas as pd
 import pickle
 # noinspection PyPackageRequirements
 import cv2
+# noinspection PyPackageRequirements
 import PIL
 import django_filters
 # noinspection PyPackageRequirements
@@ -21,6 +22,7 @@ from sklearn.externals import joblib
 import rest_framework.serializers as drf_serializers
 
 
+# noinspection PyUnusedLocal
 @api_view(['GET'])
 def heartbeat(request):
     return Response()
@@ -178,9 +180,9 @@ class TrainedModelCreate(generics.CreateAPIView):
             if len(subregions) <= 1:
                 raise ValueError(
                     """
-                    More than 1 anatomical structure is needed to train a model. Please continue to 
-                    create training data by segmenting new anatomical structures. Once complete, a 
-                    trained model can be created.
+                    More than 1 anatomical structure is needed to train a model. Please 
+                    continue to create training data by segmenting new anatomical structures. 
+                    Once complete, a trained model can be created.
                     """
                 )
 
@@ -188,10 +190,11 @@ class TrainedModelCreate(generics.CreateAPIView):
                 if sub['total'] < 4:
                     raise ValueError(
                         """
-                        In order to train a model, we require that each imageset have at least 4 subregions for
-                        each anatomical structure. It seems that within this imageset, the anatomical structure %s
-                        has only %s subregion(s). Please either delete this subregion or continue to build training data
-                        for this structure.
+                        In order to train a model, we require that each imageset have 
+                        at least 4 subregions for each anatomical structure. It seems 
+                        that within this imageset, the anatomical structure %s has 
+                        only %s subregion(s). Please either delete this subregion or 
+                        continue to build training data for this structure.
                         """ % (sub['anatomy__name'], str(sub['total']))
                     )
 
@@ -287,8 +290,10 @@ class ClassifySubRegion(generics.CreateAPIView):
 
         # noinspection PyUnresolvedReferences
         image_as_numpy = cv2.cvtColor(image_as_numpy, cv2.COLOR_RGB2HSV)
-        features = utils.generate_features(hsv_img_as_numpy=image_as_numpy,
-                                                  polygon_points=this_mask)
+        features = utils.generate_features(
+            hsv_img_as_numpy=image_as_numpy,
+            polygon_points=this_mask
+        )
         features_data_frame = pd.DataFrame([features])
         model_classes = list(this_model.named_steps['classification'].classes_)
         probabilities = this_model.predict_proba(features_data_frame.drop('label', axis=1))
