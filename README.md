@@ -41,14 +41,9 @@ At this point, we've loaded our database, now we'd like to add a user and fire u
 
 ```
 python manage.py createsuperuser
-python manage.py runserver
-```
-
-
-# Stand up the application
-```
 python manage.py runserver 0.0.0.0:8000
 ```
+You should now be able to see the application here: 
 [0.0.0.0:8000](0.0.0.0:8000)
 
 
