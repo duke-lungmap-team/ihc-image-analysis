@@ -214,14 +214,14 @@ class TrainedModelCreate(generics.CreateAPIView):
                             this_mask = np.append(this_mask, [[point.x, point.y]], axis=0)
 
                         training_data.append(
-                            utils.generate_custom_features(
+                            utils.generate_features(
                                 hsv_img_as_numpy=sub_img,
                                 polygon_points=this_mask,
                                 label=subregion.anatomy.name
                             )
                         )
 
-            pipe = utils.pipe
+            pipe = utils.pipeline
             training_data = pd.DataFrame(training_data)
             pipe.fit(training_data.drop('label', axis=1), training_data['label'])
 
@@ -287,10 +287,10 @@ class ClassifySubRegion(generics.CreateAPIView):
 
         # noinspection PyUnresolvedReferences
         image_as_numpy = cv2.cvtColor(image_as_numpy, cv2.COLOR_RGB2HSV)
-        features = utils.generate_custom_features(hsv_img_as_numpy=image_as_numpy,
+        features = utils.generate_features(hsv_img_as_numpy=image_as_numpy,
                                                   polygon_points=this_mask)
         features_data_frame = pd.DataFrame([features])
-        model_classes = list(this_model.named_steps['classification'].best_estimator_.classes_)
+        model_classes = list(this_model.named_steps['classification'].classes_)
         probabilities = this_model.predict_proba(features_data_frame.drop('label', axis=1))
 
         assert (len(model_classes) == probabilities.shape[1])
