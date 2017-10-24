@@ -22,7 +22,8 @@ These groups of images make up a critical component of the `ihc-image-analysis` 
 automatically annotate a given image segmentation relies on strata defined models made up of these four variables.
 Our first page provides functionality to filter image sets based on these four variables.
 
-### Side Panel <a id="side-panel"></a>
+<a id="side-panel"></a>
+### Side Panel
 
 The `side panel` allows users to filter the list of `Image Sets`. Here is a quick overview of the side panel:
 
@@ -39,15 +40,17 @@ options are combined with `OR` logic, while the different variables are combined
   * 'Anti-Abca3'
   * 'Anti-Acta2'
 
-would filter all image sets showing only those with (species='mus musculus`) **AND** (magnification='100X' *OR* magnification='40X') **AND** (probe='Anti-Abca3' *OR* probe='Anti-Acta2').
- 
-### Image Set List <a id="image-set-list"></a>
+would filter all image sets showing only those with (species='mus musculus') **AND** (magnification='100X' *OR* magnification='40X') **AND** (probe='Anti-Abca3' *OR* probe='Anti-Acta2').
+
+<a id="image-set-list"></a>
+### Image Set List
 
 Once the results have been narrowed sufficiently, a user will want to choose a given image set. Click the `Apply` button to filter the results. Once filtered, results are displayed to the right of the side panel. To navigate to a particular image set, click the `View` link found in the 1st column of the image set list.
 
 ![Image Set List Results](ui-instructions/imagesets_results.png)
 
-## Image Set Detail <a id="image-set-detail"></a>
+<a id="image-set-detail"></a>
+## Image Set Detail
 
 Selecting an image set will navigate to the image set detail view, where the images belonging to that image set can be viewed and annotated. The panel on the left-hand side provides details about the image set, including annotation summaries.
 
@@ -61,8 +64,8 @@ The selected image will load. **Note:** The first time an image is loaded the we
 
 ![Loaded Image - Train Mode](ui-instructions/loaded_image.png)
 
-
-### Generating Training Data <a id="generating-training-data"></a>
+<a id="generating-training-data"></a>
+### Generating Training Data
 
 In `Train` mode, additional buttons are available above the loaded image: a drop-down menu `Label
 Subregion`, an orange button labelled `Delete Regions`, and a green button labelled `Save Subregions`. To generate training data:
