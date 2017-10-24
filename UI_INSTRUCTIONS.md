@@ -9,7 +9,7 @@ The following instructions provide additional details to the use of our applicat
 1. [Image Set Detail](#image-set-detail)
 1. [Generating Training Data](#generating-training-data)
 
-## Choosing an Image Set <a id="choosing-an-imageset"></a>
+<a id="choosing-an-imageset"></a>## Choosing an Image Set
 
 An `Image Set` is a collection of LungMAP images grouped together according to the following four variables:
 - Species
