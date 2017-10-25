@@ -8,6 +8,7 @@ The following instructions provide additional details to the use of our applicat
 1. [Image Set List](#image-set-list)
 1. [Image Set Detail](#image-set-detail)
 1. [Generating Training Data](#generating-training-data)
+1. [Training a Model](#training-a-model)
 
 <a id="choosing-an-imageset"></a>
 ## Choosing an Image Set
@@ -70,16 +71,26 @@ The selected image will load. **Note:** The first time an image is loaded the we
 In `Train` mode, additional buttons are available above the loaded image: a drop-down menu `Label
 Subregion`, an orange button labelled `Delete Regions`, and a green button labelled `Save Subregions`. To generate training data:
 
-1. From the `Label Subregions` drop-down menu, choose the anatomical structure for which you want to segment.
+1. From the `Label Subregion` drop-down menu, choose the anatomical structure for which you want to segment.
   * **Note:** If regions for this image & anatomical structure have already been saved, these regions will automatically appear.
 1. To begin segmenting a new region, `left-click` anywhere around the region of interest.
 1. Continue to left-click around the segment until it is completely encapsulated. **Note:** The "active" region is the one currently being drawn and is indicated by the presence of rectangular "handles" displayed over each vertex.
 1. Once finished segmenting the active region, hit the `Enter` key to deactivate the region.
 1. Now, with no region being active, any new left-click will begin a new region.
-1. Continue segmenting regions following the above steps.
+1. When finished segmenting regions for a single anatomical structure, click on the `Save Regions` button to save your progress to the server.
+1. Continue segmenting regions for each of the anatomical structures, as well as any other images in the image set, remembering to save your progress for each structure.
 
 While segmenting an active region, any vertex of of the polygon can be moved by a click-and-drag within the rectangular "handle" around the vertex. A vertex can be deleted using the right mouse click while hovering over its handle. An entire region can be deleted by a right mouse click while hovering over the inside of the polygon.
 
 All the regions for the currently viewed image and anatomical structure can be deleted by clicking on the orange `Delete Regions` button.
 
 #### **Note: You must click on the green `Save Regions` button to save the new regions that have been drawn. New regions are not automatically saved to the database.**
+
+<a id="training-a-model"></a>
+### Training a Model
+
+Once enough regions for each anatomical structure have been segmented, a model can be trained and subsequently used for classifying new regions of interest. The minimum number of regions per structure is 4, and at least 2 different structure classes must have regions. However, using this few regions will not produce a robust model. It is recommended to have at least 10 regions per structure, and creating more than around 20 will begin to have diminishing returns.
+
+To train a model, simply click on the green `Train Model` button on the left-hand side panel. Depending on the number of sub-regions drawn it may take a few minutes for the server to generate the model. When complete, the status will be updated in the `Training Data Summary`.
+
+#### **Note: Once an image set has been trained, the saved sub-regions can no longer be modified. To modify the saved regions, first delete the trained model by clicking on the `Delete Model` button.**
