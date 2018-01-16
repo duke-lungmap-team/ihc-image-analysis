@@ -10,7 +10,7 @@ import os
 from PIL import Image
 import requests
 import tempfile
-import warnings
+import gzip
 
 
 lungmap_sparql_server = "http://data.lungmap.net/sparql"
@@ -109,26 +109,6 @@ def get_image_set_candidates():
     return image_sets
 
 
-def list_all_lungmap_experiments():
-    """
-    Call out to the LM mothership (via SPARQL) to get a list of all experiments 
-    that have an image. NOTE: this could mean a .tif image or .png image 
-    (or something else). No restriction is placed on the type of image.
-    :return: status of sparql query
-    """
-    try:
-        sparql = SPARQLWrapper(lungmap_sparql_server)
-        sparql.setQuery(sparql_queries.ALL_EXPERIMENTS_WITH_IMAGE)
-        sparql.setReturnFormat(JSON)
-        results = sparql.query().convert()
-        output = []
-        for x in results['results']['bindings']:
-            output.append(x['experiment']['value'].split('#')[1])
-        return output
-    except ValueError as e:
-        raise e
-
-
 def _get_by_experiment(query, experiment_id):
     """
     Query LM mothership (via SPARQL) and get information by a given 
@@ -149,38 +129,6 @@ def _get_by_experiment(query, experiment_id):
         raise e
 
 
-def get_experiment_model_data(experiment_id):
-    """
-    Combines three lungmap_sparql_utils functions to provide data to the 
-    Experiment model via dict
-    :param experiment_id: str: lungmap id
-    :return: dict that matches the columns in the Experiment model
-    """
-    types = get_experiment_type_by_experiment(experiment_id)
-    sample = get_sample_by_experiment(experiment_id)
-    result = {**types, **sample, **{"experiment_id": experiment_id}}
-    return result
-
-
-def get_sample_by_experiment(experiment_id):
-    results = _get_by_experiment(
-        sparql_queries.GET_SAMPLE_BY_EXPERIMENT,
-        experiment_id
-    )
-    if len(results) > 1:
-        warnings.warn('>1 sample received, only passing first result')
-    try:
-        for x in results[:1]:
-            row = {
-                'age_label': x['age_label']['value'],
-                'organism_label': x['organism_label']['value'],
-                'local_id': x['local_id']['value']
-            }
-            return row
-    except ValueError as e:
-        raise e
-
-
 def get_images_by_experiment(experiment_id):
     results = _get_by_experiment(
         sparql_queries.GET_IMAGES_BY_EXPERIMENT,
@@ -190,12 +138,13 @@ def get_images_by_experiment(experiment_id):
     try:
         for x in results:
             row = {}
-            filename = '.'.join([x['dir']['value'], 'tif'])
-            name, ext = os.path.splitext(filename)
+
+            # files in BREATH DB are gzipped TIFF files
+            filename = '.'.join([x['dir']['value'], 'tif', 'gz'])
+
             root = x['path']['value']
-            source_url = os.path.join(root, name, filename)
-            row['file_ext'] = ext
-            row['image_name'] = filename
+            source_url = os.path.join(root, x['dir']['value'], filename)
+            row['image_name'] = x['dir']['value']
             row['image_id'] = x['image']['value'].split('data#')[1]
             row['source_url'] = source_url
             row['experiment_id'] = experiment_id
@@ -227,30 +176,6 @@ def get_probes_by_experiment(experiment_id):
         raise e
 
 
-def get_experiment_type_by_experiment(experiment_id):
-    results = _get_by_experiment(
-        sparql_queries.GET_EXPERIMENT_TYPE_BY_EXPERIMENT,
-        experiment_id
-    )
-
-    if len(results) > 1:
-        raise ValueError(
-            'too many results'
-        )
-    if len(results) == 0:
-        raise ValueError(
-            'no results found'
-        )
-    try:
-        for x in results:
-            row = {
-                'experiment_type_label': x['experiment_type_label']['value']
-            }
-        return row
-    except ValueError as e:
-        raise e
-
-
 def get_image_from_lungmap(url):
     """
     Takes a URL and downloads the image, calculates a SHA1,
@@ -265,6 +190,7 @@ def get_image_from_lungmap(url):
         filename = url.split('/')[-1]
         base, ext = os.path.splitext(filename)
 
+        # TODO: check response, if not successful we cannot proceed
         response = requests.get(url, stream=True)
 
         with tempfile.NamedTemporaryFile(suffix=ext) as f:
@@ -273,10 +199,19 @@ def get_image_from_lungmap(url):
 
             f.seek(0)
 
-            # noinspection PyUnresolvedReferences
-            cv_img = cv2.imread(f.name)
+            with gzip.GzipFile(mode='rb', fileobj=f) as f2:
+                tiff_data = f2.read()
+
+            f2.close()
+
+            with open(f.name[:-3], 'wb') as f3:
+                f3.write(tiff_data)
+
+                # noinspection PyUnresolvedReferences
+                cv_img = cv2.imread(f3.name)
 
         response.close()
+        os.remove(f3.name)
 
         # noinspection PyUnresolvedReferences
         img = Image.fromarray(
@@ -295,12 +230,12 @@ def get_image_from_lungmap(url):
 
         # filename
         suf = SimpleUploadedFile(
-            filename,
+            base,
             temp_handle.read(),
             content_type='image/tif'
         )
         suf_jpg = SimpleUploadedFile(
-            base + '.jpg',
+            base.replace('.tif', '.jpg'),
             temp_handle_jpeg.read(),
             content_type='image/jpeg'
         )
