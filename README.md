@@ -47,3 +47,18 @@ You should now be able to see the application here:
 [0.0.0.0:8000](0.0.0.0:8000)
 
 
+### Docker
+```
+docker build -t lap .
+
+docker run -it \
+-p 8000:8000 \
+-v $(pwd):/ihc-image-analysis \
+lap bash 
+
+docker run -d \
+-p 8000:8000 \
+-v $(pwd):/ihc-image-analysis \
+--restart always \
+lap
+```
