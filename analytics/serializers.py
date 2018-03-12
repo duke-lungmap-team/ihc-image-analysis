@@ -89,7 +89,7 @@ class SubregionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Subregion
-        fields = ["image", "anatomy", "points"]
+        fields = ["id", "image", "anatomy", "points"]
 
     def create(self, validated_data):
         subregion = models.Subregion.objects.create(**validated_data)
