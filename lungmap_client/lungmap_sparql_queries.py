@@ -38,11 +38,9 @@ PREFIX lmdb: <http://www.lungmap.net/ontologies/database#>
 SELECT DISTINCT ?experiment_id ?probe_id ?probe_label ?color
 WHERE {
     VALUES ?experiment_id { lm:EXPERIMENT_PLACEHOLDER } .
-    ?experiment_id lmdb:in_organism ?tax_id .
     ?image lmdb:part_of_experiment ?experiment_id .
-    ?image lmdb:has_probe ?probe_id .
+    ?image lmdb:has_probe_color ?probe_color .
     ?probe_color lmdb:maps_to ?probe_id .
-    ?probe_color lmdb:maps_to ?image .
     ?probe_color lmdb:color ?color .
     ?probe_id rdfs:label ?probe_label
 }
