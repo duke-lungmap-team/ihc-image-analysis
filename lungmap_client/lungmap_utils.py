@@ -138,15 +138,10 @@ def get_images_by_experiment(experiment_id):
     try:
         for x in results:
             row = {}
-
             # files in BREATH DB are gzipped TIFF files
-            filename = '.'.join([x['dir']['value'], 'tif', 'gz'])
-
-            root = x['path']['value']
-            source_url = os.path.join(root, x['dir']['value'], filename)
-            row['image_name'] = x['dir']['value']
-            row['image_id'] = x['image']['value'].split('data#')[1]
-            row['source_url'] = source_url
+            row['image_name'] = os.path.basename(x['image_file_path']['value']).rsplit('.', 1)[0]
+            row['image_id'] = x['dir']['value']
+            row['source_url'] = x['image_file_path']['value']
             row['experiment_id'] = experiment_id
             row['experiment_type_id'] = x['experiment_type']['value']
             row['magnification'] = x['magnification']['value']
