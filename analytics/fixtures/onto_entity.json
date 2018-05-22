@@ -1,0 +1,730 @@
+[
+{
+  "model": "analytics.ontoentity",
+  "pk": 1,
+  "fields": {
+    "name": "ADP-ribosylation factor-like protein 13B",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 2,
+  "fields": {
+    "name": "neuroepithelial body",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 3,
+  "fields": {
+    "name": "transcription factor SOX-2",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 4,
+  "fields": {
+    "name": "unclassified epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 5,
+  "fields": {
+    "name": "bronchiolar connective tissue",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 6,
+  "fields": {
+    "name": "arterial smooth muscle tissue",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 7,
+  "fields": {
+    "name": "platelet endothelial cell adhesion molecule",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 8,
+  "fields": {
+    "name": "bronchiole",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 9,
+  "fields": {
+    "name": "lymphatic endothelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 10,
+  "fields": {
+    "name": "terminal bronchiole",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 11,
+  "fields": {
+    "name": "tubulin alpha-1A chain",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 12,
+  "fields": {
+    "name": "pulmonary lymphatic vessel",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 13,
+  "fields": {
+    "name": "calcitonin",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 14,
+  "fields": {
+    "name": "vimentin",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 15,
+  "fields": {
+    "name": "endothelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 16,
+  "fields": {
+    "name": "lymphatic endothelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 17,
+  "fields": {
+    "name": "pericyte",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 18,
+  "fields": {
+    "name": "acinar tubule epithelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 19,
+  "fields": {
+    "name": "proximal acinar tubule epithelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 20,
+  "fields": {
+    "name": "homeobox protein Nkx-2.1",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 21,
+  "fields": {
+    "name": "terminal bronchiole epithelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 22,
+  "fields": {
+    "name": "lymphatic tree",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 23,
+  "fields": {
+    "name": "bronchial artery endothelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 24,
+  "fields": {
+    "name": "epithelium of respiratory bronchiole",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 25,
+  "fields": {
+    "name": "artery endothelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 26,
+  "fields": {
+    "name": "pulmonary vein",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 27,
+  "fields": {
+    "name": "bronchial artery",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 28,
+  "fields": {
+    "name": "venous blood vessel",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 29,
+  "fields": {
+    "name": "uteroglobin",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 30,
+  "fields": {
+    "name": "lung interstitium",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 31,
+  "fields": {
+    "name": "proximal acinar tubule",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 32,
+  "fields": {
+    "name": "pulmonary surfactant-associated protein C",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 33,
+  "fields": {
+    "name": "distal acinar tubule bud",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 34,
+  "fields": {
+    "name": "interstitial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 35,
+  "fields": {
+    "name": "subendothelial connective tissue",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 36,
+  "fields": {
+    "name": "proximal acinar tubule epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 37,
+  "fields": {
+    "name": "epithelium of bronchiole",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 38,
+  "fields": {
+    "name": "advanced glycosylation end product-specific receptor",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 39,
+  "fields": {
+    "name": "acinar epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 40,
+  "fields": {
+    "name": "acinar tubule",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 41,
+  "fields": {
+    "name": "smooth muscle tissue of bronchiole",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 42,
+  "fields": {
+    "name": "artery",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 43,
+  "fields": {
+    "name": "endothelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 44,
+  "fields": {
+    "name": "CD34",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 45,
+  "fields": {
+    "name": "immature club cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 46,
+  "fields": {
+    "name": "arteriole",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 47,
+  "fields": {
+    "name": "bronchiole proliferative epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 48,
+  "fields": {
+    "name": "bronchiolar epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 49,
+  "fields": {
+    "name": "ciliated cell precursor",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 50,
+  "fields": {
+    "name": "epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 51,
+  "fields": {
+    "name": "pulmonary artery",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 52,
+  "fields": {
+    "name": "distal acinar tubule epithelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 53,
+  "fields": {
+    "name": "vascular associated smooth muscle cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 54,
+  "fields": {
+    "name": "respiratory bronchiole",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 55,
+  "fields": {
+    "name": "smooth muscle tissue of terminal bronchiole",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 56,
+  "fields": {
+    "name": "ATP-binding cassette sub-family A member 3",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 57,
+  "fields": {
+    "name": "pulmonary lymphatic endothelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 58,
+  "fields": {
+    "name": "epithelial cell of the lung",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 59,
+  "fields": {
+    "name": "endomucin",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 60,
+  "fields": {
+    "name": "immature type II pneumocyte",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 61,
+  "fields": {
+    "name": "alpha-actin-2",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 62,
+  "fields": {
+    "name": "lung epithelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 63,
+  "fields": {
+    "name": "lung neuroendocrine cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 64,
+  "fields": {
+    "name": "periarterial connective tissue",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 65,
+  "fields": {
+    "name": "endothelial cell of artery",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 66,
+  "fields": {
+    "name": "smooth muscle cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 67,
+  "fields": {
+    "name": "histone H3.3C",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 68,
+  "fields": {
+    "name": "epithelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 69,
+  "fields": {
+    "name": "transcription factor SOX-9",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 70,
+  "fields": {
+    "name": "unclassified fibroblast",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 71,
+  "fields": {
+    "name": "pulmonary lymphatic endothelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 72,
+  "fields": {
+    "name": "smooth muscle tissue of respiratory bronchiole",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 73,
+  "fields": {
+    "name": "lymphatic vessel endothelial hyaluronic acid receptor 1",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 74,
+  "fields": {
+    "name": "immature type I pneumocyte",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 75,
+  "fields": {
+    "name": "homeodomain-only protein",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 76,
+  "fields": {
+    "name": "distal acinar tubule epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 77,
+  "fields": {
+    "name": "nerve fiber",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 78,
+  "fields": {
+    "name": "fibroblast",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 79,
+  "fields": {
+    "name": "arteriole endothelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 80,
+  "fields": {
+    "name": "vascular tree endothelium",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 81,
+  "fields": {
+    "name": "chondroitin sulfate proteoglycan 4",
+    "type": 1
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 82,
+  "fields": {
+    "name": "bronchiolar associated smooth muscle cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 83,
+  "fields": {
+    "name": "myofibroblast",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 84,
+  "fields": {
+    "name": "intermediate pneumocyte",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 85,
+  "fields": {
+    "name": "acinar tubule proliferative epithelial cell",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 86,
+  "fields": {
+    "name": "vein",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 87,
+  "fields": {
+    "name": "interstitial tissue",
+    "type": 4
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 88,
+  "fields": {
+    "name": "respiratory venule",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 89,
+  "fields": {
+    "name": "blood vessel",
+    "type": 2
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 90,
+  "fields": {
+    "name": "endothelial cell of vascular tree",
+    "type": 3
+  }
+},
+{
+  "model": "analytics.ontoentity",
+  "pk": 91,
+  "fields": {
+    "name": "venule",
+    "type": 2
+  }
+}
+]
