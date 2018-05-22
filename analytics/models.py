@@ -13,6 +13,9 @@ class Experiment(models.Model):
         blank=False,
         null=False
     )
+    species = models.CharField(
+        max_length=25
+    )
 
     def __str__(self):
         return '%s' % self.experiment_id
