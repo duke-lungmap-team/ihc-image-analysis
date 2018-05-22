@@ -1,3 +1,9 @@
+import django
+import os
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lap.settings")
+django.setup()
+
 from analytics import models
 
 onto_protein_to_probe_dict = {
