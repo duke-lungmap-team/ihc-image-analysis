@@ -69,6 +69,26 @@ class ProbeList(generics.ListAPIView):
     serializer_class = serializers.ProbeSerializer
 
 
+class OntoEntityRelationPartOf(generics.RetrieveAPIView):
+    queryset = models.OntoEntity.objects.all()
+    serializer_class = serializers.OntoEntitySerializer
+
+    def serialize_relations(self, entity):
+        data = self.get_serializer(entity).data
+        data['relations'] = []
+        relations = models.OntoEntityMap.objects.filter(has_part=entity)
+
+        for r in relations:
+            data['relations'].append(self.serialize_relations(r.entity))
+
+        return data
+
+    def retrieve(self, request, *args, **kwargs):
+        entity = self.get_object()
+        data = self.serialize_relations(entity)
+        return Response(data)
+
+
 # noinspection PyClassHasNoInit
 class ImageSetFilter(django_filters.rest_framework.FilterSet):
     probe = django_filters.ModelMultipleChoiceFilter(

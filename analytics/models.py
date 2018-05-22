@@ -62,9 +62,14 @@ class Probe(models.Model):
     label = models.CharField(
         max_length=100,
         null=False,
-        blank=False,
-        unique=True
+        blank=False
     )
+    species = models.CharField(
+        max_length=25
+    )
+
+    class Meta:
+        unique_together = (('label', 'species'),)
 
     def __str__(self):
         return '%s: %s' % (self.id, self.label)
@@ -125,6 +130,44 @@ class ExperimentProbeMap(models.Model):
         return '%s, %s (%s)' % (self.experiment_id, self.probe.label, self.color)
 
 
+class OntoEntityType(models.Model):
+    name = models.CharField(
+        max_length=32,
+        null=False,
+        blank=False,
+        unique=True
+    )
+
+
+class OntoEntity(models.Model):
+    name = models.CharField(
+        max_length=128,
+        null=False,
+        blank=False,
+        unique=True
+    )
+    type = models.ForeignKey(OntoEntityType)
+
+    def __str__(self):
+        return '%s (%s)' % (self.name, self.type.name)
+
+
+class OntoEntityMap(models.Model):
+    entity = models.ForeignKey(OntoEntity)
+    has_part = models.ForeignKey(OntoEntity, related_name='has_part')
+
+    class Meta:
+        unique_together = (('entity', 'has_part'),)
+
+
+class ProbeOntoProteinMap(models.Model):
+    probe = models.ForeignKey(Probe)
+    protein = models.ForeignKey(OntoEntity)
+
+    class Meta:
+        unique_together = (('probe', 'protein'),)
+
+
 class Anatomy(models.Model):
     name = models.CharField(
         max_length=100,
@@ -146,6 +189,23 @@ class AnatomyProbeMap(models.Model):
         return '%s: <Probe: %s>, <Anatomy: %s>' % (self.id,
                                                    self.probe.label,
                                                    self.anatomy.name)
+
+
+# temporary new Subregion model
+class SubregionNew(models.Model):
+    image = models.ForeignKey(Image)
+    entity = models.ForeignKey(OntoEntity)
+    user = models.ForeignKey(
+        User,
+        null=False,
+        blank=False
+    )
+
+    def __str__(self):
+        return '%s, %s' % (
+            self.id,
+            self.image.image_name,
+        )
 
 
 class Subregion(models.Model):

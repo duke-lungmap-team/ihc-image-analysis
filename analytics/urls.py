@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^api/magnifications/$', api_views.get_magnification_list),
     url(r'^api/development-stages/$', api_views.get_development_stage_list),
     url(r'^api/probes/$', api_views.ProbeList.as_view()),
+    url(r'^api/onto-entities/(?P<pk>[0-9]+)/part-of/$', api_views.OntoEntityRelationPartOf.as_view()),
     url(r'^api/images/$', api_views.ImageList.as_view()),
     url(r'^api/images/(?P<pk>[0-9]+)/$', api_views.ImageDetail.as_view()),
     url(r'^api/images-jpeg/(?P<pk>[0-9]+)/$', api_views.get_image_jpeg, name='images-jpeg'),

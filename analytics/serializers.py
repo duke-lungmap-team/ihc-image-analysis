@@ -77,6 +77,14 @@ class ProbeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class OntoEntitySerializer(serializers.ModelSerializer):
+    type_name = serializers.CharField(source='type.name')
+
+    class Meta:
+        model = models.OntoEntity
+        fields = "__all__"
+
+
 class PointsSerializer(serializers.ModelSerializer):
 
     class Meta:
