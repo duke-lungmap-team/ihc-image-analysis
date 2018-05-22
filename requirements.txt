@@ -6,7 +6,7 @@ django-rest-swagger==2.1.2
 djangorestframework==3.6.2
 docutils==0.13.1
 gunicorn==19.7.1
-isodate==0.5.4
+isodate>=0.5.4
 itypes==1.1.0
 Jinja2==2.9.6
 jmespath==0.9.1
@@ -22,9 +22,9 @@ pyparsing==2.2.0
 python-dateutil==2.6.0
 pytz==2017.2
 rdflib==4.2.2
-requests==2.13.0
+requests>=2.13.0
 numpy==1.13.1
-six==1.10.0
-SPARQLWrapper==1.8.0
+six>=1.10.0
+SPARQLWrapper>=1.8.0
 uritemplate==3.0.0
 git+git://github.com/duke-lungmap-team/lung-map-utils.git
