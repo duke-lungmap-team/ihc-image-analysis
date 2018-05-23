@@ -332,7 +332,7 @@ class ClassifySubRegion(generics.CreateAPIView):
 class LungmapSubRegionFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = models.SubregionNew
-        fields = ['image', 'anatomy']
+        fields = ['image', 'entity']
 
 
 class SubregionList(
