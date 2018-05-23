@@ -137,21 +137,15 @@ def get_images_by_experiment(experiment_id):
     output = []
     try:
         for x in results:
-            row = {}
+            row = {
+                'image_name': os.path.basename(x['image_file_path']['value']).rsplit('.', 1)[0],
+                'image_id': x['dir']['value'], 'source_url': x['image_file_path']['value'],
+                'experiment_id': experiment_id,
+                'experiment_type_id': x['experiment_type']['value'],
+                'magnification': x['magnification']['value'],
+                'x_scaling': x['x_scaling']['value'], 'y_scaling': x['y_scaling']['value']
+            }
 
-            # files in BREATH DB are gzipped TIFF files
-            filename = '.'.join([x['dir']['value'], 'tif', 'gz'])
-
-            root = x['path']['value']
-            source_url = os.path.join(root, x['dir']['value'], filename)
-            row['image_name'] = x['dir']['value']
-            row['image_id'] = x['image']['value'].split('data#')[1]
-            row['source_url'] = source_url
-            row['experiment_id'] = experiment_id
-            row['experiment_type_id'] = x['experiment_type']['value']
-            row['magnification'] = x['magnification']['value']
-            row['x_scaling'] = x['x_scaling']['value']
-            row['y_scaling'] = x['y_scaling']['value']
             output.append(row)
         return output
     except ValueError as e:
