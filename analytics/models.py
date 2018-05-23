@@ -46,7 +46,7 @@ class ImageSet(models.Model):
         return '%s' % self.id
 
     def get_subregion_count(self):
-        return Subregion.objects.filter(image__image_set=self).count()
+        return SubregionNew.objects.filter(image__image_set=self).count()
 
     def get_images_with_subregion_count(self):
         return Image.objects.annotate(subregion_count=models.Count('subregion')).filter(
@@ -55,7 +55,7 @@ class ImageSet(models.Model):
         ).count()
 
     def get_images_with_subregion_count_by_anatomy_name(self):
-        return Subregion.objects.filter(image__image_set=self)\
+        return SubregionNew.objects.filter(image__image_set=self)\
             .values('anatomy__name') \
             .annotate(total=models.Count('anatomy__name')) \
             .order_by('anatomy__name')
@@ -171,29 +171,6 @@ class ProbeOntoProteinMap(models.Model):
         unique_together = (('probe', 'protein'),)
 
 
-class Anatomy(models.Model):
-    name = models.CharField(
-        max_length=100,
-        unique=True
-    )
-
-    def __str__(self):
-        return '%s: %s' % (self.id, self.name)
-
-
-class AnatomyProbeMap(models.Model):
-    probe = models.ForeignKey(Probe)
-    anatomy = models.ForeignKey(Anatomy)
-
-    class Meta:
-        unique_together = (('probe', 'anatomy'),)
-
-    def __str__(self):
-        return '%s: <Probe: %s>, <Anatomy: %s>' % (self.id,
-                                                   self.probe.label,
-                                                   self.anatomy.name)
-
-
 # temporary new Subregion model
 class SubregionNew(models.Model):
     image = models.ForeignKey(Image)
@@ -211,39 +188,9 @@ class SubregionNew(models.Model):
         )
 
 
-class Subregion(models.Model):
-    image = models.ForeignKey(Image)
-    anatomy = models.ForeignKey(Anatomy)
-    user = models.ForeignKey(
-        User,
-        null=False,
-        blank=False
-    )
-
-    def __str__(self):
-        return '%s, %s' % (
-            self.id,
-            self.image.image_name,
-        )
-
-
 class PointsNew(models.Model):
     subregion = models.ForeignKey(
         SubregionNew,
-        related_name='points',
-        on_delete=models.CASCADE
-    )
-    x = models.IntegerField()
-    y = models.IntegerField()
-    order = models.IntegerField()
-
-    def __str__(self):
-        return '%s %s #%s: [%s, %s]' % (self.id, self.subregion_id, self.order, self.x, self.y)
-
-
-class Points(models.Model):
-    subregion = models.ForeignKey(
-        Subregion,
         related_name='points',
         on_delete=models.CASCADE
     )
