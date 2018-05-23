@@ -88,7 +88,7 @@ class OntoEntitySerializer(serializers.ModelSerializer):
 class PointsSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = models.PointsNew
+        model = models.Points
         fields = ('x', 'y', 'order')
 
 
@@ -96,11 +96,11 @@ class SubregionSerializer(serializers.ModelSerializer):
     points = PointsSerializer(many=True)
 
     class Meta:
-        model = models.SubregionNew
+        model = models.Subregion
         fields = ["id", "image", "anatomy", "points"]
 
     def create(self, validated_data):
-        subregion = models.SubregionNew.objects.create(**validated_data)
+        subregion = models.Subregion.objects.create(**validated_data)
         return subregion
 
 

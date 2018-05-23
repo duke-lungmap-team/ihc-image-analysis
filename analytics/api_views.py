@@ -192,7 +192,7 @@ class TrainedModelCreate(generics.CreateAPIView):
             image_set = models.ImageSet.objects.get(id=request.data['imageset'])
             images = image_set.image_set.prefetch_related('subregion_set')
             training_data = []
-            subregions = models.SubregionNew.objects.filter(image__image_set=image_set)\
+            subregions = models.Subregion.objects.filter(image__image_set=image_set)\
                 .values('anatomy__name') \
                 .annotate(total=Count('anatomy__name')) \
                 .order_by('anatomy__name')
@@ -331,7 +331,7 @@ class ClassifySubRegion(generics.CreateAPIView):
 # noinspection PyClassHasNoInit
 class LungmapSubRegionFilter(django_filters.rest_framework.FilterSet):
     class Meta:
-        model = models.SubregionNew
+        model = models.Subregion
         fields = ['image', 'entity']
 
 
@@ -340,7 +340,7 @@ class SubregionList(
         generics.ListCreateAPIView
 ):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = models.SubregionNew.objects.all()
+    queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer
     filter_class = LungmapSubRegionFilter
 
@@ -373,7 +373,7 @@ class SubregionList(
             return Response(data={'detail': "Image set is already trained"}, status=400)
 
         anatomy_id = request.data[0]['anatomy']
-        existing_sub_regions = models.SubregionNew.objects.filter(
+        existing_sub_regions = models.Subregion.objects.filter(
             image=image_id,
             anatomy=anatomy_id
         )
@@ -398,7 +398,7 @@ class SubregionList(
                             "All sub-regions must reference the same anatomy class"
                         )
 
-                    subregion = models.SubregionNew.objects.create(
+                    subregion = models.Subregion.objects.create(
                         image_id=image_id,
                         anatomy_id=anatomy_id,
                         user_id=request.user.id
@@ -461,7 +461,7 @@ class SubregionList(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        regions = models.SubregionNew.objects.filter(anatomy=anatomy_id, image=image_id)
+        regions = models.Subregion.objects.filter(anatomy=anatomy_id, image=image_id)
         regions.delete()
 
         response_data = {'success': True}
@@ -471,5 +471,5 @@ class SubregionList(
 
 class SubregionDetail(generics.RetrieveUpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = models.SubregionNew.objects.all()
+    queryset = models.Subregion.objects.all()
     serializer_class = serializers.SubregionSerializer

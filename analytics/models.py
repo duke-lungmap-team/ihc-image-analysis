@@ -46,7 +46,7 @@ class ImageSet(models.Model):
         return '%s' % self.id
 
     def get_subregion_count(self):
-        return SubregionNew.objects.filter(image__image_set=self).count()
+        return Subregion.objects.filter(image__image_set=self).count()
 
     def get_images_with_subregion_count(self):
         return Image.objects.annotate(subregion_count=models.Count('subregion')).filter(
@@ -55,10 +55,10 @@ class ImageSet(models.Model):
         ).count()
 
     def get_images_with_subregion_count_by_anatomy_name(self):
-        return SubregionNew.objects.filter(image__image_set=self)\
-            .values('anatomy__name') \
-            .annotate(total=models.Count('anatomy__name')) \
-            .order_by('anatomy__name')
+        return Subregion.objects.filter(image__image_set=self)\
+            .values('entity__name') \
+            .annotate(total=models.Count('entity__name')) \
+            .order_by('entity__name')
 
 
 class Probe(models.Model):
@@ -172,7 +172,7 @@ class ProbeOntoProteinMap(models.Model):
 
 
 # temporary new Subregion model
-class SubregionNew(models.Model):
+class Subregion(models.Model):
     image = models.ForeignKey(Image)
     entity = models.ForeignKey(OntoEntity)
     user = models.ForeignKey(
@@ -188,9 +188,9 @@ class SubregionNew(models.Model):
         )
 
 
-class PointsNew(models.Model):
+class Points(models.Model):
     subregion = models.ForeignKey(
-        SubregionNew,
+        Subregion,
         related_name='points',
         on_delete=models.CASCADE
     )
