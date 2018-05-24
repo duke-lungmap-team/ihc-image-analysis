@@ -182,11 +182,11 @@ app.controller(
         'ImageSet',
         'Image',
         'Subregion',
-        'AnatomyProbeMap',
+        'ProbeProteinMap',
         'Classify',
         'TrainModel',
         function ($scope, $q, $routeParams, $uibModal, ImageSet, Image,
-                  Subregion, AnatomyProbeMap, Classify, TrainModel) {
+                  Subregion, ProbeProteinMap, Classify, TrainModel) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_classification = null;
@@ -263,29 +263,29 @@ app.controller(
 
             $scope.image_set.$promise.then(function(data) {
                 $scope.images = Image.query({'image_set': data.id});
-                var anatomy_promises = [];
+                var protein_promises = [];
 
                 data.probes.forEach(function(probe) {
-                    anatomy_promises.push(AnatomyProbeMap.query(
+                    protein_promises.push(ProbeProteinMap.query(
                         {
                             'probe': probe.probe
                         }).$promise
                     );
                 });
 
-                $q.all(anatomy_promises).then(function(results) {
-                    $scope.anatomies = [];
-                    var anatomy_keys = [];
+                $q.all(protein_promises).then(function(results) {
+                    $scope.proteins = [];
+                    var protein_keys = [];
 
-                    results.forEach(function(anatomy_probe_map) {
-                        anatomy_probe_map.forEach(function(anatomy_probe) {
-                            if (anatomy_keys.indexOf(anatomy_probe.anatomy) === -1) {
-                                anatomy_keys.push(anatomy_probe.anatomy);
+                    results.forEach(function(probe_protein_map) {
+                        probe_protein_map.forEach(function(probe_protein) {
+                            if (protein_keys.indexOf(probe_protein.protein_name) === -1) {
+                                protein_keys.push(probe_protein.protein_name);
 
-                                $scope.anatomies.push(
+                                $scope.proteins.push(
                                     {
-                                        'id': anatomy_probe.anatomy,
-                                        'name': anatomy_probe.anatomy_name
+                                        'id': probe_protein.protein,
+                                        'name': probe_protein.protein_name
                                     }
                                 );
                             }
