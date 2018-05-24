@@ -8,7 +8,7 @@ var URLS = {
     'classify': '/api/classify/',
     'subregions': '/api/subregions/',
     'image_sets': '/api/image-sets/',
-    'anatomy_probe_map': '/api/anatomy-probe-map/',
+    'probe_protein_map': '/api/probe-protein-map/',
     'train_model': '/api/train-model/'
 };
 
@@ -69,10 +69,10 @@ service.factory(
         );
     }
 ).factory(
-    'AnatomyProbeMap',
+    'ProbeProteinMap',
     function ($resource) {
         return $resource(
-            URLS.anatomy_probe_map,
+            URLS.probe_protein_map,
             {},
             {}
         );
