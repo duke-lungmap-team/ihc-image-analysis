@@ -97,7 +97,7 @@ class SubregionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Subregion
-        fields = ["id", "image", "anatomy", "points"]
+        fields = ["id", "image", "entity", "points"]
 
     def create(self, validated_data):
         subregion = models.Subregion.objects.create(**validated_data)
@@ -113,10 +113,10 @@ class ClassifyPointsSerializer(serializers.ModelSerializer):
         fields = ['points', 'image_id']
 
 
-# class AnatomyProbeMapSerializer(serializers.ModelSerializer):
-#     anatomy_name = serializers.CharField(source='anatomy.name')
-#     probe_name = serializers.CharField(source='probe.label')
-#
-#     class Meta:
-#         model = models.AnatomyProbeMap
-#         fields = ['anatomy', 'anatomy_name', 'probe', 'probe_name']
+class ProbeProteinMapSerializer(serializers.ModelSerializer):
+    protein_name = serializers.CharField(source='protein.name')
+    probe_name = serializers.CharField(source='probe.label')
+
+    class Meta:
+        model = models.ProbeOntoProteinMap
+        fields = ['protein', 'protein_name', 'probe', 'probe_name']
