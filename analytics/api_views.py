@@ -117,17 +117,17 @@ class ImageSetDetail(generics.RetrieveAPIView):
 
 
 # noinspection PyClassHasNoInit
-# class AnatomyProbeMapFilter(django_filters.rest_framework.FilterSet):
-#
-#     class Meta:
-#         model = models.AnatomyProbeMap
-#         fields = ['probe', 'anatomy']
-#
-#
-# class AnatomyProbeMapList(generics.ListAPIView):
-#     queryset = models.AnatomyProbeMap.objects.all()
-#     serializer_class = serializers.AnatomyProbeMapSerializer
-#     filter_class = AnatomyProbeMapFilter
+class ProbeOntoProteinMapFilter(django_filters.rest_framework.FilterSet):
+
+    class Meta:
+        model = models.ProbeOntoProteinMap
+        fields = ['probe', 'protein']
+
+
+class ProbeProteinMapList(generics.ListAPIView):
+    queryset = models.ProbeOntoProteinMap.objects.all()
+    serializer_class = serializers.ProbeProteinMapSerializer
+    filter_class = ProbeOntoProteinMapFilter
 
 
 class ImageDetail(generics.RetrieveAPIView):
@@ -405,7 +405,7 @@ class SubregionList(
                     )
 
                     for p in r['points']:
-                        models.PointsNew.objects.create(
+                        models.Points.objects.create(
                             subregion=subregion,
                             x=p['x'],
                             y=p['y'],
