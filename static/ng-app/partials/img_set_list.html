@@ -65,10 +65,10 @@
 
         <b>Probe</b>
         <ul class="list-unstyled">
-          <li ng-repeat="p in probes | orderBy:'name'">
+          <li ng-repeat="p in probes | orderBy:['name', 'species']">
             <label>
               <input type="checkbox" ng-model="p.query" />
-              {{ p.name }}
+              {{ p.name }} ({{ p.species }})
             </label>
           </li>
         </ul>

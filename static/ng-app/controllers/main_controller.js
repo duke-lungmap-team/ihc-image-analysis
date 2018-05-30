@@ -115,6 +115,7 @@ app.controller(
                         {
                             'id': p.id,
                             'name': p.label,
+                            'species': p.species,
                             'query': false
                         }
                     )
