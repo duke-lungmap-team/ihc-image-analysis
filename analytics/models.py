@@ -54,7 +54,7 @@ class ImageSet(models.Model):
             subregion_count__gt=0
         ).count()
 
-    def get_images_with_subregion_count_by_anatomy_name(self):
+    def get_images_with_subregion_count_by_entity_name(self):
         return Subregion.objects.filter(image__image_set=self)\
             .values('entity__name') \
             .annotate(total=models.Count('entity__name')) \

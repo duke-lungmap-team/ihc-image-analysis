@@ -79,8 +79,8 @@
             <td>Sub-region Count:</td>
             <td><strong>{{ image_set.subregion_count }}</strong></td>
           </tr>
-          <tr ng-repeat="p in image_set.subregion_count_by_anatomy_name">
-            <td class="padding-left-24"><i>{{ p.anatomy__name }}</i></td>
+          <tr ng-repeat="p in image_set.subregion_count_by_entity_name">
+            <td class="padding-left-24"><i>{{ p.entity__name }}</i></td>
             <td class="padding-left-24">{{ p.total }}</td>
           </tr>
         </tbody>
