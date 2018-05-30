@@ -183,10 +183,11 @@ app.controller(
         'Image',
         'Subregion',
         'ProbeProteinMap',
+        'OntoEntityPartOf',
         'Classify',
         'TrainModel',
         function ($scope, $q, $routeParams, $uibModal, ImageSet, Image,
-                  Subregion, ProbeProteinMap, Classify, TrainModel) {
+                  Subregion, ProbeProteinMap, OntoEntityPartOf, Classify, TrainModel) {
             $scope.images = [];
             $scope.selected_image = null;
             $scope.selected_classification = null;
@@ -259,6 +260,55 @@ app.controller(
                 $scope.open_modal('lg', 'custom', undefined, 'static/ng-app/partials/info_modal.html');
             };
 
+            function get_items_from_nested_entities(relations, wanted_type) {
+                var wanted = [];
+
+                relations.forEach(function(r) {
+                    if (r.type_name === wanted_type) {
+                        wanted.push({'id': r.id, 'name': r.name});
+                    }
+                    wanted = wanted.concat(get_items_from_nested_entities(r['relations'], wanted_type));
+                });
+
+                return wanted;
+            }
+
+            function get_structures_by_proteins(proteins) {
+                var entity_promises = [];
+                $scope.onto_structures = [];
+
+                proteins.forEach(function(protein) {
+                    entity_promises.push(OntoEntityPartOf.get(
+                        {
+                            'id': protein.id
+                        }).$promise
+                    );
+                });
+
+                $q.all(entity_promises).then(function(results) {
+                    var temp_structures = [];
+                    var uniq_structures = {};
+                    results.forEach(function (r) {
+                        temp_structures = get_items_from_nested_entities(r['relations'], 'structure');
+
+                        temp_structures.forEach(function (s) {
+                            if (!(s.id in uniq_structures)) {
+                                uniq_structures[s.id] = s.name;
+                            }
+                        })
+                    });
+
+                    Object.keys(uniq_structures).forEach(function (k) {
+                        $scope.onto_structures.push(
+                            {
+                                'id': k,
+                                'name': uniq_structures[k]
+                            }
+                        )
+                    })
+                });
+            }
+
             $scope.image_set = ImageSet.get({'image_set_id': $routeParams.image_set_id});
 
             $scope.image_set.$promise.then(function(data) {
@@ -291,6 +341,7 @@ app.controller(
                             }
                         });
                     });
+                    get_structures_by_proteins($scope.proteins);
                 });
             });
 
@@ -323,7 +374,7 @@ app.controller(
                 var existing_sub_regions = Subregion.query(
                     {
                         'image': $scope.selected_image.id,
-                        'anatomy': classification.id
+                        'entity': classification.id
                     }
                 );
 
@@ -398,7 +449,7 @@ app.controller(
                         );
                     }
 
-                    region.anatomy = $scope.selected_classification.id;
+                    region.entity = $scope.selected_classification.id;
                     region.image = $scope.selected_image.id;
                     region.points = region_points;
 
@@ -410,7 +461,7 @@ app.controller(
                 // first
                 var delete_response = Subregion.delete({
                     'image': $scope.selected_image.id,
-                    'anatomy': $scope.selected_classification.id
+                    'entity': $scope.selected_classification.id
                 });
 
                 delete_response.$promise.then(function (delete_data) {
@@ -468,7 +519,7 @@ app.controller(
             $scope.delete_saved_regions = function () {
                 var delete_response = Subregion.delete({
                     'image': $scope.selected_image.id,
-                    'anatomy': $scope.selected_classification.id
+                    'entity': $scope.selected_classification.id
                 });
 
                 delete_response.$promise.then(function (data) {
