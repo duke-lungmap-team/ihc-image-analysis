@@ -193,9 +193,9 @@ class TrainedModelCreate(generics.CreateAPIView):
             images = image_set.image_set.prefetch_related('subregion_set')
             training_data = []
             subregions = models.Subregion.objects.filter(image__image_set=image_set)\
-                .values('anatomy__name') \
-                .annotate(total=Count('anatomy__name')) \
-                .order_by('anatomy__name')
+                .values('entity__name') \
+                .annotate(total=Count('entity__name')) \
+                .order_by('entity__name')
 
             if len(subregions) <= 1:
                 raise ValueError(
@@ -215,7 +215,7 @@ class TrainedModelCreate(generics.CreateAPIView):
                         that within this imageset, the anatomical structure %s has 
                         only %s subregion(s). Please either delete this subregion or 
                         continue to build training data for this structure.
-                        """ % (sub['anatomy__name'], str(sub['total']))
+                        """ % (sub['entity__name'], str(sub['total']))
                     )
 
             for image in images:
@@ -240,7 +240,7 @@ class TrainedModelCreate(generics.CreateAPIView):
                             utils.generate_features(
                                 hsv_img_as_numpy=sub_img,
                                 polygon_points=this_mask,
-                                label=subregion.anatomy.name
+                                label=subregion.entity.name
                             )
                         )
 
@@ -347,21 +347,21 @@ class SubregionList(
     def create(self, request, *args, **kwargs):
         """
         A bit of a special case with this API endpoint. We don't allow the creation of
-        new sub-regions for a image / anatomy class combination if there are existing
+        new sub-regions for a image / entity class combination if there are existing
         sub-regions for that pair. So, a POST will take a list of sub-regions and check
         that none exist before saving them in bulk within an atomic transaction.
 
-        The save will also fail if there are a mixture of different image or anatomy IDs,
-        all sub-regions in the list must have the same image ID and anatomy ID.
+        The save will also fail if there are a mixture of different image or entity IDs,
+        all sub-regions in the list must have the same image ID and entity ID.
         """
 
         # A couple checks to make sure we can continue...
         # First, if the image set for the image is already trained, we do not allow
         # new sub-regions.
-        # Second, as of now, we don't allow new sub-regions for an image / anatomy combo if
+        # Second, as of now, we don't allow new sub-regions for an image / entity combo if
         # existing sub-regions exist for it. This may change in the future.
-        # Third, we don't allow a bulk POST with a different image / anatomy combos. Since
-        # we will have the first region image / anatomy combo from the previous check,
+        # Third, we don't allow a bulk POST with a different image / entity combos. Since
+        # we will have the first region image / entity combo from the previous check,
         # we can verify that all the rest are the same as we iterate through them.
         image_id = request.data[0]['image']
 
@@ -372,15 +372,15 @@ class SubregionList(
         if hasattr(image_set, 'trainedmodel'):
             return Response(data={'detail': "Image set is already trained"}, status=400)
 
-        anatomy_id = request.data[0]['anatomy']
+        entity_id = request.data[0]['entity']
         existing_sub_regions = models.Subregion.objects.filter(
             image=image_id,
-            anatomy=anatomy_id
+            entity=entity_id
         )
 
         if existing_sub_regions.count() > 0:
             raise drf_serializers.ValidationError(
-                "Sub-regions already exist for this image / anatomy"
+                "Sub-regions already exist for this image / entity"
             )
 
         sub_regions = []
@@ -393,14 +393,14 @@ class SubregionList(
                             "All sub-regions must reference the same image"
                         )
 
-                    if anatomy_id != r['anatomy']:
+                    if entity_id != r['entity']:
                         raise drf_serializers.ValidationError(
-                            "All sub-regions must reference the same anatomy class"
+                            "All sub-regions must reference the same entity class"
                         )
 
                     subregion = models.Subregion.objects.create(
                         image_id=image_id,
-                        anatomy_id=anatomy_id,
+                        entity_id=entity_id,
                         user_id=request.user.id
                     )
 
@@ -436,7 +436,7 @@ class SubregionList(
         # both the Image and Anatomy IDs. However, deleting sub-regions
         # for image sets with a trained model is not allowed.
         try:
-            anatomy_id = request.query_params['anatomy']
+            entity_id = request.query_params['entity']
             image_id = request.query_params['image']
         except KeyError:
             return Response(
@@ -461,7 +461,7 @@ class SubregionList(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        regions = models.Subregion.objects.filter(anatomy=anatomy_id, image=image_id)
+        regions = models.Subregion.objects.filter(entity=entity_id, image=image_id)
         regions.delete()
 
         response_data = {'success': True}
