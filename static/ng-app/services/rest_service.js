@@ -9,6 +9,7 @@ var URLS = {
     'subregions': '/api/subregions/',
     'image_sets': '/api/image-sets/',
     'probe_protein_map': '/api/probe-protein-map/',
+    'onto_entities': '/api/onto-entities/',
     'train_model': '/api/train-model/'
 };
 
@@ -73,6 +74,15 @@ service.factory(
     function ($resource) {
         return $resource(
             URLS.probe_protein_map,
+            {},
+            {}
+        );
+    }
+).factory(
+    'OntoEntityPartOf',
+    function ($resource) {
+        return $resource(
+            URLS.onto_entities + ':id' + '/part-of/',
             {},
             {}
         );
