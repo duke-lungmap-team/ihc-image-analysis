@@ -8,9 +8,13 @@ from rest_framework import generics, permissions, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from lung_map_utils import utils
 import numpy as np
 import pandas as pd
+import hashlib
+import os
+from io import BytesIO
 import pickle
 # noinspection PyPackageRequirements
 import cv2
@@ -146,10 +150,49 @@ class ImageDetail(generics.RetrieveAPIView):
         try:
             with transaction.atomic():
                 if img.image_orig_sha1 is None or img.image_orig_sha1 == '':
-                    suf, sha1, suf_jpeg = lungmap_utils.get_image_from_lungmap(img.source_url)
+                    file_name, tiff_data = lungmap_utils.get_image_from_lungmap(img.source_url)
+
+                    with open(file_name[:-3], 'wb') as f3:
+                        f3.write(tiff_data)
+
+                        # noinspection PyUnresolvedReferences
+                        cv_img = cv2.imread(f3.name)
+
+                    os.remove(f3.name)
+
+                    # noinspection PyUnresolvedReferences
+                    pil_img = PIL.Image.fromarray(
+                        cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB),
+                        'RGB'
+                    )
+                    img_jpeg = pil_img.copy()
+                    temp_handle = BytesIO()
+                    pil_img.save(temp_handle, 'TIFF')
+                    temp_handle.seek(0)
+
+                    # jpeg image
+                    temp_handle_jpeg = BytesIO()
+                    img_jpeg.save(temp_handle_jpeg, 'JPEG')
+                    temp_handle_jpeg.seek(0)
+
+                    # filename
+                    suf = SimpleUploadedFile(
+                        file_name,
+                        temp_handle.read(),
+                        content_type='image/tif'
+                    )
+                    suf_jpg = SimpleUploadedFile(
+                        file_name.replace('.tif', '.jpg'),
+                        temp_handle_jpeg.read(),
+                        content_type='image/jpeg'
+                    )
+
+                    temp_handle.seek(0)
+                    image_orig_sha1 = hashlib.sha1(temp_handle.read()).hexdigest()
+
                     img.image_orig = suf
-                    img.image_orig_sha1 = sha1
-                    img.image_jpeg = suf_jpeg
+                    img.image_orig_sha1 = image_orig_sha1
+                    img.image_jpeg = suf_jpg
                     img.save()
                 serializer = serializers.ImageSerializer(
                     img,

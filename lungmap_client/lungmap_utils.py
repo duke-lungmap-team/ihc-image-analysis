@@ -1,13 +1,6 @@
-# noinspection PyPackageRequirements
-import cv2
-from django.core.files.uploadedfile import SimpleUploadedFile
-from io import BytesIO
 from lungmap_client import lungmap_sparql_queries as sparql_queries
 from SPARQLWrapper import SPARQLWrapper, JSON
-import hashlib
 import os
-# noinspection PyPackageRequirements
-from PIL import Image
 import requests
 import tempfile
 import gzip
@@ -172,71 +165,28 @@ def get_probes_by_experiment(experiment_id):
 
 def get_image_from_lungmap(url):
     """
-    Takes a URL and downloads the image, calculates a SHA1,
-    creates a SimpleUploadedFile, converts to jpeg
-    and then creates another SimpleUploadedFile for the jpeg, 
-    returns 3 objects
-    :param url:
-    :return: SimpleUploadedFile (orig), SHA1 Hash (orig), 
-    SimpleUploadedFile (jpeg converted)
+    Takes a URL and downloads the image,
+    returns file name and image data as file object
+    :param url: source URL for the image resource
+    :return: file name, TIFF data as bytes object
     """
-    try:
-        filename = url.split('/')[-1]
-        base, ext = os.path.splitext(filename)
+    filename = url.split('/')[-1]
+    base, ext = os.path.splitext(filename)  # this extension is just the .gz of .tiff.gz
 
-        # TODO: check response, if not successful we cannot proceed
-        response = requests.get(url, stream=True)
+    # TODO: check response, if not successful we cannot proceed
+    response = requests.get(url, stream=True)
 
-        with tempfile.NamedTemporaryFile(suffix=ext) as f:
-            for chunk in response.iter_content(chunk_size=1024):
-                f.write(chunk)
+    with tempfile.NamedTemporaryFile(suffix=ext) as f:
+        for chunk in response.iter_content(chunk_size=1024):
+            f.write(chunk)
 
-            f.seek(0)
+        f.seek(0)
 
-            with gzip.GzipFile(mode='rb', fileobj=f) as f2:
-                tiff_data = f2.read()
+        with gzip.GzipFile(mode='rb', fileobj=f) as f2:
+            tiff_data = f2.read()
 
-            f2.close()
+        f2.close()
 
-            with open(f.name[:-3], 'wb') as f3:
-                f3.write(tiff_data)
+    response.close()
 
-                # noinspection PyUnresolvedReferences
-                cv_img = cv2.imread(f3.name)
-
-        response.close()
-        os.remove(f3.name)
-
-        # noinspection PyUnresolvedReferences
-        img = Image.fromarray(
-            cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB),
-            'RGB'
-        )
-        img_jpeg = img.copy()
-        temp_handle = BytesIO()
-        img.save(temp_handle, 'TIFF')
-        temp_handle.seek(0)
-
-        # jpeg image
-        temp_handle_jpeg = BytesIO()
-        img_jpeg.save(temp_handle_jpeg, 'JPEG')
-        temp_handle_jpeg.seek(0)
-
-        # filename
-        suf = SimpleUploadedFile(
-            base,
-            temp_handle.read(),
-            content_type='image/tif'
-        )
-        suf_jpg = SimpleUploadedFile(
-            base.replace('.tif', '.jpg'),
-            temp_handle_jpeg.read(),
-            content_type='image/jpeg'
-        )
-
-        temp_handle.seek(0)
-        image_orig_sha1 = hashlib.sha1(temp_handle.read()).hexdigest()
-
-        return suf, image_orig_sha1, suf_jpg
-    except ValueError as e:
-        raise e
+    return base, tiff_data
