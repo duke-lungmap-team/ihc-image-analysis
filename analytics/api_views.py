@@ -3,13 +3,12 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-from lungmap_client import lungmap_utils
+import lungmap_utils.client as lm_client
 from rest_framework import generics, permissions, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-from lung_map_utils import utils
 import numpy as np
 import pandas as pd
 import hashlib
@@ -18,11 +17,15 @@ from io import BytesIO
 import pickle
 # noinspection PyPackageRequirements
 import cv2
+from cv_color_features import utils as color_utils
 # noinspection PyPackageRequirements
 import PIL
 import django_filters
 # noinspection PyPackageRequirements
 from sklearn.externals import joblib
+from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import MinMaxScaler
 import rest_framework.serializers as drf_serializers
 
 
@@ -150,7 +153,7 @@ class ImageDetail(generics.RetrieveAPIView):
         try:
             with transaction.atomic():
                 if img.image_orig_sha1 is None or img.image_orig_sha1 == '':
-                    file_name, tiff_data = lungmap_utils.get_image_from_lungmap(img.source_url)
+                    file_name, tiff_data = lm_client.get_image_from_lungmap(img.source_url)
 
                     with open(file_name[:-3], 'wb') as f3:
                         f3.write(tiff_data)
@@ -280,14 +283,20 @@ class TrainedModelCreate(generics.CreateAPIView):
                             this_mask = np.append(this_mask, [[point.x, point.y]], axis=0)
 
                         training_data.append(
-                            utils.generate_features(
+                            color_utils.generate_features(
                                 hsv_img_as_numpy=sub_img,
                                 polygon_points=this_mask,
                                 label=subregion.entity.name
                             )
                         )
 
-            pipe = utils.pipeline
+            classifier = SVC(probability=True, class_weight='balanced')
+            pipe = Pipeline([
+                    ('scaler', MinMaxScaler()),
+                    ('classification', classifier)
+                ]
+            )
+
             training_data = pd.DataFrame(training_data)
             pipe.fit(training_data.drop('label', axis=1), training_data['label'])
 
@@ -353,7 +362,7 @@ class ClassifySubRegion(generics.CreateAPIView):
 
         # noinspection PyUnresolvedReferences
         image_as_numpy = cv2.cvtColor(image_as_numpy, cv2.COLOR_RGB2HSV)
-        features = utils.generate_features(
+        features = color_utils.generate_features(
             hsv_img_as_numpy=image_as_numpy,
             polygon_points=this_mask
         )
